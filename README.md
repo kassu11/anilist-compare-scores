@@ -1,0 +1,2 @@
+# anilist-compare-scores
+ 
