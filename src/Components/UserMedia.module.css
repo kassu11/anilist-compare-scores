@@ -1,0 +1,57 @@
+.flex {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	justify-content: center;
+}
+
+.media {
+	position: relative;
+	width: 400px;
+	height: 200px;
+	background-color: #0B1622;
+	padding: 16px;
+	isolation: isolate;
+	border-radius: 5px;
+	display: flex;
+	overflow: hidden;
+}
+
+.banner {
+	position: absolute;
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+	inset: 0px;
+	opacity: 15%;
+	z-index: -1;
+}
+
+.coverContainer {
+	position: relative;
+	height: 100%;
+	aspect-ratio: 2/3;
+	overflow: hidden;
+	border-radius: 5px;
+	box-shadow: inset 0 -60px 0px -20px #000000cc;
+	flex-shrink: 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+.coverContainer p {
+	margin: 0px;
+}
+
+.cover {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	inset: 0px;
+	object-fit: cover;
+	border-radius: 5px;
+	z-index: -1;
+}

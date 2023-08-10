@@ -1,6 +1,6 @@
-import { createStore } from "solid-js/store";
+import { createSignal } from "solid-js";
 
-export const [userTable, setUserTable] = createStore([]);
+export const [userTable, setUserTable] = createSignal([]);
 
 function UserTable() {
 	return (
@@ -17,7 +17,7 @@ function UserTable() {
 				</tr>
 			</thead>
 			<tbody>
-				<For each={userTable}>{user => (
+				<For each={userTable()}>{user => (
 					<tr>
 						<td><img src={user.avatar.medium} alt={user.name} height="25" /> {user.name}</td>
 						<td>{user.statistics.anime.count}</td>

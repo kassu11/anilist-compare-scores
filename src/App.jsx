@@ -1,5 +1,6 @@
 import UserSearch from "./Components/UserSearch";
 import UserTable from "./Components/UserTable";
+import UserMedia from "./Components/UserMedia";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
         <button>Anime</button>
         <button>Manga</button>
       </footer>
-      <main></main>
+      <UserMedia />
     </>
   );
 }

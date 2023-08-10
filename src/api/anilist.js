@@ -30,47 +30,47 @@ const userQuery = `query($page:Int = 1 $id:Int $search:String $sort:[UserSort]=[
 }`;
 
 const userVariable = {
-	"page": 1,
-	"type": "USERS",
-	"search": "user_name",
-	"sort": "SEARCH_MATCH"
+  "page": 1,
+  "type": "USERS",
+  "search": "user_name",
+  "sort": "SEARCH_MATCH"
 }
 
 const fetchedUsers = {};
 
 export async function fetchUsers(userName) {
-	userName = userName.toLowerCase();
-	if (userName === "") return [];
-	if (fetchedUsers[userName] instanceof Promise) {
-		await fetchedUsers[userName];
-		return fetchedUsers[userName];
-	}
-	if (fetchedUsers[userName]) return fetchedUsers[userName];
+  userName = userName.toLowerCase();
+  if (userName === "") return [];
+  if (fetchedUsers[userName] instanceof Promise) {
+    await fetchedUsers[userName];
+    return fetchedUsers[userName];
+  }
+  if (fetchedUsers[userName]) return fetchedUsers[userName];
 
-	let fetchingDone;
-	fetchedUsers[userName] = new Promise((resolve) => fetchingDone = resolve);
+  let fetchingDone;
+  fetchedUsers[userName] = new Promise((resolve) => fetchingDone = resolve);
 
-	const option = optionHandler(userQuery, { ...userVariable, search: userName });
-	const response = await fetch("https://graphql.anilist.co", option);
-	const json = await response.json();
-	fetchedUsers[userName] = json.data.Page.users;
-	fetchingDone();
-	return json.data.Page.users;
+  const option = optionHandler(userQuery, { ...userVariable, search: userName });
+  const response = await fetch("https://graphql.anilist.co", option);
+  const json = await response.json();
+  fetchedUsers[userName] = json.data.Page.users;
+  fetchingDone();
+  return json.data.Page.users;
 }
 
 export const optionHandler = (query, variables = {}) => ({
-	method: "POST",
-	headers: {
-		"Content-Type": "application/json",
-		"Accept": "application/json",
-	},
-	body: JSON.stringify({
-		query,
-		variables
-	})
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+  },
+  body: JSON.stringify({
+    query,
+    variables
+  })
 });
 
-const fetchedUserMedias = {};
+export const fetchedUserMedias = {};
 const userMediaQuery = `query ($userId: Int, $userName: String, $type: MediaType) {
   MediaListCollection(userId: $userId, userName: $userName, type: $type) {
     lists {
@@ -143,6 +143,7 @@ fragment mediaListEntry on MediaList {
     coverImage {
       extraLarge
       large
+      color
     }
     type
     format
@@ -156,6 +157,9 @@ fragment mediaListEntry on MediaList {
     countryOfOrigin
     genres
     bannerImage
+    nextAiringEpisode {
+      episode
+    }
     startDate {
       year
       month
@@ -165,25 +169,25 @@ fragment mediaListEntry on MediaList {
 }`
 
 const userMediaVariable = {
-	"userId": 0,
-	"type": "ANIME"
+  "userId": 0,
+  "type": "ANIME"
 }
 
 export async function fetchUserMedia({ id, name }, type = "ANIME") {
-	if (name === "") return [];
-	if (fetchedUserMedias[name] instanceof Promise) {
-		await fetchedUserMedias[name];
-		return fetchedUserMedias[name];
-	}
-	if (fetchedUserMedias[name]) return fetchedUserMedias[name];
+  if (name === "") return [];
+  if (fetchedUserMedias[name] instanceof Promise) {
+    await fetchedUserMedias[name];
+    return fetchedUserMedias[name];
+  }
+  if (fetchedUserMedias[name]) return fetchedUserMedias[name];
 
-	let fetchingDone;
-	fetchedUserMedias[name] = new Promise((resolve) => fetchingDone = resolve);
+  let fetchingDone;
+  fetchedUserMedias[name] = new Promise((resolve) => fetchingDone = resolve);
 
-	const option = optionHandler(userMediaQuery, { ...userMediaVariable, userId: id, type });
-	const response = await fetch("https://graphql.anilist.co", option);
-	const json = await response.json();
-	fetchedUserMedias[name] = json.data;
-	fetchingDone();
-	return json.data;
+  const option = optionHandler(userMediaQuery, { ...userMediaVariable, userId: id, type });
+  const response = await fetch("https://graphql.anilist.co", option);
+  const json = await response.json();
+  fetchedUserMedias[name] = json.data;
+  fetchingDone();
+  return json.data;
 }

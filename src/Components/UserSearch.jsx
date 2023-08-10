@@ -1,6 +1,7 @@
 import { fetchUsers, fetchUserMedia } from "../api/anilist";
 import { createSignal, createResource } from "solid-js";
 import { userTable, setUserTable } from "./UserTable";
+import { mediaInfo } from "./UserMedia";
 
 const [search, setSearch] = createSignal();
 
@@ -52,13 +53,24 @@ async function submitSearch(event) {
 	setSearch("");
 	if (!userName) return console.log("No input");
 
-	const users = await fetchUsers(userName);
-	if (!users?.length) return console.log("No users found");
+	const [newUser] = await fetchUsers(userName);
+	if (!newUser?.name) return console.log("No users found");
+	if (userTable().some(user => user.id === newUser.id)) return console.log("User already added");
 
-	if (userTable.every((user) => user.id !== users[0].id)) setUserTable([...userTable, users[0]]);
-	console.log("searched user:", users[0]);
-	console.log(userTable);
-	console.log(await fetchUserMedia(users[0]));
+	const userMedia = await fetchUserMedia(newUser);
+	for (const list of userMedia.MediaListCollection.lists) {
+		for (const userStats of list.entries) {
+			if (userStats.media.id in mediaInfo) {
+				mediaInfo[userStats.media.id].users[newUser.name] = userStats.score
+				continue;
+			}
+			mediaInfo[userStats.media.id] = userStats.media;
+			mediaInfo[userStats.media.id].users = { [newUser.name]: userStats.score };
+		}
+	}
+
+	setUserTable([...userTable(), newUser]);
+	console.log(mediaInfo)
 }
 
 
