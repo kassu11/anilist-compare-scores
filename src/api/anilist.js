@@ -10,9 +10,20 @@ const userQuery = `query($page:Int = 1 $id:Int $search:String $sort:[UserSort]=[
 		users(id:$id search:$search sort:$sort) {
 			id 
 			name 
+      statistics {
+        anime {
+          count
+          meanScore
+          minutesWatched
+        }
+        manga {
+          count
+          meanScore
+          chaptersRead
+        }
+      }
 			avatar {
-				large
-				medium
+        medium
 			}
 		}
 	}
@@ -25,10 +36,26 @@ const userVariable = {
 	"sort": "SEARCH_MATCH"
 }
 
-export async function fetchUsers(search) {
-	const option = optionHandler(userQuery, { ...userVariable, search });
+const fetchedUsers = {};
+
+export async function fetchUsers(userName) {
+	userName = userName.toLowerCase();
+	if (userName === "") return [];
+	if (fetchedUsers[userName] instanceof Promise) {
+		await fetchedUsers[userName];
+		return fetchedUsers[userName];
+	}
+	if (fetchedUsers[userName]) return fetchedUsers[userName];
+
+	let fetchingDone;
+	fetchedUsers[userName] = new Promise((resolve) => fetchingDone = resolve);
+
+	const option = optionHandler(userQuery, { ...userVariable, search: userName });
 	const response = await fetch("https://graphql.anilist.co", option);
-	return await response.json();
+	const json = await response.json();
+	fetchedUsers[userName] = json.data.Page.users;
+	fetchingDone();
+	return json.data.Page.users;
 }
 
 export const optionHandler = (query, variables = {}) => ({
