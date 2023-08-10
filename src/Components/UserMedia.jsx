@@ -1,10 +1,12 @@
 let array = [];
 let checkedArray = {};
+
 import { createEffect, createSignal } from "solid-js";
 import { userTable } from "./UserTable";
-import { fetchedUserMedias } from "../api/anilist"
+import { fetchedUserMedias } from "../api/anilist";
+import { navSettings } from "./UserSearch";
 
-import style from "./UserMedia.module.css"
+import style from "./UserMedia.module.css";
 
 export const mediaInfo = {};
 
@@ -16,7 +18,7 @@ function UserMedia() {
 			const userMedia = fetchedUserMedias[user.name]
 			userMedia.MediaListCollection.lists.find(list => list.name === "Completed").entries.forEach(entry => {
 				if (checkedArray[entry.media.id]) return;
-				console.log(mediaInfo[entry.media.id])
+
 				checkedArray[entry.media.id] = true;
 				const score = avarageScore(mediaInfo[entry.media.id].users);
 				if (!score) return;
@@ -27,11 +29,13 @@ function UserMedia() {
 					coverImage: entry.media.coverImage.large,
 					color: entry.media.coverImage.color,
 					banner: entry.media.bannerImage,
-					episodes: entry.media.episodes || entry.media.nextAiringEpisode.episode || entry.media.status,
+					episodes: entry.media.episodes || entry.media.nextAiringEpisode?.episode || entry.media.status,
 					score,
 				});
 			});
 		}
+
+		array.sort((a, b) => b.score - a.score);
 
 		setMediaData(array);
 		array = [];
@@ -48,7 +52,7 @@ function UserMedia() {
 			}
 		}
 
-		if (userCount / userTable().length < 1) return null;
+		if (userCount / userTable().length < navSettings.percentage) return null;
 		return (sum / userCount).toFixed(2);
 	}
 
@@ -64,7 +68,7 @@ function UserMedia() {
 						<p>{media.score}</p>
 					</div>
 
-					<p>{media.english}</p>
+					<p className={style.title}>{media.english}</p>
 				</div>
 			)}</For>
 		</main>

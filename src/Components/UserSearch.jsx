@@ -3,6 +3,10 @@ import { createSignal, createResource } from "solid-js";
 import { userTable, setUserTable } from "./UserTable";
 import { mediaInfo } from "./UserMedia";
 
+export const navSettings = {
+	percentage: 1
+}
+
 const [search, setSearch] = createSignal();
 
 function UserSearch() {
@@ -13,8 +17,8 @@ function UserSearch() {
 			<form>
 				<ul>
 					<li><button type="button" onClick={openDialog}>User Search</button></li>
-					<li><input type="radio" name="mode" id="All" checked /><label htmlFor="All">All</label></li>
-					<li><input type="radio" name="mode" id="Intersect" /><label htmlFor="Intersect">Intersect</label></li>
+					<li><input value="100" onInput={e => navSettings.percentage = parseInt(e.target.value) / 100} /></li>
+					<li><input type="radio" name="mode" id="Include" checked /><label htmlFor="Intersect">Intersect</label></li>
 					<li><input type="radio" name="mode" id="Exclude" /><label htmlFor="Exclude">Exclude</label></li>
 				</ul>
 			</form>
