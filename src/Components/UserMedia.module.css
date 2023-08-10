@@ -36,11 +36,14 @@
 	border-radius: 5px;
 	box-shadow: inset 0 -60px 0px -20px #000000cc;
 	flex-shrink: 0;
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-end;
+	/* display: flex; */
+	/* justify-content: space-between; */
+	/* align-items: flex-end; */
 	padding: 10px;
 	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
 }
 
 .coverContainer p {
@@ -55,6 +58,36 @@
 	object-fit: cover;
 	border-radius: 5px;
 	z-index: -1;
+}
+
+.repeat {
+	grid-column: 2/3;
+	background: #000000b3;
+	height: max-content;
+	width: max-content;
+	justify-self: end;
+	padding: 2px 5px;
+	border-radius: 5px;
+	font-weight: 500;
+	font-size: 12px;
+}
+
+.repeat svg {
+	position: relative;
+	fill: white;
+	margin-left: 5px;
+	top: 1px;
+}
+
+.episodes {
+	grid-row: 2/3;
+	align-self: end;
+}
+
+.score {
+	grid-row: 2/3;
+	align-self: end;
+	justify-self: end;
 }
 
 .title {

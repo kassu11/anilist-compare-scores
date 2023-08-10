@@ -75,11 +75,13 @@ async function submitSearch(event) {
 	for (const list of userMedia.MediaListCollection.lists) {
 		for (const userStats of list.entries) {
 			if (userStats.media.id in mediaInfo) {
-				mediaInfo[userStats.media.id].users[newUser.name] = userStats.score
+				mediaInfo[userStats.media.id].userScores[newUser.name] = userStats.score
+				mediaInfo[userStats.media.id].userRepeats[newUser.name] = userStats.repeat;
 				continue;
 			}
 			mediaInfo[userStats.media.id] = userStats.media;
-			mediaInfo[userStats.media.id].users = { [newUser.name]: userStats.score };
+			mediaInfo[userStats.media.id].userScores = { [newUser.name]: userStats.score };
+			mediaInfo[userStats.media.id].userRepeats = { [newUser.name]: userStats.repeat };
 		}
 	}
 
