@@ -2,12 +2,14 @@ import { fetchUsers, fetchUserMedia } from "../api/anilist";
 import { createSignal, createResource } from "solid-js";
 import { userTable, setUserTable } from "./UserTable";
 import { mediaInfo } from "./UserMedia";
+import { setWidthBuffer } from "../utilities/buffer.js";
 
 export const navSettings = {
 	percentage: 1
 }
 
 const [search, setSearch] = createSignal();
+export const [percentage, setPercentage] = createSignal(1);
 
 function UserSearch() {
 	const [recommendations] = createResource(search, fetchUsers);
@@ -17,7 +19,7 @@ function UserSearch() {
 			<form>
 				<ul>
 					<li><button type="button" onClick={openDialog}>User Search</button></li>
-					<li><input value="100" onInput={e => navSettings.percentage = parseInt(e.target.value) / 100} /></li>
+					<li><input value="100" onInput={e => calcPercentage(e.target.value)} /></li>
 					<li><input type="radio" name="mode" id="Include" checked /><label htmlFor="Intersect">Intersect</label></li>
 					<li><input type="radio" name="mode" id="Exclude" /><label htmlFor="Exclude">Exclude</label></li>
 				</ul>
@@ -41,6 +43,14 @@ function UserSearch() {
 			{console.log(recommendations())}
 		</nav>
 	)
+}
+
+function calcPercentage(string_value) {
+	const value = (parseInt(string_value) / 100) || 0;
+	const percentage = 1 / (userTable().length || 1);
+	const ceilToClosestDiff = Math.ceil(value / percentage) * percentage;
+	const fixTo2Ceil = Math.floor(ceilToClosestDiff * 100) / 100;
+	setWidthBuffer(setPercentage, fixTo2Ceil)
 }
 
 function openDialog() {

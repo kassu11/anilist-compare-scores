@@ -4,7 +4,7 @@ let checkedArray = {};
 import { createEffect, createSignal } from "solid-js";
 import { userTable } from "./UserTable";
 import { fetchedUserMedias } from "../api/anilist";
-import { navSettings } from "./UserSearch";
+import { navSettings, percentage } from "./UserSearch";
 
 import style from "./UserMedia.module.css";
 
@@ -35,7 +35,7 @@ function UserMedia() {
 			});
 		}
 
-		array.sort((a, b) => b.score - a.score);
+		array.sort((a, b) => b.score - a.score || a.english.localeCompare(b.english));
 
 		setMediaData(array);
 		array = [];
@@ -46,13 +46,13 @@ function UserMedia() {
 		let sum = 0;
 		let userCount = 0;
 		for (const user of userTable()) {
-			if (scores[user.name] > 0) {
+			if (user.name in scores) {
 				sum += scores[user.name];
 				userCount++;
 			}
 		}
 
-		if (userCount / userTable().length < navSettings.percentage) return null;
+		if (userCount / userTable().length < percentage()) return null;
 		return (sum / userCount).toFixed(2);
 	}
 
