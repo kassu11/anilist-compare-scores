@@ -3,8 +3,10 @@ let checkedArray = {};
 
 import { createEffect, createSignal } from "solid-js";
 import { userTable } from "./UserTable";
-import { fetchedUserMedias } from "../api/anilist";
-import { navSettings, percentage } from "./UserSearch";
+import { fetchUserMedia } from "../api/anilist";
+import { percentage } from "./UserSearch";
+import { mediaType } from "./MediaTypeButtons";
+import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 
 import style from "./UserMedia.module.css";
 
@@ -13,10 +15,13 @@ export const mediaInfo = {};
 function UserMedia() {
 	const [mediaData, setMediaData] = createSignal([])
 
-	createEffect(() => {
+	createEffect(async () => {
+		percentage(); // This is here to trigger the effect when the percentage changes
+		await updateMediaInfoObject();
+
 		for (const user of userTable()) {
-			const userMedia = fetchedUserMedias[user.name]
-			userMedia.MediaListCollection.lists.find(list => list.name === "Completed").entries.forEach(entry => {
+			const userMedia = await fetchUserMedia(user, mediaType());
+			userMedia.find(list => list.name === "Completed")?.entries.forEach(entry => {
 				if (checkedArray[entry.media.id]) return;
 
 				checkedArray[entry.media.id] = true;
@@ -31,7 +36,10 @@ function UserMedia() {
 					coverImage: entry.media.coverImage.large,
 					color: entry.media.coverImage.color,
 					banner: entry.media.bannerImage,
-					episodes: entry.media.episodes || entry.media.nextAiringEpisode?.episode || entry.media.status,
+					episodes: entry.media.episodes ||
+						entry.media.nextAiringEpisode?.episode ||
+						entry.media.chapters ||
+						entry.media.status,
 					score,
 					repeat,
 				});

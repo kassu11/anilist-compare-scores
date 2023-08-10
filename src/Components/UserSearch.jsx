@@ -1,12 +1,8 @@
-import { fetchUsers, fetchUserMedia } from "../api/anilist";
+import { fetchUsers } from "../api/anilist";
 import { createSignal, createResource } from "solid-js";
 import { userTable, setUserTable } from "./UserTable";
-import { mediaInfo } from "./UserMedia";
 import { setWidthBuffer } from "../utilities/buffer.js";
-
-export const navSettings = {
-	percentage: 1
-}
+import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 
 const [search, setSearch] = createSignal();
 export const [percentage, setPercentage] = createSignal(1);
@@ -20,7 +16,7 @@ function UserSearch() {
 				<ul>
 					<li><button type="button" onClick={openDialog}>User Search</button></li>
 					<li><input value="100" onInput={e => calcPercentage(e.target.value)} /></li>
-					<li><input type="radio" name="mode" id="Include" checked /><label htmlFor="Intersect">Intersect</label></li>
+					<li><input type="radio" name="mode" id="Intersect" checked /><label htmlFor="Intersect">Intersect</label></li>
 					<li><input type="radio" name="mode" id="Exclude" /><label htmlFor="Exclude">Exclude</label></li>
 				</ul>
 			</form>
@@ -71,22 +67,9 @@ async function submitSearch(event) {
 	if (!newUser?.name) return console.log("No users found");
 	if (userTable().some(user => user.id === newUser.id)) return console.log("User already added");
 
-	const userMedia = await fetchUserMedia(newUser);
-	for (const list of userMedia.MediaListCollection.lists) {
-		for (const userStats of list.entries) {
-			if (userStats.media.id in mediaInfo) {
-				mediaInfo[userStats.media.id].userScores[newUser.name] = userStats.score
-				mediaInfo[userStats.media.id].userRepeats[newUser.name] = userStats.repeat;
-				continue;
-			}
-			mediaInfo[userStats.media.id] = userStats.media;
-			mediaInfo[userStats.media.id].userScores = { [newUser.name]: userStats.score };
-			mediaInfo[userStats.media.id].userRepeats = { [newUser.name]: userStats.repeat };
-		}
-	}
+	await updateMediaInfoObject(newUser);
 
 	setUserTable([...userTable(), newUser]);
-	console.log(mediaInfo)
 }
 
 

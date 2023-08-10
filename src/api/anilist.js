@@ -55,7 +55,7 @@ export async function fetchUsers(userName) {
   const json = await response.json();
   fetchedUsers[userName] = json.data.Page.users;
   fetchingDone();
-  return json.data.Page.users;
+  return fetchedUsers[userName];
 }
 
 export const optionHandler = (query, variables = {}) => ({
@@ -175,19 +175,20 @@ const userMediaVariable = {
 
 export async function fetchUserMedia({ id, name }, type = "ANIME") {
   if (name === "") return [];
-  if (fetchedUserMedias[name] instanceof Promise) {
-    await fetchedUserMedias[name];
-    return fetchedUserMedias[name];
+  const key = name + type;
+  if (fetchedUserMedias[key] instanceof Promise) {
+    await fetchedUserMedias[key];
+    return fetchedUserMedias[key];
   }
-  if (fetchedUserMedias[name]) return fetchedUserMedias[name];
+  if (fetchedUserMedias[key]) return fetchedUserMedias[key];
 
   let fetchingDone;
-  fetchedUserMedias[name] = new Promise((resolve) => fetchingDone = resolve);
+  fetchedUserMedias[key] = new Promise((resolve) => fetchingDone = resolve);
 
   const option = optionHandler(userMediaQuery, { ...userMediaVariable, userId: id, type });
   const response = await fetch("https://graphql.anilist.co", option);
   const json = await response.json();
-  fetchedUserMedias[name] = json.data;
+  fetchedUserMedias[key] = json.data.MediaListCollection.lists;
   fetchingDone();
-  return json.data;
+  return fetchedUserMedias[key];
 }
