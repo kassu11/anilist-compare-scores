@@ -1,4 +1,4 @@
-import { fetchUsers } from "../api/anilist";
+import { fetchUsers, fetchUserMedia } from "../api/anilist";
 import { createSignal, createResource } from "solid-js";
 import { userTable, setUserTable } from "./UserTable";
 
@@ -19,7 +19,7 @@ function UserSearch() {
 			</form>
 
 			<dialog id="userSearch">
-				<form onSubmit={e => test(e)} onInput={e => setSearch(e.target.value)}>
+				<form onSubmit={submitSearch} onInput={({ target }) => setSearch(target.value)}>
 					<input autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></input>
 				</form>
 				{console.log(recommendations.loading)}
@@ -44,9 +44,9 @@ function openDialog() {
 	dialog.showModal();
 }
 
-async function test(e) {
-	e.preventDefault();
-	const input = e.target.querySelector("input");
+async function submitSearch(event) {
+	event.preventDefault();
+	const input = event.target.querySelector("input");
 	const userName = input.value;
 	input.value = "";
 	setSearch("");
@@ -55,9 +55,10 @@ async function test(e) {
 	const users = await fetchUsers(userName);
 	if (!users?.length) return console.log("No users found");
 
-	if (userTable.every((id) => id !== users[0].id)) setUserTable([...userTable, users[0]]);
+	if (userTable.every((user) => user.id !== users[0].id)) setUserTable([...userTable, users[0]]);
 	console.log("searched user:", users[0]);
 	console.log(userTable);
+	console.log(await fetchUserMedia(users[0]));
 }
 
 
