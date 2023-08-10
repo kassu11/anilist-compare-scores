@@ -23,9 +23,9 @@ function UserMedia() {
 				const score = avarageScore(mediaInfo[entry.media.id].users);
 				if (!score) return;
 				array.push({
-					english: entry.media.title.english,
-					native: entry.media.title.native,
-					romaji: entry.media.title.romaji,
+					english: entry.media.title.english || entry.media.title.userPreferred,
+					native: entry.media.title.native || entry.media.title.userPreferred,
+					romaji: entry.media.title.romaji || entry.media.title.userPreferred,
 					coverImage: entry.media.coverImage.large,
 					color: entry.media.coverImage.color,
 					banner: entry.media.bannerImage,
