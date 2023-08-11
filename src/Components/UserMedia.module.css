@@ -60,11 +60,9 @@
 }
 
 .repeat {
-	grid-column: 2/3;
 	background: #000000b3;
 	height: max-content;
 	width: max-content;
-	justify-self: end;
 	padding: 2px 5px;
 	border-radius: 5px;
 	font-weight: 500;
@@ -78,12 +76,17 @@
 	top: 1px;
 }
 
-.episodes {
+.coverContainer .repeat {
+	grid-column: 2/3;
+	justify-self: end;
+}
+
+.coverContainer .episodes {
 	grid-row: 2/3;
 	align-self: end;
 }
 
-.score {
+.coverContainer .score {
 	grid-row: 2/3;
 	align-self: end;
 	justify-self: end;
@@ -99,4 +102,48 @@
 	overflow: hidden;
 	height: max-content;
 	text-wrap: balance;
+}
+
+.rightContainer {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.users {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+.row {
+	position: relative;
+	width: 100%;
+	height: 25px;
+	display: grid;
+	grid-template-columns: 25px auto 40px 40px;
+	gap: 5px;
+}
+
+.row .repeat {
+	justify-self: end;
+}
+
+.row .name {
+	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.row .score {
+	grid-column: 4/5;
+	justify-self: end;
+}
+
+.avatar {
+	width: 25px;
+	height: 25px;
+	object-fit: cover;
 }
