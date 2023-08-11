@@ -44,7 +44,7 @@ function UserMedia() {
 					}
 				}
 
-				const score = (totalScore / totalUserWhoScored).toFixed(2);
+				const score = totalScore ? (totalScore / totalUserWhoScored).toFixed(2) : 0;
 
 				array.push({
 					english: entry.media.title.english || entry.media.title.userPreferred,
