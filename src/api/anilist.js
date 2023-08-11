@@ -1,3 +1,5 @@
+const DEBUG = location.hostname === "localhost"
+
 const userQuery = `query($page:Int = 1 $id:Int $search:String $sort:[UserSort]=[SEARCH_MATCH]) {
 	Page(page:$page,perPage:20) {
 		pageInfo {
@@ -40,6 +42,11 @@ const fetchedUsers = {};
 
 export async function fetchUsers(userName) {
   userName = userName.toLowerCase();
+  const debugKey = "ani" + userName + "Search";
+  if (DEBUG) {
+    const data = JSON.parse(localStorage.getItem(debugKey));
+    if (data) return data;
+  }
   if (userName === "") return [];
   if (fetchedUsers[userName] instanceof Promise) {
     await fetchedUsers[userName];
@@ -54,6 +61,7 @@ export async function fetchUsers(userName) {
   const response = await fetch("https://graphql.anilist.co", option);
   const json = await response.json();
   fetchedUsers[userName] = json.data.Page.users;
+  if (DEBUG) localStorage.setItem(debugKey, JSON.stringify(fetchedUsers[userName]));
   fetchingDone();
   return fetchedUsers[userName];
 }
@@ -175,6 +183,11 @@ const userMediaVariable = {
 }
 
 export async function fetchUserMedia({ id, name }, type = "ANIME") {
+  const debugKey = "ani" + id + type;
+  if (DEBUG) {
+    const data = JSON.parse(localStorage.getItem(debugKey));
+    if (data) return data;
+  }
   if (name === "") return [];
   const key = name + type;
   if (fetchedUserMedias[key] instanceof Promise) {
@@ -190,6 +203,7 @@ export async function fetchUserMedia({ id, name }, type = "ANIME") {
   const response = await fetch("https://graphql.anilist.co", option);
   const json = await response.json();
   fetchedUserMedias[key] = json.data.MediaListCollection.lists;
+  if (DEBUG) localStorage.setItem(debugKey, JSON.stringify(fetchedUserMedias[key]));
   fetchingDone();
   return fetchedUserMedias[key];
 }

@@ -13,3 +13,7 @@ body {
 .capitalize::first-letter {
 	text-transform: uppercase;
 }
+
+svg {
+	fill: currentColor;
+}

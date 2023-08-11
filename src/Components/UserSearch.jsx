@@ -33,7 +33,7 @@ function UserSearch() {
 				<form onSubmit={submitSearch} onInput={({ target }) => setSearch(target.value)}>
 					<input autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></input>
 				</form>
-				{console.log(recommendations.loading)}
+				{/* {console.log(recommendations.loading)} */}
 				<div className="userList">
 					<For each={recommendations()}>{user => (
 						<div className="user" tabIndex="0">
@@ -43,8 +43,6 @@ function UserSearch() {
 					)}</For>
 				</div>
 			</dialog>
-
-			{console.log(recommendations())}
 		</nav>
 	)
 }

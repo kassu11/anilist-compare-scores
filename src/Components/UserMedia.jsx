@@ -32,10 +32,10 @@ function UserMedia() {
 				let totalScore = 0;
 				let repeat = 0;
 				const users = []
+				const media = mediaInfo[mediaKey];
 
 				for (const user of userTable()) {
 					const userKey = "Completed" + user.name;
-					const media = mediaInfo[mediaKey];
 					if (userKey in media.userScores) {
 						totalUserCount++;
 						repeat += media.userRepeats[userKey];
@@ -51,17 +51,17 @@ function UserMedia() {
 				const score = totalScore ? (totalScore / totalUserWhoScored).toFixed(2) : 0;
 
 				array.push({
-					info: entry.media,
-					english: entry.media.title.english || entry.media.title.userPreferred,
-					native: entry.media.title.native || entry.media.title.userPreferred,
-					romaji: entry.media.title.romaji || entry.media.title.userPreferred,
-					coverImage: entry.media.coverImage.large,
-					color: entry.media.coverImage.color,
-					banner: entry.media.bannerImage,
-					episodes: entry.media.episodes ||
-						entry.media.nextAiringEpisode?.episode ||
-						entry.media.chapters ||
-						entry.media.status,
+					info: media,
+					english: media.title.english || media.title.userPreferred,
+					native: media.title.native || media.title.userPreferred,
+					romaji: media.title.romaji || media.title.userPreferred,
+					coverImage: media.coverImage.large,
+					color: media.coverImage.color,
+					banner: media.bannerImage,
+					episodes: media.episodes ||
+						media.nextAiringEpisode?.episode ||
+						media.chapters ||
+						media.status,
 					score,
 					repeat,
 					percentage: (totalUserCount / userTable().length),
@@ -88,7 +88,7 @@ function UserMedia() {
 		<>
 			<p>Matches: {count()}</p>
 			<main className={style.flex}>
-				<For each={mediaData()}>{(media, index) => (
+				<For each={mediaData()}>{media => (
 					<Show when={media.percentage >= percentage()}>
 						<div className={style.media}>
 							{media.banner ? <img className={style.banner} loading="lazy" src={media.banner} /> : <div className={style.banner} style={"background-color: " + media.color}></div>}

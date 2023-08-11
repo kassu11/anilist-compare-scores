@@ -26,12 +26,12 @@ export async function updateMediaInfoObject(...newUsers) {
 				if (userStats.media.format && userStats.media.format !== "TV" && userStats.media.format !== "ONA" && userStats.media.format !== "OVA") userStats.media.format = userStats.media.format.toLowerCase();
 				userStats.media.season = userStats.media.season?.toLowerCase() || "";
 
-				if (!userStats.media.format) console.log(userStats.media)
-
 				mediaInfo[mediaKey] = userStats.media;
 				mediaInfo[mediaKey].userScores = { [userKey]: userStats.score };
 				mediaInfo[mediaKey].userRepeats = { [userKey]: userStats.repeat };
 			}
 		}
 	}
+
+	console.log(mediaInfo[108511]?.season)
 }
