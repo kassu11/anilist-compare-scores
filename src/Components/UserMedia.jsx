@@ -14,6 +14,7 @@ export const mediaInfo = {};
 
 function UserMedia() {
 	const [mediaData, setMediaData] = createSignal([])
+	const [count, setCount] = createSignal(0);
 
 	createEffect(async () => {
 		console.log("BIG update to media info");
@@ -76,43 +77,52 @@ function UserMedia() {
 		checkedArray = {};
 	});
 
+	createEffect(() => {
+		mediaData();
+		percentage();
+		setCount(document.querySelector(`main.${style.flex}`).children.length);
+	});
+
 
 	return (
-		<main className={style.flex}>
-			<For each={mediaData()}>{media => (
-				<Show when={media.percentage >= percentage()}>
-					<div className={style.media}>
-						{media.banner ? <img className={style.banner} loading="lazy" src={media.banner} /> : <div className={style.banner} style={"background-color: " + media.color}></div>}
-						<div className={style.coverContainer}>
-							<img className={style.cover} loading="lazy" src={media.coverImage} />
-							{media.repeat && (<p className={style.repeat}>{media.repeat}<RepeatSvg /></p>)}
-							<p className={style.episodes}>{media.episodes}</p>
-							<p className={style.score}>{media.score}</p>
-						</div>
+		<>
+			<p>Matches: {count()}</p>
+			<main className={style.flex}>
+				<For each={mediaData()}>{(media, index) => (
+					<Show when={media.percentage >= percentage()}>
+						<div className={style.media}>
+							{media.banner ? <img className={style.banner} loading="lazy" src={media.banner} /> : <div className={style.banner} style={"background-color: " + media.color}></div>}
+							<div className={style.coverContainer}>
+								<img className={style.cover} loading="lazy" src={media.coverImage} />
+								{media.repeat && (<p className={style.repeat}>{media.repeat}<RepeatSvg /></p>)}
+								<p className={style.episodes}>{media.episodes}</p>
+								<p className={style.score}>{media.score}</p>
+							</div>
 
-						<div className={style.rightContainer}>
-							<p className={style.title}>{media.english}</p>
-							<div className={style.users}>
-								<For each={media.users}>{user => (
-									<div className={style.row}>
-										<img className={style.avatar} src={user.avatar} />
-										<span className={style.name}>{user.name}</span>
-										{user.repeat && (<span className={style.repeat}>{user.repeat}<RepeatSvg /></span>)}
-										<span className={style.score}>{user.score.toFixed(1)}</span>
-									</div>
-								)}</For>
-							</div>
-							<div className={style.info}>
-								<span class="capitalize" className={style.format}>{media.info.format}</span>
-								<Show when={media.info.startDate.year} fallback={<span className={style.date}>TBA</span>}>
-									<span class="capitalize" className={style.date}>{`${media.info.season} ${media.info.startDate.year}`}</span>
-								</Show>
+							<div className={style.rightContainer}>
+								<p className={style.title}>{media.english}</p>
+								<div className={style.users}>
+									<For each={media.users}>{user => (
+										<div className={style.row}>
+											<img className={style.avatar} src={user.avatar} />
+											<span className={style.name}>{user.name}</span>
+											{user.repeat && (<span className={style.repeat}>{user.repeat}<RepeatSvg /></span>)}
+											<span className={style.score}>{user.score.toFixed(1)}</span>
+										</div>
+									)}</For>
+								</div>
+								<div className={style.info}>
+									<span class="capitalize" className={style.format}>{media.info.format}</span>
+									<Show when={media.info.startDate.year} fallback={<span className={style.date}>TBA</span>}>
+										<span class="capitalize" className={style.date}>{`${media.info.season} ${media.info.startDate.year}`}</span>
+									</Show>
+								</div>
 							</div>
 						</div>
-					</div>
-				</Show>
-			)}</For>
-		</main>
+					</Show>
+				)}</For>
+			</main>
+		</>
 	)
 }
 
