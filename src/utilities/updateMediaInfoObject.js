@@ -32,6 +32,4 @@ export async function updateMediaInfoObject(...newUsers) {
 			}
 		}
 	}
-
-	console.log(mediaInfo[108511]?.season)
 }

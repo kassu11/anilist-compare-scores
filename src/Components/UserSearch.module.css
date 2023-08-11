@@ -1,0 +1,7 @@
+.user {
+	cursor: pointer;
+}
+
+.user:hover {
+	background-color: brown;
+}

@@ -4,8 +4,11 @@ import { userTable, setUserTable } from "./UserTable";
 import { setWidthBuffer } from "../utilities/buffer.js";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 
+import style from "./UserSearch.module.css";
+
 const [search, setSearch] = createSignal();
 export const [percentage, setPercentage] = createSignal(1);
+let searchIndex = 0;
 
 function UserSearch() {
 	const [recommendations] = createResource(search, fetchUsers);
@@ -35,8 +38,11 @@ function UserSearch() {
 				</form>
 				{/* {console.log(recommendations.loading)} */}
 				<div className="userList">
-					<For each={recommendations()}>{user => (
-						<div className="user" tabIndex="0">
+					<For each={recommendations()}>{(user, index) => (
+						<div className={style.user} tabIndex="0" onClick={() => {
+							searchIndex = index();
+							submitSearch();
+						}}>
 							<img src={user.avatar.medium} alt={user.name} height="25" />
 							<span>{user.name}</span>
 						</div>
@@ -62,20 +68,22 @@ function openDialog() {
 }
 
 async function submitSearch(event) {
-	event.preventDefault();
-	const input = event.target.querySelector("input");
+	event?.preventDefault?.();
+	const input = document.querySelector("#userSearch input");
 	const userName = input.value;
 	input.value = "";
 	setSearch("");
 	if (!userName) return console.log("No input");
 
-	const [newUser] = await fetchUsers(userName);
+	const newUser = (await fetchUsers(userName))[searchIndex];
+
 	if (!newUser?.name) return console.log("No users found");
 	if (userTable().some(user => user.id === newUser.id)) return console.log("User already added");
 
 	await updateMediaInfoObject(newUser);
 
 	setUserTable([...userTable(), newUser]);
+	searchIndex = 0;
 }
 
 
