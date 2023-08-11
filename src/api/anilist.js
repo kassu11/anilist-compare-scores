@@ -145,6 +145,7 @@ fragment mediaListEntry on MediaList {
       large
       color
     }
+    season
     type
     format
     status(version: 2)

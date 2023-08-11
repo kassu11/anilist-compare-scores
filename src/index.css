@@ -5,3 +5,11 @@ html {
 body {
 	font-family: system-ui;
 }
+
+.capitalize {
+	display: inline-block;
+}
+
+.capitalize::first-letter {
+	text-transform: uppercase;
+}

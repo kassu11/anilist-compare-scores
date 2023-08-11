@@ -38,10 +38,10 @@ function UserMedia() {
 					if (userKey in media.userScores) {
 						totalUserCount++;
 						repeat += media.userRepeats[userKey];
+						users.push({ name: user.name, avatar: user.avatar.medium, score: media.userScores[userKey], repeat: media.userRepeats[userKey] })
 
 						if (media.userScores[userKey] > 0) {
 							totalScore += media.userScores[userKey];
-							users.push({ name: user.name, avatar: user.avatar.medium, score: media.userScores[userKey], repeat: media.userRepeats[userKey] })
 							totalUserWhoScored++;
 						}
 					}
@@ -50,6 +50,7 @@ function UserMedia() {
 				const score = totalScore ? (totalScore / totalUserWhoScored).toFixed(2) : 0;
 
 				array.push({
+					info: entry.media,
 					english: entry.media.title.english || entry.media.title.userPreferred,
 					native: entry.media.title.native || entry.media.title.userPreferred,
 					romaji: entry.media.title.romaji || entry.media.title.userPreferred,
@@ -63,7 +64,7 @@ function UserMedia() {
 					score,
 					repeat,
 					percentage: (totalUserCount / userTable().length),
-					users
+					users: users.sort((a, b) => b.score - a.score)
 				});
 			});
 		}
@@ -100,6 +101,12 @@ function UserMedia() {
 										<span className={style.score}>{user.score.toFixed(1)}</span>
 									</div>
 								)}</For>
+							</div>
+							<div className={style.info}>
+								<span class="capitalize" className={style.format}>{media.info.format}</span>
+								<Show when={media.info.startDate.year} fallback={<span className={style.date}>TBA</span>}>
+									<span class="capitalize" className={style.date}>{`${media.info.season} ${media.info.startDate.year}`}</span>
+								</Show>
 							</div>
 						</div>
 					</div>
