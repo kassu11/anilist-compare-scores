@@ -22,8 +22,9 @@ function UserMedia() {
 		for (const user of userTable()) {
 			const userMedia = await fetchUserMedia(user, mediaType());
 			userMedia.find(list => list.name === "Completed")?.entries.forEach(entry => {
-				if (checkedArray[entry.media.id]) return;
-				checkedArray[entry.media.id] = true;
+				const mediaKey = entry.media.id;
+				if (checkedArray[mediaKey]) return;
+				checkedArray[mediaKey] = true;
 
 				let totalUserCount = 0;
 				let totalUserWhoScored = 0;
@@ -31,12 +32,13 @@ function UserMedia() {
 				let repeat = 0;
 
 				for (const user of userTable()) {
-					if (user.name in mediaInfo[entry.media.id].userScores) {
+					const userKey = "Completed" + user.name;
+					if (userKey in mediaInfo[mediaKey].userScores) {
 						totalUserCount++;
-						repeat += mediaInfo[entry.media.id].userRepeats[user.name];
+						repeat += mediaInfo[mediaKey].userRepeats[userKey];
 
-						if (mediaInfo[entry.media.id].userScores[user.name] > 0) {
-							totalScore += mediaInfo[entry.media.id].userScores[user.name];
+						if (mediaInfo[mediaKey].userScores[userKey] > 0) {
+							totalScore += mediaInfo[mediaKey].userScores[userKey];
 							totalUserWhoScored++;
 						}
 					}

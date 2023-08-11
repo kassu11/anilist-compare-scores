@@ -16,14 +16,16 @@ export async function updateMediaInfoObject(...newUsers) {
 		const userMedia = await fetchUserMedia(user, mediaType());
 		for (const list of userMedia) {
 			for (const userStats of list.entries) {
-				if (userStats.media.id in mediaInfo) {
-					mediaInfo[userStats.media.id].userScores[user.name] = userStats.score
-					mediaInfo[userStats.media.id].userRepeats[user.name] = userStats.repeat;
+				const mediaKey = userStats.media.id;
+				const userKey = list.name + user.name;
+				if (mediaKey in mediaInfo) {
+					mediaInfo[mediaKey].userScores[userKey] = userStats.score
+					mediaInfo[mediaKey].userRepeats[userKey] = userStats.repeat;
 					continue;
 				}
-				mediaInfo[userStats.media.id] = userStats.media;
-				mediaInfo[userStats.media.id].userScores = { [user.name]: userStats.score };
-				mediaInfo[userStats.media.id].userRepeats = { [user.name]: userStats.repeat };
+				mediaInfo[mediaKey] = userStats.media;
+				mediaInfo[mediaKey].userScores = { [userKey]: userStats.score };
+				mediaInfo[mediaKey].userRepeats = { [userKey]: userStats.repeat };
 			}
 		}
 	}
