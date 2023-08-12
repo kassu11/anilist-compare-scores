@@ -91,7 +91,10 @@ async function updateMediaData() {
 					const media = mediaInfo[mediaKey];
 
 					for (const user of userTable()) {
-						const userKey = type + user.name;
+						const userKey = user.name;
+						const test = listType().some(type => media.userLists[userKey]?.[type]);
+						if (!test) continue;
+
 						if (userKey in media.userScores) {
 							totalUserCount++;
 							repeat += media.userRepeats[userKey];

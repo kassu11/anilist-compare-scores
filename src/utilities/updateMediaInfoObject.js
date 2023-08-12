@@ -17,8 +17,10 @@ export async function updateMediaInfoObject(...newUsers) {
 		for (const list of userMedia) {
 			for (const userStats of list.entries) {
 				const mediaKey = userStats.media.id;
-				const userKey = list.name + user.name;
+				const userKey = user.name;
 				if (mediaKey in mediaInfo) {
+					mediaInfo[mediaKey].userLists[userKey] ??= {}
+					mediaInfo[mediaKey].userLists[userKey][list.name] = true
 					mediaInfo[mediaKey].userScores[userKey] = userStats.score
 					mediaInfo[mediaKey].userRepeats[userKey] = userStats.repeat;
 					continue;
@@ -27,6 +29,7 @@ export async function updateMediaInfoObject(...newUsers) {
 				userStats.media.season = userStats.media.season?.toLowerCase() || "";
 
 				mediaInfo[mediaKey] = userStats.media;
+				mediaInfo[mediaKey].userLists = { [userKey]: { [list.name]: true } };
 				mediaInfo[mediaKey].userScores = { [userKey]: userStats.score };
 				mediaInfo[mediaKey].userRepeats = { [userKey]: userStats.repeat };
 			}
