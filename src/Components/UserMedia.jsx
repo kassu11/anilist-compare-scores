@@ -11,6 +11,23 @@ import { listType } from "./ListTypes";
 
 import style from "./UserMedia.module.css";
 
+const userLisrOrder = {
+	"Completed": 1,
+	"Watching": 2,
+	"Rewatched": 3,
+	"Paused": 4,
+	"Dropped": 5,
+	"Planning": 6,
+	"Custom": 7,
+	1: "Completed",
+	2: "Watching",
+	3: "Rewatched",
+	4: "Paused",
+	5: "Dropped",
+	6: "Planning",
+	7: "Custom",
+}
+
 export const mediaInfo = {};
 const [mediaData, setMediaData] = createSignal([])
 
@@ -48,13 +65,20 @@ function UserMedia() {
 							<div className={style.rightContainer}>
 								<p className={style.title}>{media.english}</p>
 								<div className={style.users}>
-									<For each={media.users}>{user => (
-										<div className={style.row}>
-											<img className={style.avatar} src={user.avatar} />
-											<span className={style.name}>{user.name}</span>
-											{user.repeat && (<span className={style.repeat}>{user.repeat}<RepeatSvg /></span>)}
-											<span className={style.score}>{user.score.toFixed(1)}</span>
-										</div>
+									<For each={media.users}>{(user, i) => (
+										<>
+											<Show when={user.list != media.users[i() - 1]?.list}>
+												<div className={style.list}>
+													<span>{userLisrOrder[user.list]}</span>
+												</div>
+											</Show>
+											<div className={style.row}>
+												<img className={style.avatar} src={user.avatar} />
+												<span className={style.name}>{user.name}</span>
+												{user.repeat && (<span className={style.repeat}>{user.repeat}<RepeatSvg /></span>)}
+												<span className={style.score}>{user.score.toFixed(1)}</span>
+											</div>
+										</>
 									)}</For>
 								</div>
 								<div className={style.info}>
@@ -92,18 +116,22 @@ async function updateMediaData() {
 
 					for (const user of userTable()) {
 						const userKey = user.name;
-						const test = listType().some(type => media.userLists[userKey]?.[type]);
-						if (!test) continue;
+						const isOnSelectedList = listType().find(type => media.userLists[userKey]?.[type]);
+						if (!isOnSelectedList) continue;
 
-						if (userKey in media.userScores) {
-							totalUserCount++;
-							repeat += media.userRepeats[userKey];
-							users.push({ name: user.name, avatar: user.avatar.medium, score: media.userScores[userKey], repeat: media.userRepeats[userKey] })
+						totalUserCount++;
+						repeat += media.userRepeats[userKey];
+						users.push({
+							name: user.name,
+							avatar: user.avatar.medium,
+							score: media.userScores[userKey],
+							repeat: media.userRepeats[userKey],
+							list: userLisrOrder[isOnSelectedList]
+						})
 
-							if (media.userScores[userKey] > 0) {
-								totalScore += media.userScores[userKey];
-								totalUserWhoScored++;
-							}
+						if (media.userScores[userKey] > 0) {
+							totalScore += media.userScores[userKey];
+							totalUserWhoScored++;
 						}
 					}
 
@@ -123,7 +151,9 @@ async function updateMediaData() {
 						score,
 						repeat,
 						percentage: (totalUserCount / userTable().length),
-						users: users.sort((a, b) => b.score - a.score)
+						users: users.sort((a, b) => {
+							return (a.list - b.list) || b.score - a.score;
+						})
 					});
 				});
 			}

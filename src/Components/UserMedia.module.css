@@ -7,8 +7,8 @@
 
 .media {
 	position: relative;
-	width: 400px;
-	height: 200px;
+	width: 450px;
+	height: 250px;
 	background-color: #0B1622;
 	padding: 16px;
 	isolation: isolate;
@@ -16,6 +16,7 @@
 	display: flex;
 	overflow: hidden;
 	gap: 5px;
+	box-sizing: border-box;
 }
 
 .banner {
@@ -104,6 +105,7 @@
 	height: max-content;
 	text-wrap: balance;
 	flex-shrink: 0;
+	line-height: 1;
 }
 
 .rightContainer {
@@ -115,12 +117,33 @@
 
 .users {
 	position: relative;
-	width: 100%;
+	width: calc(100% + 8px);
 	height: 100%;
 	overflow: auto;
 	display: flex;
 	flex-direction: column;
 	gap: 3px;
+	padding-right: 8px;
+	box-sizing: border-box;
+	scrollbar-width: thin;
+}
+
+.users::-webkit-scrollbar {
+	width: 6px;
+}
+
+.users::-webkit-scrollbar-thumb {
+	background: #646464;
+	border-radius: 10px;
+}
+
+.users::-webkit-scrollbar-thumb:hover {
+	background: #949494;
+}
+
+.list {
+	margin: 0px;
+	opacity: .8;
 }
 
 .row {
@@ -141,6 +164,7 @@
 	width: 100%;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	opacity: 90%;
 }
 
 .row .score {
@@ -157,6 +181,7 @@
 
 .info {
 	font-weight: 600;
+	opacity: 90%;
 }
 
 .format::after {
