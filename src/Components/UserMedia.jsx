@@ -7,74 +7,20 @@ import { fetchUserMedia } from "../api/anilist";
 import { percentage } from "./UserSearch";
 import { mediaType } from "./MediaTypeButtons";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
+import { listType } from "./ListTypes";
 
 import style from "./UserMedia.module.css";
 
 export const mediaInfo = {};
+const [mediaData, setMediaData] = createSignal([])
 
 function UserMedia() {
-	const [mediaData, setMediaData] = createSignal([])
 	const [count, setCount] = createSignal(0);
 
 	createEffect(async () => {
-		console.log("BIG update to media info");
-		await updateMediaInfoObject();
+		listType(); // Update listType
 
-		for (const user of userTable()) {
-			const userMedia = await fetchUserMedia(user, mediaType());
-			userMedia.find(list => list.name === "Completed")?.entries.forEach(entry => {
-				const mediaKey = entry.media.id;
-				if (checkedArray[mediaKey]) return;
-				checkedArray[mediaKey] = true;
-
-				let totalUserCount = 0;
-				let totalUserWhoScored = 0;
-				let totalScore = 0;
-				let repeat = 0;
-				const users = []
-				const media = mediaInfo[mediaKey];
-
-				for (const user of userTable()) {
-					const userKey = "Completed" + user.name;
-					if (userKey in media.userScores) {
-						totalUserCount++;
-						repeat += media.userRepeats[userKey];
-						users.push({ name: user.name, avatar: user.avatar.medium, score: media.userScores[userKey], repeat: media.userRepeats[userKey] })
-
-						if (media.userScores[userKey] > 0) {
-							totalScore += media.userScores[userKey];
-							totalUserWhoScored++;
-						}
-					}
-				}
-
-				const score = totalScore ? (totalScore / totalUserWhoScored).toFixed(2) : 0;
-
-				array.push({
-					info: media,
-					english: media.title.english || media.title.userPreferred,
-					native: media.title.native || media.title.userPreferred,
-					romaji: media.title.romaji || media.title.userPreferred,
-					coverImage: media.coverImage.large,
-					color: media.coverImage.color,
-					banner: media.bannerImage,
-					episodes: media.episodes ||
-						media.nextAiringEpisode?.episode ||
-						media.chapters ||
-						media.status,
-					score,
-					repeat,
-					percentage: (totalUserCount / userTable().length),
-					users: users.sort((a, b) => b.score - a.score)
-				});
-			});
-		}
-
-		array.sort((a, b) => b.score - a.score || a.english.localeCompare(b.english));
-
-		setMediaData(array);
-		array = [];
-		checkedArray = {};
+		updateMediaData();
 	});
 
 	createEffect(() => {
@@ -124,6 +70,69 @@ function UserMedia() {
 			</main>
 		</>
 	)
+}
+
+async function updateMediaData() {
+	await updateMediaInfoObject();
+	for (const user of userTable()) {
+		const userMedia = await fetchUserMedia(user, mediaType());
+		for (const type of listType()) {
+			for (const list of userMedia) {
+				if (list.name === type) list.entries.forEach(entry => {
+					const mediaKey = entry.media.id;
+					if (checkedArray[mediaKey]) return;
+					checkedArray[mediaKey] = true;
+
+					let totalUserCount = 0;
+					let totalUserWhoScored = 0;
+					let totalScore = 0;
+					let repeat = 0;
+					const users = []
+					const media = mediaInfo[mediaKey];
+
+					for (const user of userTable()) {
+						const userKey = type + user.name;
+						if (userKey in media.userScores) {
+							totalUserCount++;
+							repeat += media.userRepeats[userKey];
+							users.push({ name: user.name, avatar: user.avatar.medium, score: media.userScores[userKey], repeat: media.userRepeats[userKey] })
+
+							if (media.userScores[userKey] > 0) {
+								totalScore += media.userScores[userKey];
+								totalUserWhoScored++;
+							}
+						}
+					}
+
+					const score = totalScore ? (totalScore / totalUserWhoScored).toFixed(2) : 0;
+
+					array.push({
+						info: media,
+						english: media.title.english || media.title.userPreferred,
+						native: media.title.native || media.title.userPreferred,
+						romaji: media.title.romaji || media.title.userPreferred,
+						coverImage: media.coverImage.large,
+						color: media.coverImage.color,
+						banner: media.bannerImage,
+						episodes: media.episodes ||
+							media.nextAiringEpisode?.episode ||
+							media.chapters ||
+							media.status,
+						score,
+						repeat,
+						percentage: (totalUserCount / userTable().length),
+						users: users.sort((a, b) => b.score - a.score)
+					});
+				});
+			}
+		}
+	}
+
+	array.sort((a, b) => b.score - a.score || a.english.localeCompare(b.english));
+
+	setMediaData(array);
+	array = [];
+	checkedArray = {};
 }
 
 function RepeatSvg() {

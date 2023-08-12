@@ -1,8 +1,11 @@
-import { createSignal } from "solid-js";
+import { createSignal, createEffect } from "solid-js";
 
 export const [listType, setListType] = createSignal([]);
 
 function ListTypes() {
+	createEffect(() => {
+		console.log(listType());
+	})
 	return (
 		<form id="checkboxRow" onInput={e => updateListType(e.currentTarget)} use: updateListType>
 			<ul>
