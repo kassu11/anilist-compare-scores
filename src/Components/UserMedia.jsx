@@ -116,8 +116,7 @@ async function updateMediaData() {
 						banner: media.bannerImage,
 						episodes: media.episodes ||
 							media.nextAiringEpisode?.episode ||
-							media.chapters ||
-							media.status,
+							media.chapters || "TBA",
 						score,
 						repeat,
 						percentage: (totalUserCount / userTable().length),
