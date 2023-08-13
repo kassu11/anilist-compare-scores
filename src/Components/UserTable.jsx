@@ -24,7 +24,7 @@ function UserTable() {
 				<For each={userTable()}>{user => (
 					<tr>
 						<td className={style.userCell}>
-							<input type="checkbox" onInput={e => changeUserState(e, user)} checked />
+							<input type="checkbox" for="enabled" onInput={e => changeUserState(e, user)} checked onClick={multiSelect} />
 							<div className={style.hamburger}></div>
 							<TrashCan user={user} />
 							<img src={user.avatar.medium} alt={user.name} height="25" /> {user.name}</td>
@@ -34,12 +34,35 @@ function UserTable() {
 						<td>{user.statistics.manga.count}</td>
 						<td>{user.statistics.manga.meanScore}</td>
 						<td>{Math.round(user.statistics.manga.chaptersRead)}</td>
-						<td><input type="checkbox" onInput={e => changeExcludeState(e, user)} /></td>
+						<td><input type="checkbox" for="exclude" onInput={e => changeExcludeState(e, user)} onClick={multiSelect} /></td>
 					</tr>
 				)}</For>
 			</tbody>
 		</table>
 	)
+}
+
+function multiSelect(event) {
+	if (!event.shiftKey) return;
+	const forType = event.target.getAttribute("for");
+	const checkboxes = document.querySelectorAll(`input[for="${forType}"]`);
+	let sum = 0;
+	for (const checkbox of checkboxes) {
+		if (checkbox.checked) sum++;
+		else break;
+	}
+
+	if (sum === checkboxes.length && event.target.checked) {
+		checkboxes.forEach(input => input.checked = false);
+	} else {
+		checkboxes.forEach(input => input.checked = true);
+		event.target.checked = false;
+	}
+
+	const users = [...userTable()];
+	users.forEach((user, index) => user[forType] = checkboxes[index].checked);
+	setUserTable(users);
+	updateMediaData(users);
 }
 
 
