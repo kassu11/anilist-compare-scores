@@ -38,12 +38,13 @@ function UserSearch() {
 						<i class="fa-solid fa-magnifying-glass"></i>
 						<input className={style.userInput} onKeyDown={keyboard} type="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type to search"></input>
 					</form>
-					{console.log(recommendations.loading)}
+					<Show when={!recommendations.loading} fallback={UserSearchLoading}>
 					<div className={style.userList} tabIndex="0">
 						<For each={recommendations()}>{(user, index) => (
 							<UserSearchItem user={user} index={index()} selected={index() === 0} />
 						)}</For>
 					</div>
+					</Show>
 				</div>
 			</dialog>
 		</nav>
@@ -65,6 +66,18 @@ function UserSearchItem({ user, selected, index }) {
 			<img src={user.avatar.medium} alt={user.name} height="25" />
 			<span>{user.name}</span>
 		</div>
+	)
+}
+
+function UserSearchLoading() {
+	const leading = new Array(5).fill(0);
+	return (
+		<For each={leading}>{() => (
+			<div className={style.user}>
+				<div className={style.loadingImage}></div>
+				<span className={style.loadingName}>Loading...</span>
+			</div>
+		)}</For>
 	)
 }
 
