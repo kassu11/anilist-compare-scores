@@ -32,7 +32,7 @@ export const mediaInfo = {};
 const filteredLists = {};
 const [mediaData, setMediaData] = createSignal([])
 
-function UserMedia() {
+function UserMediaList() {
 	const [count, setCount] = createSignal(0);
 
 	createEffect(() => {
@@ -47,47 +47,65 @@ function UserMedia() {
 			<p>Matches: {count()}</p>
 			<main className={style.flex}>
 				<For each={mediaData()}>{media => (
-					<Show when={media.percentage >= percentage()}>
-						<div className={style.media}>
-							{media.banner ? <img className={style.banner} loading="lazy" src={media.banner} /> : <div className={style.banner} style={"background-color: " + media.color}></div>}
-							<div className={style.coverContainer}>
-								<img className={style.cover} loading="lazy" src={media.coverImage} />
-								{media.repeat && (<p className={style.repeat}>{media.repeat}<RepeatSvg /></p>)}
-								<p className={style.episodes}>{media.episodes}</p>
-								<p className={style.score}>{media.score}</p>
-							</div>
-
-							<div className={style.rightContainer}>
-								<p className={style.title}>{media.english}</p>
-								<div className={style.users}>
-									<For each={media.users}>{(user, i) => (
-										<>
-											<Show when={user.list != media.users[i() - 1]?.list}>
-												<div className={style.list}>
-													<span>{userLisrOrder[user.list]}</span>
-												</div>
-											</Show>
-											<div className={style.row}>
-												<img className={style.avatar} src={user.avatar} />
-												<span className={style.name}>{user.name}</span>
-												{user.repeat && (<span className={style.repeat}>{user.repeat}<RepeatSvg /></span>)}
-												<span className={style.score}>{user.score.toFixed(1)}</span>
-											</div>
-										</>
-									)}</For>
-								</div>
-								<div className={style.info}>
-									<span class="capitalize" className={style.format}>{media.info.format}</span>
-									<Show when={media.info.startDate.year} fallback={<span className={style.date}>TBA</span>}>
-										<span class="capitalize" className={style.date}>{`${media.info.season} ${media.info.startDate.year}`}</span>
-									</Show>
-								</div>
-							</div>
-						</div>
-					</Show>
+					<MediaCard media={media} />
 				)}</For>
 			</main>
 		</>
+	)
+}
+
+function MediaCard({ media }) {
+	return (
+		<Show when={media.percentage >= percentage()}>
+			<div className={style.media}>
+				{media.banner ? <img className={style.banner} loading="lazy" src={media.banner} /> : <div className={style.banner} style={"background-color: " + media.color}></div>}
+				<div className={style.coverContainer}>
+					<img className={style.cover} loading="lazy" src={media.coverImage} />
+					<Repeat repeat={media.repeat} />
+					<p className={style.episodes}>{media.episodes}</p>
+					<p className={style.score}>{media.score}</p>
+				</div>
+
+				<UserScoreList media={media} />
+			</div>
+		</Show>
+	)
+}
+
+function UserScoreList({ media }) {
+	return (
+		<div className={style.rightContainer}>
+			<p className={style.title}>{media.english}</p>
+			<div className={style.users}>
+				<For each={media.users}>{(user, i) => (
+					<>
+						<Show when={user.list != media.users[i() - 1]?.list}>
+							<span className={style.listName}>{userLisrOrder[user.list]}</span>
+						</Show>
+						<div className={style.row}>
+							<img className={style.avatar} src={user.avatar} />
+							<span className={style.name}>{user.name}</span>
+							<Repeat repeat={media.repeat} />
+							<span className={style.score}>{user.score.toFixed(1)}</span>
+						</div>
+					</>
+				)}</For>
+			</div>
+			<div className={style.info}>
+				<span class="capitalize" className={style.format}>{media.info.format}</span>
+				<Show when={media.info.startDate.year} fallback={<span className={style.date}>TBA</span>}>
+					<span class="capitalize" className={style.date}>{`${media.info.season} ${media.info.startDate.year}`}</span>
+				</Show>
+			</div>
+		</div>
+	)
+}
+
+function Repeat({ repeat }) {
+	return (
+		<Show when={repeat}>
+			<p className={style.repeat}>{repeat}<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M386.3 160H336c-17.7 0-32 14.3-32 32s14.3 32 32 32H464c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32s-32 14.3-32 32v51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z" /></svg></p>
+		</Show>
 	)
 }
 
@@ -170,8 +188,5 @@ export async function updateMediaData(usersT = userTable(), listTypes = listType
 	checkedArray = {};
 }
 
-function RepeatSvg() {
-	return <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M386.3 160H336c-17.7 0-32 14.3-32 32s14.3 32 32 32H464c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32s-32 14.3-32 32v51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z" /></svg>
-}
 
-export default UserMedia;
+export default UserMediaList;

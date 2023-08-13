@@ -1,6 +1,6 @@
 import UserSearch from "./Components/UserSearch";
 import UserTable from "./Components/UserTable";
-import UserMedia from "./Components/UserMedia";
+import UserMediaList from "./Components/UserMedia";
 import MediaTypeButtons from "./Components/MediaTypeButtons";
 import ListTypes from "./Components/ListTypes";
 
@@ -15,7 +15,7 @@ function App() {
 
         <MediaTypeButtons />
       </footer>
-      <UserMedia />
+      <UserMediaList />
     </>
   );
 }
