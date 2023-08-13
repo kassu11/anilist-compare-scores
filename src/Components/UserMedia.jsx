@@ -85,7 +85,7 @@ function UserScoreList({ media }) {
 						<div className={style.row}>
 							<img className={style.avatar} src={user.avatar} />
 							<span className={style.name}>{user.name}</span>
-							<Repeat repeat={media.repeat} />
+							<Repeat repeat={user.repeat} />
 							<span className={style.score}>{user.score.toFixed(1)}</span>
 						</div>
 					</>
