@@ -56,7 +56,7 @@ function UserSearch() {
 
 function calcPercentage(string_value) {
 	const value = (parseInt(string_value) / 100) || 0;
-	const percentage = 1 / (userTable().length || 1);
+	const percentage = 1 / (userTable().filter(u => u.enabled && !u.exclude).length || 1);
 	const ceilToClosestDiff = Math.ceil(value / percentage) * percentage;
 	const fixTo2Ceil = Math.floor(ceilToClosestDiff * 100) / 100;
 	setWidthBuffer(setPercentage, fixTo2Ceil)
@@ -83,6 +83,7 @@ async function submitSearch(event) {
 
 	await updateMediaInfoObject(newUser);
 	newUser.enabled = true;
+	newUser.exclude = false;
 
 	const users = [...userTable(), newUser]
 	setUserTable(users);

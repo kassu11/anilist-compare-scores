@@ -17,6 +17,7 @@ function UserTable() {
 					<th>Manga</th>
 					<th>Mean score</th>
 					<th>Chapters read</th>
+					<th>Exclude</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -33,11 +34,20 @@ function UserTable() {
 						<td>{user.statistics.manga.count}</td>
 						<td>{user.statistics.manga.meanScore}</td>
 						<td>{Math.round(user.statistics.manga.chaptersRead)}</td>
+						<td><input type="checkbox" onInput={e => changeExcludeState(e, user)} /></td>
 					</tr>
 				)}</For>
 			</tbody>
 		</table>
 	)
+}
+
+
+function changeExcludeState(e, user) {
+	user.exclude = e.target.checked;
+	const users = [...userTable()];
+	setUserTable(users);
+	updateMediaData(users);
 }
 
 function TrashCan({ user }) {

@@ -111,6 +111,10 @@ function Repeat({ repeat }) {
 
 export async function updateMediaData(usersT = userTable(), listTypes = listType(), type = mediaType()) {
 	usersT = usersT.filter(u => u.enabled);
+	if (usersT.some(u => u.exclude)) {
+		test(usersT, listTypes, type);
+		return;
+	}
 	const filteredListsKey = usersT.map(u => u.name).join("-") + listTypes.join("-") + type;
 	console.log("updateMediaData", usersT, listTypes, type)
 	if (filteredLists[filteredListsKey]) return setMediaData(filteredLists[filteredListsKey]);
@@ -182,6 +186,94 @@ export async function updateMediaData(usersT = userTable(), listTypes = listType
 	array.sort((a, b) => b.score - a.score || a.english.localeCompare(b.english));
 
 	console.log("Set media data")
+
+	filteredLists[filteredListsKey] = array;
+	setMediaData(array);
+	array = [];
+	checkedArray = {};
+}
+
+async function test(usersT = userTable(), listTypes = listType(), type = mediaType()) {
+	const filteredListsKey = usersT.map(u => u.name + u.exclude).join("-") + listTypes.join("-") + type;
+	console.log("updateMediaData", usersT, listTypes, type)
+	if (filteredLists[filteredListsKey]) return setMediaData(filteredLists[filteredListsKey]);
+	await updateMediaInfoObject();
+
+	const excludeUsers = usersT.filter(u => u.exclude);
+	const includeUsers = usersT.filter(u => !u.exclude);
+
+	for (const iUser of includeUsers) {
+		const userMedia = await fetchUserMedia(iUser, type);
+		for (const type of listTypes) {
+			for (const list of userMedia) {
+				const listKey = list.isCustomList ? "Custom" : list.name;
+				if (listKey === type) list.entries.forEach(entry => {
+					const mediaKey = entry.media.id;
+					if (checkedArray[mediaKey]) return;
+					checkedArray[mediaKey] = true;
+
+					let totalUserCount = 0;
+					let totalUserWhoScored = 0;
+					let totalScore = 0;
+					let repeat = 0;
+					const users = []
+					const media = mediaInfo[mediaKey];
+
+					for (const eUser of excludeUsers) {
+						if (eUser.name in media.userLists) return;
+					}
+
+					// console.log(media)
+
+					for (const user of includeUsers) {
+						const userKey = user.name;
+						const isOnSelectedList = listTypes.find(type => media.userLists[userKey]?.[type]);
+						if (!isOnSelectedList) continue;
+
+						totalUserCount++;
+						repeat += media.userRepeats[userKey];
+						users.push({
+							name: user.name,
+							avatar: user.avatar.medium,
+							score: media.userScores[userKey],
+							repeat: media.userRepeats[userKey],
+							list: userLisrOrder[isOnSelectedList]
+						})
+
+						if (media.userScores[userKey] > 0) {
+							totalScore += media.userScores[userKey];
+							totalUserWhoScored++;
+						}
+					}
+
+					const score = totalScore ? (totalScore / totalUserWhoScored).toFixed(2) : 0;
+
+					array.push({
+						info: media,
+						english: media.title.english || media.title.userPreferred,
+						native: media.title.native || media.title.userPreferred,
+						romaji: media.title.romaji || media.title.userPreferred,
+						coverImage: media.coverImage.large,
+						color: media.coverImage.color,
+						banner: media.bannerImage,
+						episodes: media.episodes ||
+							media.nextAiringEpisode?.episode ||
+							media.chapters || "TBA",
+						score,
+						repeat,
+						percentage: (totalUserCount / includeUsers.length),
+						users: users.sort((a, b) => {
+							return (a.list - b.list) || b.score - a.score;
+						})
+					});
+				});
+			}
+		}
+	}
+
+	array.sort((a, b) => b.score - a.score || a.english.localeCompare(b.english));
+
+	console.log(array)
 
 	filteredLists[filteredListsKey] = array;
 	setMediaData(array);
