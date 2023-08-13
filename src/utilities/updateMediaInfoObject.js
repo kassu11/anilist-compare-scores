@@ -14,16 +14,22 @@ export async function updateMediaInfoObject(...newUsers) {
 		userDataSaved[key] = true;
 
 		const userMedia = await fetchUserMedia(user, mediaType());
+		const rewatchedList = { name: "Rewatched", entries: [], isCustomList: false };
 		for (const list of userMedia) {
 			const listKey = list.isCustomList ? "Custom" : list.name;
 			for (const userStats of list.entries) {
 				const mediaKey = userStats.media.id;
 				const userKey = user.name;
+
 				if (mediaKey in mediaInfo) {
 					mediaInfo[mediaKey].userLists[userKey] ??= {}
 					mediaInfo[mediaKey].userLists[userKey][listKey] = true
 					mediaInfo[mediaKey].userScores[userKey] = userStats.score
 					mediaInfo[mediaKey].userRepeats[userKey] = userStats.repeat;
+					if (userStats.repeat && !mediaInfo[mediaKey].userLists[userKey]["Rewatched"]) {
+						rewatchedList.entries.push(userStats);
+						mediaInfo[mediaKey].userLists[userKey]["Rewatched"] = true;
+					}
 					continue;
 				}
 				if (userStats.media.format && userStats.media.format !== "TV" && userStats.media.format !== "ONA" && userStats.media.format !== "OVA") userStats.media.format = userStats.media.format.toLowerCase();
@@ -33,7 +39,15 @@ export async function updateMediaInfoObject(...newUsers) {
 				mediaInfo[mediaKey].userLists = { [userKey]: { [listKey]: true } };
 				mediaInfo[mediaKey].userScores = { [userKey]: userStats.score };
 				mediaInfo[mediaKey].userRepeats = { [userKey]: userStats.repeat };
+				if (userStats.repeat) {
+					rewatchedList.entries.push(userStats);
+					mediaInfo[mediaKey].userLists[userKey]["Rewatched"] = true;
+				}
 			}
 		}
+
+		userMedia.push(rewatchedList);
+
+		console.log(userMedia)
 	}
 }

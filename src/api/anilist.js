@@ -42,17 +42,18 @@ const fetchedUsers = {};
 
 export async function fetchUsers(userName) {
   userName = userName.toLowerCase();
-  const debugKey = "ani" + userName + "Search";
-  if (DEBUG) {
-    const data = JSON.parse(localStorage.getItem(debugKey));
-    if (data) return data;
-  }
   if (userName === "") return [];
+  const debugKey = "ani" + userName + "Search";
   if (fetchedUsers[userName] instanceof Promise) {
     await fetchedUsers[userName];
     return fetchedUsers[userName];
   }
   if (fetchedUsers[userName]) return fetchedUsers[userName];
+
+  if (DEBUG) {
+    const data = JSON.parse(localStorage.getItem(debugKey));
+    if (data) return fetchedUsers[userName] = data;
+  }
 
   let fetchingDone;
   fetchedUsers[userName] = new Promise((resolve) => fetchingDone = resolve);
@@ -183,18 +184,19 @@ const userMediaVariable = {
 }
 
 export async function fetchUserMedia({ id, name }, type = "ANIME") {
-  const debugKey = "ani" + id + type;
-  if (DEBUG) {
-    const data = JSON.parse(localStorage.getItem(debugKey));
-    if (data) return data;
-  }
   if (name === "") return [];
   const key = name + type;
+  const debugKey = "ani" + id + type;
   if (fetchedUserMedias[key] instanceof Promise) {
     await fetchedUserMedias[key];
     return fetchedUserMedias[key];
   }
   if (fetchedUserMedias[key]) return fetchedUserMedias[key];
+
+  if (DEBUG) {
+    const data = JSON.parse(localStorage.getItem(debugKey));
+    if (data) return fetchedUserMedias[key] = data;
+  }
 
   let fetchingDone;
   fetchedUserMedias[key] = new Promise((resolve) => fetchingDone = resolve);
