@@ -62,7 +62,6 @@ function multiSelect(event) {
 	const users = [...userTable()];
 	users.forEach((user, index) => user[forType] = checkboxes[index].checked);
 	setUserTable(users);
-	updateMediaData(users);
 }
 
 
