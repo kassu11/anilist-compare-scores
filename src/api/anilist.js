@@ -119,7 +119,7 @@ fragment mediaListEntry on MediaList {
   id
   mediaId
   status
-  score
+  score(format: POINT_10_DECIMAL)
   progress
   progressVolumes
   repeat
