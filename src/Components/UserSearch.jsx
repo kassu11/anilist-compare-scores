@@ -3,6 +3,7 @@ import { createSignal, createResource } from "solid-js";
 import { userTable, setUserTable } from "./UserTable";
 import { setWidthBuffer } from "../utilities/buffer.js";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
+import { updateMediaData } from "./UserMedia";
 
 import style from "./UserSearch.module.css";
 
@@ -82,7 +83,9 @@ async function submitSearch(event) {
 
 	await updateMediaInfoObject(newUser);
 
-	setUserTable([...userTable(), newUser]);
+	const users = [...userTable(), newUser]
+	setUserTable(users);
+	updateMediaData(users, undefined, undefined);
 	searchIndex = 0;
 }
 

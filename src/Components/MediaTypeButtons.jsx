@@ -1,4 +1,5 @@
 import { createSignal } from "solid-js"
+import { updateMediaData } from "./UserMedia";
 
 export const [mediaType, setMediaType] = createSignal("ANIME");
 
@@ -14,6 +15,7 @@ function MediaTypeButtons() {
 function updateMediaType(form) {
 	const { type } = Object.fromEntries(new FormData(form));
 	setMediaType(type);
+	updateMediaData(undefined, undefined, type)
 }
 
 export default MediaTypeButtons;

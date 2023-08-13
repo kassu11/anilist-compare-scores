@@ -29,16 +29,11 @@ const userLisrOrder = {
 }
 
 export const mediaInfo = {};
+const filteredLists = {};
 const [mediaData, setMediaData] = createSignal([])
 
 function UserMedia() {
 	const [count, setCount] = createSignal(0);
-
-	createEffect(async () => {
-		listType(); // Update listType
-
-		updateMediaData();
-	});
 
 	createEffect(() => {
 		mediaData();
@@ -96,12 +91,15 @@ function UserMedia() {
 	)
 }
 
-async function updateMediaData() {
+export async function updateMediaData(usersT = userTable(), listTypes = listType(), type = mediaType()) {
+	const filteredListsKey = usersT.map(u => u.name).join("-") + listTypes.join("-") + type;
+	console.log("updateMediaData", usersT, listTypes, type)
+	if (filteredLists[filteredListsKey]) return setMediaData(filteredLists[filteredListsKey]);
 	await updateMediaInfoObject();
-	for (const user of userTable()) {
-		const userMedia = await fetchUserMedia(user, mediaType());
-		console.log(userMedia);
-		for (const type of listType()) {
+
+	for (const user of usersT) {
+		const userMedia = await fetchUserMedia(user, type);
+		for (const type of listTypes) {
 			for (const list of userMedia) {
 				const listKey = list.isCustomList ? "Custom" : list.name;
 				if (listKey === type) list.entries.forEach(entry => {
@@ -116,9 +114,9 @@ async function updateMediaData() {
 					const users = []
 					const media = mediaInfo[mediaKey];
 
-					for (const user of userTable()) {
+					for (const user of usersT) {
 						const userKey = user.name;
-						const isOnSelectedList = listType().find(type => media.userLists[userKey]?.[type]);
+						const isOnSelectedList = listTypes.find(type => media.userLists[userKey]?.[type]);
 						if (!isOnSelectedList) continue;
 
 						totalUserCount++;
@@ -152,7 +150,7 @@ async function updateMediaData() {
 							media.chapters || "TBA",
 						score,
 						repeat,
-						percentage: (totalUserCount / userTable().length),
+						percentage: (totalUserCount / usersT.length),
 						users: users.sort((a, b) => {
 							return (a.list - b.list) || b.score - a.score;
 						})
@@ -164,6 +162,9 @@ async function updateMediaData() {
 
 	array.sort((a, b) => b.score - a.score || a.english.localeCompare(b.english));
 
+	console.log("Set media data")
+
+	filteredLists[filteredListsKey] = array;
 	setMediaData(array);
 	array = [];
 	checkedArray = {};

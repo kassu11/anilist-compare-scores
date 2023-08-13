@@ -1,11 +1,9 @@
-import { createSignal, createEffect } from "solid-js";
+import { createSignal } from "solid-js";
+import { updateMediaData } from "./UserMedia"
 
 export const [listType, setListType] = createSignal([]);
 
 function ListTypes() {
-	createEffect(() => {
-		console.log(listType());
-	})
 	return (
 		<form id="checkboxRow" onInput={e => updateListType(e.currentTarget)} use: updateListType>
 			<ul>
@@ -23,8 +21,9 @@ function ListTypes() {
 
 function updateListType(formElem) {
 	const data = Object.fromEntries(new FormData(formElem))
-	const keys = Object.keys(data);
-	setListType(keys);
+	const types = Object.keys(data);
+	setListType(types);
+	updateMediaData(undefined, types, undefined);
 }
 
 export default ListTypes;
