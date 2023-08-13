@@ -82,6 +82,7 @@ async function submitSearch(event) {
 	if (userTable().some(user => user.id === newUser.id)) return console.log("User already added");
 
 	await updateMediaInfoObject(newUser);
+	newUser.enabled = true;
 
 	const users = [...userTable(), newUser]
 	setUserTable(users);

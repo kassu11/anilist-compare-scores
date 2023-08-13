@@ -110,6 +110,7 @@ function Repeat({ repeat }) {
 }
 
 export async function updateMediaData(usersT = userTable(), listTypes = listType(), type = mediaType()) {
+	usersT = usersT.filter(u => u.enabled);
 	const filteredListsKey = usersT.map(u => u.name).join("-") + listTypes.join("-") + type;
 	console.log("updateMediaData", usersT, listTypes, type)
 	if (filteredLists[filteredListsKey]) return setMediaData(filteredLists[filteredListsKey]);
