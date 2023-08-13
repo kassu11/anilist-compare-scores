@@ -16,12 +16,10 @@ function UserSearch() {
 
 	return (
 		<nav>
-			<form>
+			<form onSubmit={e => e.preventDefault()}>
 				<ul>
 					<li><button type="button" onClick={openDialog}>User Search</button></li>
 					<li><input value="100" onInput={e => calcPercentage(e.target.value)} /></li>
-					<li><input type="radio" name="mode" id="Intersect" checked /><label htmlFor="Intersect">Intersect</label></li>
-					<li><input type="radio" name="mode" id="Exclude" /><label htmlFor="Exclude">Exclude</label></li>
 					<li><input type="checkbox" name="zero" id="hideZero" /><label htmlFor="hideZero">Hide zero</label></li>
 					<li><label for="sort">Sorting order </label>
 						<select id="sort">
