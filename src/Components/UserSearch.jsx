@@ -19,7 +19,7 @@ function UserSearch() {
 		<nav>
 			<form onSubmit={e => e.preventDefault()}>
 				<ul>
-					<li><button type="button" onClick={openDialog}>User Search</button></li>
+					<li><button type="button" onClick={openDialog}><i class="fa-solid fa-magnifying-glass"></i> User Search</button></li>
 					<li><input value="100" onInput={e => calcPercentage(e.target.value)} /></li>
 					<li><input type="checkbox" name="zero" id="hideZero" /><label htmlFor="hideZero">Hide zero</label></li>
 					<li><label for="sort">Sorting order </label>
@@ -32,25 +32,74 @@ function UserSearch() {
 				</ul>
 			</form>
 
-			<dialog id="userSearch">
-				<form onSubmit={submitSearch} onInput={({ target }) => setSearch(target.value)}>
-					<input autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></input>
-				</form>
-				{/* {console.log(recommendations.loading)} */}
-				<div className="userList">
-					<For each={recommendations()}>{(user, index) => (
-						<div className={style.user} tabIndex="0" onClick={() => {
-							searchIndex = index();
-							submitSearch();
-						}}>
-							<img src={user.avatar.medium} alt={user.name} height="25" />
-							<span>{user.name}</span>
-						</div>
-					)}</For>
+			<dialog id="userSearch" className={style.userSearch} onFocus={closeOnFocus}>
+				<div id="wrapper">
+					<form onSubmit={submitSearch} onInput={({ target }) => setSearch(target.value)}>
+						<i class="fa-solid fa-magnifying-glass"></i>
+						<input className={style.userInput} onKeyDown={keyboard} type="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type to search"></input>
+					</form>
+					{console.log(recommendations.loading)}
+					<div className={style.userList} tabIndex="0">
+						<For each={recommendations()}>{(user, index) => (
+							<UserSearchItem user={user} index={index()} selected={index() === 0} />
+						)}</For>
+					</div>
 				</div>
 			</dialog>
 		</nav>
 	)
+}
+
+function UserSearchItem({ user, selected, index }) {
+	return (
+		<div attr: custom-selected={selected} className={style.user} onClick={() => {
+			searchIndex = index;
+			submitSearch();
+			document.querySelector("#userSearch input").focus();
+		}} onMouseMove={e => {
+			if (e.target.getAttribute("custom-selected") === "true") return;
+			const users = document.querySelectorAll(`.${style.user}[custom-selected="true"]`);
+			users.forEach(user => user.setAttribute("custom-selected", false));
+			e.target.setAttribute("custom-selected", true);
+		}}>
+			<img src={user.avatar.medium} alt={user.name} height="25" />
+			<span>{user.name}</span>
+		</div>
+	)
+}
+
+function closeOnFocus(e) {
+	if (e.target.tagName === "DIALOG") e.target.close();
+}
+
+function keyboard(e) {
+	if(e.code === "Enter" && document.querySelector("#userSearch input").value === "") {
+		document.querySelector("#userSearch").close();
+		setSearch("");
+		return;
+	}
+	else if (e.code === "Escape") {
+		document.querySelector("#userSearch").close();
+		setSearch("");
+	}
+	else if (e.code === "ArrowUp" || (e.code === "Tab" && e.shiftKey)) {
+		e.preventDefault();
+		const user = document.querySelector(`.${style.user}[custom-selected="true"]`);
+		if (!user) return;
+		user.setAttribute("custom-selected", false);
+		const elem = user.previousElementSibling || user;
+		elem?.setAttribute("custom-selected", true);
+		elem?.scrollIntoView({ block: "nearest" });
+	}
+	else if (e.code === "ArrowDown" || e.code === "Tab") {
+		e.preventDefault();
+		const user = document.querySelector(`.${style.user}[custom-selected="true"]`);
+		if (!user) return;
+		user.setAttribute("custom-selected", false);
+		const elem = user.nextElementSibling || user;
+		elem?.setAttribute("custom-selected", true);
+		elem?.scrollIntoView({ block: "nearest" });
+	}
 }
 
 

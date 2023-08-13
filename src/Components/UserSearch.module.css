@@ -1,7 +1,83 @@
-.user {
-	cursor: pointer;
+.userSearch[open] {
+	padding: 0px;
+	margin-block: 0px;
+	top: 75px;
+	width: min(600px, 100%);
+	border: unset;
+	background-color: #0B1622;
+	border-radius: 10px;
+	overflow: visible;
+	display: flex;
+	max-height: calc(100% - 100px);
+	flex-direction: column;
 }
 
-.user:hover {
-	background-color: brown;
+
+
+.userSearch form {
+	display: flex;
+}
+
+
+
+.userSearch i {
+	position: absolute;
+	font-size: 16px;
+	top: 18px;
+	left: 18px;
+	font-weight: 900;
+}
+
+.userInput {
+	border: none;
+	outline: none;
+	padding-left: 50px;
+	padding-right: 18px;
+	width: 100%;
+	font-size: 16px;
+	font-weight: 700;
+	height: 52px;
+	background-color: transparent;
+}
+
+
+
+.userList {
+	overflow: auto;
+	border-radius: 0px 0px 10px 10px;
+}
+
+.user {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 5px 14px;
+}
+
+.user[custom-selected="true"] {
+	background-color: hsla(0, 0%, 100%, 0.8);
+	color: black;
+}
+
+.user:last-child {
+	padding-bottom: 10px;
+}
+
+.user img {
+	width: 20px;
+	height: 20px;
+	object-fit: cover;
+	border-radius: 4px;
+}
+
+.user span {
+	font-weight: 600;
+}
+
+
+
+.userSearch::backdrop {
+	background-color: rgba(0, 0, 0, 0.75);
+	backdrop-filter: blur(5px);
 }
