@@ -100,9 +100,11 @@ async function updateMediaData() {
 	await updateMediaInfoObject();
 	for (const user of userTable()) {
 		const userMedia = await fetchUserMedia(user, mediaType());
+		console.log(userMedia);
 		for (const type of listType()) {
 			for (const list of userMedia) {
-				if (list.name === type) list.entries.forEach(entry => {
+				const listKey = list.isCustomList ? "Custom" : list.name;
+				if (listKey === type) list.entries.forEach(entry => {
 					const mediaKey = entry.media.id;
 					if (checkedArray[mediaKey]) return;
 					checkedArray[mediaKey] = true;
