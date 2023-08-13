@@ -4,7 +4,7 @@ let checkedArray = {};
 import { createEffect, createSignal } from "solid-js";
 import { userTable } from "./UserTable";
 import { fetchUserMedia } from "../api/anilist";
-import { percentage } from "./UserSearch";
+import { percentage, sortValue } from "./UserSearch";
 import { mediaType } from "./MediaTypeButtons";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 import { listType } from "./ListTypes";
@@ -109,15 +109,22 @@ function Repeat({ repeat }) {
 	)
 }
 
-export async function updateMediaData(usersT = userTable(), listTypes = listType(), type = mediaType()) {
+export async function updateMediaData(usersT = userTable(), listTypes = listType(), type = mediaType(), sortType = sortValue()) {
 	usersT = usersT.filter(u => u.enabled);
 	if (usersT.some(u => u.exclude)) {
-		test(usersT, listTypes, type);
+		excludeUpdate(usersT, listTypes, type);
 		return;
 	}
+
 	const filteredListsKey = usersT.map(u => u.name).join("-") + listTypes.join("-") + type;
 	console.log("updateMediaData", usersT, listTypes, type)
-	if (filteredLists[filteredListsKey]) return setMediaData(filteredLists[filteredListsKey]);
+	if (filteredLists[filteredListsKey + sortType]) return setMediaData(filteredLists[filteredListsKey + sortType]);
+	if (filteredLists[filteredListsKey]) {
+		const listData = sortArray(filteredLists[filteredListsKey], sortType, true)
+		filteredLists[filteredListsKey + sortType] = listData;
+		return setMediaData(listData);
+	}
+
 	await updateMediaInfoObject();
 
 	for (const user of usersT) {
@@ -183,20 +190,24 @@ export async function updateMediaData(usersT = userTable(), listTypes = listType
 		}
 	}
 
-	array.sort((a, b) => b.score - a.score || a.english.localeCompare(b.english));
-
-	console.log("Set media data")
-
+	console.log(array)
+	sortArray(array, sortType);
 	filteredLists[filteredListsKey] = array;
+	filteredLists[filteredListsKey + sortType] = array;
 	setMediaData(array);
 	array = [];
 	checkedArray = {};
+
 }
 
-async function test(usersT = userTable(), listTypes = listType(), type = mediaType()) {
+async function excludeUpdate(usersT = userTable(), listTypes = listType(), type = mediaType(), sortType = sortValue()) {
 	const filteredListsKey = usersT.map(u => u.name + u.exclude).join("-") + listTypes.join("-") + type;
-	console.log("updateMediaData", usersT, listTypes, type)
-	if (filteredLists[filteredListsKey]) return setMediaData(filteredLists[filteredListsKey]);
+	if (filteredLists[filteredListsKey + sortType]) return setMediaData(filteredLists[filteredListsKey + sortType]);
+	if (filteredLists[filteredListsKey]) {
+		const listData = sortArray(filteredLists[filteredListsKey], sortType, true)
+		filteredLists[filteredListsKey + sortType] = listData;
+		return setMediaData(listData);
+	}
 	await updateMediaInfoObject();
 
 	const excludeUsers = usersT.filter(u => u.exclude);
@@ -222,8 +233,6 @@ async function test(usersT = userTable(), listTypes = listType(), type = mediaTy
 					for (const eUser of excludeUsers) {
 						if (eUser.name in media.userLists) return;
 					}
-
-					// console.log(media)
 
 					for (const user of includeUsers) {
 						const userKey = user.name;
@@ -271,14 +280,23 @@ async function test(usersT = userTable(), listTypes = listType(), type = mediaTy
 		}
 	}
 
-	array.sort((a, b) => b.score - a.score || a.english.localeCompare(b.english));
-
-	console.log(array)
-
+	sortArray(array, sortType);
 	filteredLists[filteredListsKey] = array;
+	filteredLists[filteredListsKey + sortType] = array;
 	setMediaData(array);
 	array = [];
 	checkedArray = {};
+}
+
+function sortArray(array, type = "score", clone = false) {
+	const sorts = {
+		"score": (a, b) => b.score - a.score || a.english.localeCompare(b.english),
+		"repeat": (a, b) => b.repeat - a.repeat || b.score - a.score || a.english.localeCompare(b.english),
+		"title": (a, b) => a.english.localeCompare(b.english)
+	}
+
+	if (clone) return array.toSorted(sorts[type]);
+	return array.sort(sorts[type]);
 }
 
 

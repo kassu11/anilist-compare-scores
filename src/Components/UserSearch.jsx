@@ -9,6 +9,7 @@ import style from "./UserSearch.module.css";
 
 const [search, setSearch] = createSignal();
 export const [percentage, setPercentage] = createSignal(1);
+export const [sortValue, setSortValue] = createSignal("score");
 let searchIndex = 0;
 
 function UserSearch() {
@@ -22,10 +23,10 @@ function UserSearch() {
 					<li><input value="100" onInput={e => calcPercentage(e.target.value)} /></li>
 					<li><input type="checkbox" name="zero" id="hideZero" /><label htmlFor="hideZero">Hide zero</label></li>
 					<li><label for="sort">Sorting order </label>
-						<select id="sort">
-							<option value="volvo">Score</option>
-							<option value="saab">Repeat</option>
-							<option value="opel">Title</option>
+						<select id="sort" onInput={sortSelect}>
+							<option value="score">Score</option>
+							<option value="repeat">Repeat</option>
+							<option value="title">Title</option>
 						</select>
 					</li>
 				</ul>
@@ -50,6 +51,12 @@ function UserSearch() {
 			</dialog>
 		</nav>
 	)
+}
+
+
+function sortSelect(e) {
+	setSortValue(e.target.value);
+	updateMediaData();
 }
 
 function calcPercentage(string_value) {
