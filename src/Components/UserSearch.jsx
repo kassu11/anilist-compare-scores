@@ -113,6 +113,12 @@ function keyboard(e) {
 		elem?.setAttribute("custom-selected", true);
 		elem?.scrollIntoView({ block: "nearest" });
 	}
+
+	const selected = document.querySelector(`.${style.user}[custom-selected="true"]`);
+	if (selected) {
+		const index = Array.from(selected.parentElement.children).indexOf(selected);
+		searchIndex = index;
+	};
 }
 
 
