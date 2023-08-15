@@ -26,7 +26,7 @@ function UserTable() {
 					<tr>
 						<td>
 							<div className={style.center}>
-								<label style="padding: 8px; margin: -8px;">
+								<label className={style.hitbox}>
 									<input type="checkbox" for="enabled" onInput={e => changeUserState(e, user)} checked onClick={multiSelect} />
 								</label>
 								<div className={style.hamburger}></div>
@@ -44,7 +44,11 @@ function UserTable() {
 						<td>{user.statistics.manga.count}</td>
 						<td className={style.close}>{user.statistics.manga.meanScore}</td>
 						<td>{Math.round(user.statistics.manga.chaptersRead)}</td>
-						<td className={style.exclude}><input type="checkbox" for="exclude" onInput={e => changeExcludeState(e, user)} onClick={multiSelect} /></td>
+						<td className={style.exclude}>
+							<label className={style.hitbox}>
+								<input type="checkbox" for="exclude" onInput={e => changeExcludeState(e, user)} onClick={multiSelect} />
+							</label>
+						</td>
 					</tr>
 				)}</For>
 			</tbody>
@@ -86,7 +90,7 @@ function multiSelect(event) {
 	const users = [...userTable()];
 	users.forEach((user, index) => {
 		user[forType] = checkboxes[index].checked;
-		checkboxes[index].closest("tr").classList.toggle(style.disabled, !checkboxes[index].checked);
+		if (forType === "enabled") checkboxes[index].closest("tr").classList.toggle(style.disabled, !checkboxes[index].checked);
 	});
 	setUserTable(users);
 }
