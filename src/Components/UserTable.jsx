@@ -26,7 +26,9 @@ function UserTable() {
 					<tr>
 						<td>
 							<div className={style.center}>
-								<input type="checkbox" for="enabled" onInput={e => changeUserState(e, user)} checked onClick={multiSelect} />
+								<label style="padding: 8px; margin: -8px;">
+									<input type="checkbox" for="enabled" onInput={e => changeUserState(e, user)} checked onClick={multiSelect} />
+								</label>
 								<div className={style.hamburger}></div>
 								<TrashCan user={user} />
 							</div>
@@ -82,7 +84,10 @@ function multiSelect(event) {
 	}
 
 	const users = [...userTable()];
-	users.forEach((user, index) => user[forType] = checkboxes[index].checked);
+	users.forEach((user, index) => {
+		user[forType] = checkboxes[index].checked;
+		checkboxes[index].closest("tr").classList.toggle(style.disabled, !checkboxes[index].checked);
+	});
 	setUserTable(users);
 }
 
@@ -98,7 +103,7 @@ function changeExcludeState(e, user) {
 
 function changeUserState(e, user) {
 	user.enabled = e.target.checked;
-	e.target.closest("tr").classList.toggle(style.disabled);
+	e.target.closest("tr").classList.toggle(style.disabled, !e.target.checked);
 	const users = [...userTable()];
 	setUserTable(users);
 	updateMediaData(users);
