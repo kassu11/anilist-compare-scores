@@ -1,6 +1,6 @@
-import { userTable } from "../Components/UserTable/UserTable";
+import { userTable } from "../utilities/signals";
 import { mediaInfo } from "../Components/UserMedia";
-import { mediaType } from "../Components/MediaTypeButtons";
+import { mediaType } from "../utilities/signals";
 import { fetchUserMedia } from "../api/anilist";
 
 const userDataSaved = {}

@@ -1,7 +1,6 @@
-import { createSignal } from "solid-js"
 import { updateMediaData } from "./UserMedia";
+import { setMediaType } from "../utilities/signals.js";
 
-export const [mediaType, setMediaType] = createSignal("ANIME");
 
 function MediaTypeButtons() {
 	return (

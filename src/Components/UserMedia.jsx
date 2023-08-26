@@ -2,12 +2,9 @@ let array = [];
 let checkedArray = {};
 
 import { createEffect, createSignal } from "solid-js";
-import { userTable } from "./UserTable/UserTable";
 import { fetchUserMedia } from "../api/anilist";
-import { percentage, sortValue } from "./UserSearch";
-import { mediaType } from "./MediaTypeButtons";
+import { percentage, sortValue, listType, mediaType, userTable } from "../utilities/signals.js";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
-import { listType } from "./ListTypes";
 
 import style from "./UserMedia.module.css";
 

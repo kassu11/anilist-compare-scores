@@ -1,4 +1,3 @@
-import { createSignal } from "solid-js";
 import { updateMediaData } from "../UserMedia";
 import TrashCan from "../Icons/TrashCan";
 import EmptyUserTable from "./EmptyUserTable";
@@ -6,8 +5,8 @@ import EmptyUserTable from "./EmptyUserTable";
 import style from "./UserTable.module.css";
 
 import UserSearch2 from "./UserSearch2";
+import { userTable, setUserTable } from "../../utilities/signals.js"
 
-export const [userTable, setUserTable] = createSignal([]);
 
 function UserTable() {
 	return (

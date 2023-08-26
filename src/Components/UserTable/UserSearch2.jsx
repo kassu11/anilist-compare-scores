@@ -1,14 +1,12 @@
 import { fetchUsers } from "../../api/anilist";
 import { createSignal, createResource } from "solid-js";
-import { userTable, setUserTable } from "./UserTable";
+import { userTable, setUserTable } from "../../utilities/signals.js";
 import { updateMediaInfoObject } from "../../utilities/updateMediaInfoObject";
 import { updateMediaData } from "../UserMedia";
 
 import style from "./UserSearch2.module.css";
 
 const [search, setSearch] = createSignal();
-export const [percentage, setPercentage] = createSignal(1);
-export const [sortValue, setSortValue] = createSignal("score");
 let searchIndex = 0;
 
 function UserSearch() {

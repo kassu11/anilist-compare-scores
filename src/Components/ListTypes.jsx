@@ -1,7 +1,6 @@
-import { createSignal } from "solid-js";
 import { updateMediaData } from "./UserMedia"
 
-export const [listType, setListType] = createSignal([]);
+import { setListType } from "../utilities/signals.js";
 
 function ListTypes() {
 	return (
