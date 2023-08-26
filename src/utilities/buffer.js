@@ -1,6 +1,6 @@
 let timeout;
 
-export function setWidthBuffer(set, value) {
+export function setWithBuffer(set, value) {
 	clearTimeout(timeout);
 	timeout = setTimeout(() => {
 		set(value);

@@ -1,7 +1,7 @@
 import { fetchUsers } from "../api/anilist";
 import { createSignal, createResource } from "solid-js";
 import { userTable, setUserTable } from "./UserTable/UserTable";
-import { setWidthBuffer } from "../utilities/buffer.js";
+import { setWithBuffer } from "../utilities/buffer.js";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 import { updateMediaData } from "./UserMedia";
 
@@ -137,7 +137,7 @@ function calcPercentage(string_value) {
 	const percentage = 1 / (userTable().filter(u => u.enabled && !u.exclude).length || 1);
 	const ceilToClosestDiff = Math.ceil(value / percentage) * percentage;
 	const fixTo2Ceil = Math.floor(ceilToClosestDiff * 100) / 100;
-	setWidthBuffer(setPercentage, fixTo2Ceil)
+	setWithBuffer(setPercentage, fixTo2Ceil)
 }
 
 function openDialog() {
