@@ -8,6 +8,7 @@ function App() {
   return (
     <>
       <footer>
+        <h1>Anime Score Compare</h1>
         <UserSearch />
         <UserTable />
 

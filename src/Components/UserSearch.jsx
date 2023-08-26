@@ -63,10 +63,15 @@ function UserSearchItem({ user, selected, index }) {
 			users.forEach(user => user.setAttribute("custom-selected", false));
 			e.target.setAttribute("custom-selected", true);
 		}}>
-			<img src={user.avatar.medium} alt={user.name} height="25" />
+			<img src={user.avatar.medium} className={style.loading} onLoad={removeLoading} alt={user.name} height="25" />
 			<span>{user.name}</span>
 		</div>
 	)
+}
+
+
+function removeLoading(e) {
+	e.target.classList.remove(style.loading);
 }
 
 function UserSearchLoading() {

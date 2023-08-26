@@ -17,3 +17,13 @@ body {
 svg {
 	fill: currentColor;
 }
+
+body {
+	display: grid;
+	margin: 16px;
+	justify-items: center;
+}
+
+#root {
+	max-width: clamp(300px, 1400px, 100% - 32px);
+}

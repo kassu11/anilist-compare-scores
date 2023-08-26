@@ -105,7 +105,6 @@
 	height: max-content;
 	text-wrap: balance;
 	flex-shrink: 0;
-	line-height: 1;
 }
 
 .rightContainer {
