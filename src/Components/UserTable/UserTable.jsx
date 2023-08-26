@@ -5,17 +5,19 @@ import EmptyUserTable from "./EmptyUserTable";
 
 import style from "./UserTable.module.css";
 
+import UserSearch2 from "./UserSearch2";
+
 export const [userTable, setUserTable] = createSignal([]);
 
 function UserTable() {
 	return (
-		<>
-			<p><i class="fa-solid fa-magnifying-glass"></i> Searched Users 0</p>
-			<select name="" id="">
-				<option value="">10</option>
-				<option value="">20</option>
-				<option value="">30</option>
-			</select>
+		<div className={style.usersTable}>
+			<div className={style.options}>
+				<UserSearch2 />
+				<p>
+					Inclusion <input type="text" value="100" /> %
+				</p>
+			</div>
 			<table>
 				<thead>
 					<tr>
@@ -62,7 +64,7 @@ function UserTable() {
 					)}</For>
 				</tbody>
 			</table>
-		</>
+		</div>
 	)
 }
 
