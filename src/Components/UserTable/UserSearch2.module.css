@@ -80,7 +80,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	padding: 5px 14px;
 }
 
-.user[custom-selected="true"] {
+.user[custom-selected] {
 	background-color: hsla(0, 0%, 100%, 0.8);
 	color: black;
 }
@@ -96,7 +96,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	border-radius: 4px;
 }
 
-.user[custom-selected="true"] .loading {
+.user[custom-selected] .loading {
 	background-color: #1b3653;
 }
 

@@ -9,7 +9,7 @@ function App() {
     <>
       <footer>
         <h1>Anime Score Compare</h1>
-        <UserSearch />
+        {/* <UserSearch /> */}
         <UserTable />
 
         <ListTypes />

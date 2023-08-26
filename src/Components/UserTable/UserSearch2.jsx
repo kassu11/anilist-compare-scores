@@ -1,13 +1,14 @@
 import { fetchUsers } from "../../api/anilist";
 import { createSignal, createResource } from "solid-js";
-import { userTable, setUserTable } from "../../utilities/signals";
+import { userTable, setUserTable, searchIndex, setSearchIndex } from "../../utilities/signals";
 import { updateMediaInfoObject } from "../../utilities/updateMediaInfoObject";
 import { updateMediaData } from "../UserMedia";
+
+import UserSearchItem from "./UserSearchItem";
 
 import style from "./UserSearch2.module.css";
 
 const [search, setSearch] = createSignal();
-let searchIndex = 0;
 
 function UserSearch() {
 	const [recommendations] = createResource(search, fetchUsers);
@@ -32,31 +33,13 @@ function UserSearch() {
 				</div>
 			</dialog>
 		</>
-	)
+	);
+
+	function closeOnFocus(event) {
+		if (event.target.tagName === "DIALOG") event.target.close();
+	}
 }
 
-function UserSearchItem({ user, selected, index }) {
-	return (
-		<div attr: custom-selected={selected} className={style.user} onClick={() => {
-			searchIndex = index;
-			submitSearch();
-			document.querySelector("#userSearch input").focus();
-		}} onMouseMove={e => {
-			if (e.target.getAttribute("custom-selected") === "true") return;
-			const users = document.querySelectorAll(`.${style.user}[custom-selected="true"]`);
-			users.forEach(user => user.setAttribute("custom-selected", false));
-			e.target.setAttribute("custom-selected", true);
-		}}>
-			<img src={user.avatar.medium} className={style.loading} onLoad={removeLoading} alt={user.name} height="25" />
-			<span>{user.name}</span>
-		</div>
-	)
-}
-
-
-function removeLoading(e) {
-	e.target.classList.remove(style.loading);
-}
 
 function UserSearchLoading() {
 	const leading = new Array(5).fill(0);
@@ -67,25 +50,24 @@ function UserSearchLoading() {
 				<span className={style.loadingName}>Loading...</span>
 			</div>
 		)}</For>
-	)
+	);
 }
 
-function closeOnFocus(e) {
-	if (e.target.tagName === "DIALOG") e.target.close();
-}
 
-function keyboard(e) {
-	if(e.code === "Enter" && document.querySelector("#userSearch input").value === "") {
+function keyboard(event) {
+	const { code } = event;
+
+	if (code === "Enter" && document.querySelector("#userSearch input").value === "") {
 		document.querySelector("#userSearch").close();
 		setSearch("");
 		return;
 	}
-	else if (e.code === "Escape") {
+	else if (code === "Escape") {
 		document.querySelector("#userSearch").close();
 		setSearch("");
 	}
-	else if (e.code === "ArrowUp" || (e.code === "Tab" && e.shiftKey)) {
-		e.preventDefault();
+	else if (code === "ArrowUp" || (code === "Tab" && event.shiftKey)) {
+		event.preventDefault();
 		const user = document.querySelector(`.${style.user}[custom-selected="true"]`);
 		if (!user) return;
 		user.setAttribute("custom-selected", false);
@@ -93,8 +75,8 @@ function keyboard(e) {
 		elem?.setAttribute("custom-selected", true);
 		elem?.scrollIntoView({ block: "nearest" });
 	}
-	else if (e.code === "ArrowDown" || e.code === "Tab") {
-		e.preventDefault();
+	else if (code === "ArrowDown" || code === "Tab") {
+		event.preventDefault();
 		const user = document.querySelector(`.${style.user}[custom-selected="true"]`);
 		if (!user) return;
 		user.setAttribute("custom-selected", false);
@@ -106,7 +88,7 @@ function keyboard(e) {
 	const selected = document.querySelector(`.${style.user}[custom-selected="true"]`);
 	if (selected) {
 		const index = Array.from(selected.parentElement.children).indexOf(selected);
-		searchIndex = index;
+		setSearchIndex(index);
 	};
 }
 
@@ -117,7 +99,7 @@ function openDialog() {
 	dialog.showModal();
 }
 
-async function submitSearch(event) {
+export async function submitSearch(event) {
 	event?.preventDefault?.();
 	const input = document.querySelector("#userSearch input");
 	const userName = input.value;
@@ -125,7 +107,7 @@ async function submitSearch(event) {
 	setSearch("");
 	if (!userName) return console.log("No input");
 
-	const newUser = (await fetchUsers(userName))[searchIndex];
+	const newUser = (await fetchUsers(userName))[searchIndex()];
 
 	if (!newUser?.name) return console.log("No users found");
 	if (userTable().some(user => user.id === newUser.id)) return console.log("User already added");
@@ -137,7 +119,7 @@ async function submitSearch(event) {
 	const users = [...userTable(), newUser]
 	setUserTable(users);
 	updateMediaData(users, undefined, undefined);
-	searchIndex = 0;
+	setSearchIndex(0);
 }
 
 

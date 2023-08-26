@@ -7,3 +7,5 @@ export const [percentage, setPercentage] = createSignal(1);
 export const [sortValue, setSortValue] = createSignal("score");
 
 export const [userTable, setUserTable] = createSignal([]);
+
+export const [searchIndex, setSearchIndex] = createSignal(0);

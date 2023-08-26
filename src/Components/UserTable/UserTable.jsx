@@ -14,7 +14,7 @@ function UserTable() {
 			<div className={style.options}>
 				<UserSearch2 />
 				<p>
-					Inclusion <input type="text" value="100" /> %
+					Inclusion <input className={style.includePercentage} type="text" value="100" /> %
 				</p>
 			</div>
 			<table>
