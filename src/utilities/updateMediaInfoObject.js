@@ -1,4 +1,4 @@
-import { userTable } from "../Components/UserTable";
+import { userTable } from "../Components/UserTable/UserTable";
 import { mediaInfo } from "../Components/UserMedia";
 import { mediaType } from "../Components/MediaTypeButtons";
 import { fetchUserMedia } from "../api/anilist";

@@ -1,6 +1,6 @@
 import { fetchUsers } from "../api/anilist";
 import { createSignal, createResource } from "solid-js";
-import { userTable, setUserTable } from "./UserTable";
+import { userTable, setUserTable } from "./UserTable/UserTable";
 import { setWidthBuffer } from "../utilities/buffer.js";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 import { updateMediaData } from "./UserMedia";

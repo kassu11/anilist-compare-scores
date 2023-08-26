@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
-import { updateMediaData } from "./UserMedia";
-import TrashCan from "./Icons/TrashCan";
+import { updateMediaData } from "../UserMedia";
+import TrashCan from "../Icons/TrashCan";
 
 import style from "./UserTable.module.css";
 
