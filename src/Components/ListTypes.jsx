@@ -1,6 +1,6 @@
 import { updateMediaData } from "./UserMedia"
 
-import { setListType } from "../utilities/signals.js";
+import { setListType } from "../utilities/signals";
 
 function ListTypes() {
 	return (

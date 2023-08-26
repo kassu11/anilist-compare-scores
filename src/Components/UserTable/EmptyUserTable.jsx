@@ -17,15 +17,28 @@ function EmptyUserTable() {
 			</td>
 			<td>
 				<div className={style.center}>
-					<div className={style.fillerImage}></div> <span> ----------</span>
+					<div className={style.fillerImage}></div>
+					<span>----------</span>
 				</div>
 			</td>
-			<td><span>------</span></td>
-			<td className={style.close}><span>------</span></td>
-			<td><span>-------</span></td>
-			<td><span>-------</span></td>
-			<td className={style.close}><span>-------</span></td>
-			<td><span>-------</span></td>
+			<td>
+				<span>------</span>
+			</td>
+			<td className={style.close}>
+				<span>------</span>
+			</td>
+			<td>
+				<span>-------</span>
+			</td>
+			<td>
+				<span>-------</span>
+			</td>
+			<td className={style.close}>
+				<span>-------</span>
+			</td>
+			<td>
+				<span>-------</span>
+			</td>
 			<td className={style.exclude}>
 				<label className={style.hitbox}>
 					<input type="checkbox" for="exclude" disabled />

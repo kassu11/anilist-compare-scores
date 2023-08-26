@@ -1,10 +1,9 @@
 import { fetchUsers } from "../api/anilist";
 import { createSignal, createResource } from "solid-js";
-import { userTable, setUserTable } from "../utilities/signals.js";
+import { userTable, setUserTable, setPercentage, setSortValue } from "../utilities/signals";
 import { setWithBuffer } from "../utilities/buffer.js";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 import { updateMediaData } from "./UserMedia";
-import {setPercentage, setSortValue} from "../utilities/signals.js";
 
 import style from "./UserSearch.module.css";
 

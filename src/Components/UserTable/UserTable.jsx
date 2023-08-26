@@ -5,7 +5,7 @@ import EmptyUserTable from "./EmptyUserTable";
 import style from "./UserTable.module.css";
 
 import UserSearch2 from "./UserSearch2";
-import { userTable, setUserTable } from "../../utilities/signals.js"
+import { userTable, setUserTable } from "../../utilities/signals"
 
 
 function UserTable() {

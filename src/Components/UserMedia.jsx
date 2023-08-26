@@ -3,7 +3,7 @@ let checkedArray = {};
 
 import { createEffect, createSignal } from "solid-js";
 import { fetchUserMedia } from "../api/anilist";
-import { percentage, sortValue, listType, mediaType, userTable } from "../utilities/signals.js";
+import { percentage, sortValue, listType, mediaType, userTable } from "../utilities/signals";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 
 import style from "./UserMedia.module.css";
