@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 import { updateMediaData } from "../UserMedia";
 import TrashCan from "../Icons/TrashCan";
+import EmptyUserTable from "./EmptyUserTable";
 
 import style from "./UserTable.module.css";
 
@@ -30,7 +31,7 @@ function UserTable() {
 					</tr>
 				</thead>
 				<tbody>
-					<For each={userTable()} fallback={<div>test</div>}>{user => (
+					<For each={userTable()} fallback={<EmptyUserTable />}>{user => (
 						<tr>
 							<td>
 								<div className={style.center}>
@@ -43,7 +44,7 @@ function UserTable() {
 							</td>
 							<td>
 								<div className={style.center}>
-									<img src={user.avatar.medium} alt={user.name} height="25" /> {user.name}
+									<img src={user.avatar.medium} alt={user.name} className={style.profile} height="25" /> {user.name}
 								</div>
 							</td>
 							<td>{user.statistics.anime.count}</td>
