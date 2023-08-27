@@ -1,0 +1,35 @@
+.user {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 5px 14px;
+}
+
+.user:last-child {
+	padding-bottom: 10px;
+}
+
+.user[custom-selected] {
+	background-color: hsla(0, 0%, 100%, 0.8);
+	color: black;
+}
+
+.user[custom-selected] img.loading {
+	background-color: #1b3653;
+}
+
+img.loading {
+	background-color: #ffffff17;
+}
+
+.user img {
+	width: 20px;
+	height: 20px;
+	object-fit: cover;
+	border-radius: 4px;
+}
+
+.userName {
+	font-weight: 600;
+}
