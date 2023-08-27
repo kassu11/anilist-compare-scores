@@ -6,32 +6,37 @@ import { updateMediaData } from "../UserMedia";
 
 import UserSearchItem from "./UserSearchItem";
 import UserSearchLoading from "./UserSearchLoading";
+import SearchError from "./SearchError";
 
-import style from "./UserSearch2.module.css";
+import searchStyle from "./UserSearch2.module.css";
+import userItemStyle from "./UserSearchItem.module.css";
 
 const [search, setSearch] = createSignal();
+const [error, setError] = createSignal();
 
 function UserSearch() {
 	const [recommendations] = createResource(search, fetchUsers);
 
 	return (
 		<>
-			<p onClick={openDialog} className={style.search}><i class="fa-solid fa-magnifying-glass"></i> Search users</p>
+			<p onClick={openDialog} className={searchStyle.search}><i class="fa-solid fa-magnifying-glass"></i> Search users</p>
 
-			<dialog id="userSearch" className={style.userSearch} onFocus={closeOnFocus}>
+			<dialog id="userSearch" className={searchStyle.userSearch} onFocus={closeOnFocus}>
 				<div id="wrapper">
 					<form onSubmit={submitSearch} onInput={({ target }) => setSearch(target.value)}>
 						<i class="fa-solid fa-magnifying-glass"></i>
-						<input className={style.userInput} onKeyDown={keyboard} type="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type to search"></input>
+						<input className={searchStyle.userInput} onKeyDown={keyboard} type="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type to search"></input>
 					</form>
 					<Show when={!recommendations.loading} fallback={UserSearchLoading}>
-						<div className={style.userList} tabIndex="0">
+						<div className={searchStyle.userList} tabIndex="0">
 							<For each={recommendations()}>{(user, index) => (
 								<UserSearchItem user={user} index={index()} selected={index() === 0} />
 							)}</For>
 						</div>
 					</Show>
 				</div>
+
+				<SearchError error={error} />
 			</dialog>
 		</>
 	);
@@ -45,35 +50,32 @@ function UserSearch() {
 function keyboard(event) {
 	const { code } = event;
 
-	if (code === "Enter" && document.querySelector("#userSearch input").value === "") {
+	if (code === "Enter" && document.querySelector("#userSearch input").value === "" || code === "Escape") {
 		document.querySelector("#userSearch").close();
 		setSearch("");
+		setError("");
 		return;
-	}
-	else if (code === "Escape") {
-		document.querySelector("#userSearch").close();
-		setSearch("");
 	}
 	else if (code === "ArrowUp" || (code === "Tab" && event.shiftKey)) {
 		event.preventDefault();
-		const user = document.querySelector(`.${style.user}[custom-selected="true"]`);
+		const user = document.querySelector(`.${userItemStyle.user}[custom-selected]`);
 		if (!user) return;
-		user.setAttribute("custom-selected", false);
+		user.removeAttribute("custom-selected");
 		const elem = user.previousElementSibling || user;
-		elem?.setAttribute("custom-selected", true);
+		elem?.setAttribute("custom-selected", "");
 		elem?.scrollIntoView({ block: "nearest" });
 	}
 	else if (code === "ArrowDown" || code === "Tab") {
 		event.preventDefault();
-		const user = document.querySelector(`.${style.user}[custom-selected="true"]`);
+		const user = document.querySelector(`.${userItemStyle.user}[custom-selected]`);
 		if (!user) return;
-		user.setAttribute("custom-selected", false);
+		user.removeAttribute("custom-selected");
 		const elem = user.nextElementSibling || user;
-		elem?.setAttribute("custom-selected", true);
+		elem?.setAttribute("custom-selected", "");
 		elem?.scrollIntoView({ block: "nearest" });
 	}
 
-	const selected = document.querySelector(`.${style.user}[custom-selected="true"]`);
+	const selected = document.querySelector(`.${userItemStyle.user}[custom-selected]`);
 	if (selected) {
 		const index = Array.from(selected.parentElement.children).indexOf(selected);
 		setSearchIndex(index);
@@ -97,7 +99,10 @@ export async function submitSearch(event) {
 
 	const newUser = (await fetchUsers(userName))[searchIndex()];
 
-	if (!newUser?.name) return console.log("No users found");
+	if (!newUser?.name) {
+		setError(`User "${userName}" not found`);
+		return console.log("No users found");
+	}
 	if (userTable().some(user => user.id === newUser.id)) return console.log("User already added");
 
 	await updateMediaInfoObject(newUser);

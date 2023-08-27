@@ -1,0 +1,58 @@
+.error {
+	color: #ff9b9b;
+	position: fixed;
+	top: 10px;
+	border-radius: 10px;
+	border: 2px solid red;
+	padding: 5px 20px;
+	padding-right: 10px;
+	box-shadow: inset 0 0 13px 0px black;
+	background: #370000;
+
+	transform: translateY(-200px);
+	transition: transform 0.5s ease-in-out;
+	visibility: none;
+	display: block;
+}
+
+.error[open] {
+	transform: translateY(0);
+}
+
+.container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+}
+
+.closeButton {
+	position: relative;
+	width: 20px;
+	height: 20px;
+	color: #ffb3b3;
+	font-size: 20px;
+	cursor: pointer;
+	background-color: transparent;
+	border: none;
+}
+
+.closeButton::before,
+.closeButton::after {
+	content: '';
+	position: absolute;
+	width: 4px;
+	height: 15px;
+	background-color: currentColor;
+	top: 3px;
+	left: 8px;
+	border-radius: 10px;
+}
+
+.closeButton::before {
+	transform: rotate(45deg);
+}
+
+.closeButton::after {
+	transform: rotate(-45deg);
+}
