@@ -5,6 +5,7 @@ import { updateMediaInfoObject } from "../../utilities/updateMediaInfoObject";
 import { updateMediaData } from "../UserMedia";
 
 import UserSearchItem from "./UserSearchItem";
+import UserSearchLoading from "./UserSearchLoading";
 
 import style from "./UserSearch2.module.css";
 
@@ -38,19 +39,6 @@ function UserSearch() {
 	function closeOnFocus(event) {
 		if (event.target.tagName === "DIALOG") event.target.close();
 	}
-}
-
-
-function UserSearchLoading() {
-	const leading = new Array(5).fill(0);
-	return (
-		<For each={leading}>{() => (
-			<div className={style.user}>
-				<div className={style.loadingImage}></div>
-				<span className={style.loadingName}>Loading...</span>
-			</div>
-		)}</For>
-	);
 }
 
 
