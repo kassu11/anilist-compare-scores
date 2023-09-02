@@ -178,4 +178,5 @@ td:last-of-type {
 
 .excludeRow td {
 	background-color: #3f1111;
+	accent-color: red;
 }

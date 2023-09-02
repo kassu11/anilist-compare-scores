@@ -7,7 +7,7 @@ import ListTypes from "./Components/ListTypes";
 function App() {
   return (
     <>
-      <footer>
+      <footer class="settings">
         <h1>Anime Score Compare</h1>
         {/* <UserSearch /> */}
         <UserTable />
