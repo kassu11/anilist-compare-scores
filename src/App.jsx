@@ -4,25 +4,29 @@ import UserMediaList from "./Components/UserMedia";
 import MediaTypeButtons from "./Components/MediaTypeButtons";
 import ListTypes from "./Components/ListTypes";
 
+import WebWorker from "./lib/test.js?worker";
+
+const myWorker = WebWorker instanceof Worker ? WebWorker : new WebWorker();
+
+myWorker.postMessage([{ 5: 5 }, 7]);
+
 function App() {
-  return (
-    <>
-      <footer class="settings">
-        <h1>Anime Score Compare</h1>
-        {/* <UserSearch /> */}
-        <UserTable />
+	return (
+		<>
+			<footer class="settings">
+				<h1>Anime Score Compare</h1>
+				{/* <UserSearch /> */}
+				<UserTable />
 
-        <ListTypes />
+				<ListTypes />
 
-        <MediaTypeButtons />
-      </footer>
-      <UserMediaList />
-    </>
-  );
+				<MediaTypeButtons />
+			</footer>
+			<UserMediaList />
+		</>
+	);
 }
 
-function userSearch() {
-
-}
+function userSearch() {}
 
 export default App;

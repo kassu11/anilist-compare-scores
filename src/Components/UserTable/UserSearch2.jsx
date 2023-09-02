@@ -19,19 +19,28 @@ function UserSearch() {
 
 	return (
 		<>
-			<p onClick={openDialog} className={searchStyle.search}><i class="fa-solid fa-magnifying-glass"></i> Search users</p>
+			<p onClick={openDialog} className={searchStyle.search}>
+				<i class="fa-solid fa-magnifying-glass"></i> Search users
+			</p>
 
 			<dialog id="userSearch" className={searchStyle.userSearch} onFocus={closeOnFocus}>
 				<div id="wrapper">
 					<form onSubmit={submitSearch} onInput={({ target }) => setSearch(target.value)}>
 						<i class="fa-solid fa-magnifying-glass"></i>
-						<input className={searchStyle.userInput} onKeyDown={keyboard} type="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type to search"></input>
+						<input
+							className={searchStyle.userInput}
+							onKeyDown={keyboard}
+							type="search"
+							autocomplete="off"
+							autocapitalize="off"
+							autocorrect="off"
+							spellcheck="false"
+							placeholder="Type to search"
+						></input>
 					</form>
 					<Show when={!recommendations.loading} fallback={UserSearchLoading}>
 						<div className={searchStyle.userList} tabIndex="0">
-							<For each={recommendations()}>{(user, index) => (
-								<UserSearchItem user={user} index={index()} selected={index() === 0} />
-							)}</For>
+							<For each={recommendations()}>{(user, index) => <UserSearchItem user={user} index={index()} selected={index() === 0} />}</For>
 						</div>
 					</Show>
 				</div>
@@ -46,17 +55,15 @@ function UserSearch() {
 	}
 }
 
-
 function keyboard(event) {
 	const { code } = event;
 
-	if (code === "Enter" && document.querySelector("#userSearch input").value === "" || code === "Escape") {
+	if ((code === "Enter" && document.querySelector("#userSearch input").value === "") || code === "Escape") {
 		document.querySelector("#userSearch").close();
 		setSearch("");
 		setError("");
 		return;
-	}
-	else if (code === "ArrowUp" || (code === "Tab" && event.shiftKey)) {
+	} else if (code === "ArrowUp" || (code === "Tab" && event.shiftKey)) {
 		event.preventDefault();
 		const user = document.querySelector(`.${userItemStyle.user}[custom-selected]`);
 		if (!user) return;
@@ -64,8 +71,7 @@ function keyboard(event) {
 		const elem = user.previousElementSibling || user;
 		elem?.setAttribute("custom-selected", "");
 		elem?.scrollIntoView({ block: "nearest" });
-	}
-	else if (code === "ArrowDown" || code === "Tab") {
+	} else if (code === "ArrowDown" || code === "Tab") {
 		event.preventDefault();
 		const user = document.querySelector(`.${userItemStyle.user}[custom-selected]`);
 		if (!user) return;
@@ -79,9 +85,8 @@ function keyboard(event) {
 	if (selected) {
 		const index = Array.from(selected.parentElement.children).indexOf(selected);
 		setSearchIndex(index);
-	};
+	}
 }
-
 
 function openDialog() {
 	const dialog = document.getElementById("userSearch");
@@ -103,17 +108,16 @@ export async function submitSearch(event) {
 		setError(`User "${userName}" not found`);
 		return console.log("No users found");
 	}
-	if (userTable().some(user => user.id === newUser.id)) return console.log("User already added");
+	if (userTable().some((user) => user.id === newUser.id)) return console.log("User already added");
 
 	await updateMediaInfoObject(newUser);
 	newUser.enabled = true;
 	newUser.exclude = false;
 
-	const users = [...userTable(), newUser]
+	const users = [...userTable(), newUser];
 	setUserTable(users);
-	updateMediaData(users, undefined, undefined);
+	updateMediaData();
 	setSearchIndex(0);
 }
-
 
 export default UserSearch;
