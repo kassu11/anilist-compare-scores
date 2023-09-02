@@ -6,6 +6,7 @@ import style from "./UserTable.module.css";
 
 import UserSearch2 from "./UserSearch2";
 import { userTable, setUserTable } from "../../utilities/signals"
+import UserIncludeBar from "./UserIncludeBar";
 
 
 function UserTable() {
@@ -13,9 +14,7 @@ function UserTable() {
 		<div className={style.usersTable}>
 			<div className={style.options}>
 				<UserSearch2 />
-				<p>
-					Inclusion <input className={style.includePercentage} type="text" value="100" /> %
-				</p>
+				<UserIncludeBar />
 			</div>
 			<table>
 				<thead>
