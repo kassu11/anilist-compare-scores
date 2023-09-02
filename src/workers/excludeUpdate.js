@@ -21,7 +21,16 @@ onmessage = async (array) => {
 	const mediaArray = [];
 	const checkedArray = {};
 
-	for (const userMedia of userMediaData) {
+	const excludeUsers = [];
+	const includeUsersIndex = [];
+
+	usersT.forEach((u, i) => {
+		if (u.exclude) excludeUsers.push(u);
+		else includeUsersIndex.push(i);
+	});
+
+	for (const iUserIndex of includeUsersIndex) {
+		const userMedia = userMediaData[iUserIndex];
 		for (const type of listTypes) {
 			for (const list of userMedia) {
 				const listKey = list.isCustomList ? "Custom" : list.name;
@@ -39,7 +48,12 @@ onmessage = async (array) => {
 					const users = [];
 					const media = mediaInfo[mediaKey];
 
-					for (const user of usersT) {
+					for (const eUser of excludeUsers) {
+						if (eUser.name in media.userLists) return;
+					}
+
+					for (const userIndex of includeUsersIndex) {
+						const user = usersT[userIndex];
 						const userKey = user.name;
 						const isOnSelectedList = listTypes.find((type) => media.userLists[userKey]?.[type]);
 						if (!isOnSelectedList) continue;
@@ -73,7 +87,7 @@ onmessage = async (array) => {
 						episodes: media.episodes || media.nextAiringEpisode?.episode || media.chapters || "TBA",
 						score,
 						repeat,
-						percentage: totalUserCount / usersT.length,
+						percentage: totalUserCount / includeUsersIndex.length,
 						users: users.sort((a, b) => {
 							return a.list - b.list || b.score - a.score;
 						}),

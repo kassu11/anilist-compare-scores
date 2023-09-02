@@ -3,7 +3,7 @@ import { mediaInfo } from "../Components/UserMedia";
 import { mediaType } from "../utilities/signals";
 import { fetchUserMedia } from "../api/anilist";
 
-const userDataSaved = {}
+const userDataSaved = {};
 
 export async function updateMediaInfoObject(...newUsers) {
 	const users = [...userTable(), ...newUsers];
@@ -22,9 +22,9 @@ export async function updateMediaInfoObject(...newUsers) {
 				const userKey = user.name;
 
 				if (mediaKey in mediaInfo) {
-					mediaInfo[mediaKey].userLists[userKey] ??= {}
-					mediaInfo[mediaKey].userLists[userKey][listKey] = true
-					mediaInfo[mediaKey].userScores[userKey] = userStats.score
+					mediaInfo[mediaKey].userLists[userKey] ??= {};
+					mediaInfo[mediaKey].userLists[userKey][listKey] = true;
+					mediaInfo[mediaKey].userScores[userKey] = userStats.score;
 					mediaInfo[mediaKey].userRepeats[userKey] = userStats.repeat;
 					if (userStats.repeat && !mediaInfo[mediaKey].userLists[userKey]["Rewatched"]) {
 						rewatchedList.entries.push(userStats);
@@ -32,7 +32,13 @@ export async function updateMediaInfoObject(...newUsers) {
 					}
 					continue;
 				}
-				if (userStats.media.format && userStats.media.format !== "TV" && userStats.media.format !== "ONA" && userStats.media.format !== "OVA") userStats.media.format = userStats.media.format.toLowerCase();
+				if (
+					userStats.media.format &&
+					userStats.media.format !== "TV" &&
+					userStats.media.format !== "ONA" &&
+					userStats.media.format !== "OVA"
+				)
+					userStats.media.format = userStats.media.format.toLowerCase();
 				userStats.media.season = userStats.media.season?.toLowerCase() || "";
 
 				mediaInfo[mediaKey] = userStats.media;
@@ -48,6 +54,6 @@ export async function updateMediaInfoObject(...newUsers) {
 
 		userMedia.push(rewatchedList);
 
-		console.log(userMedia)
+		console.log(userMedia);
 	}
 }

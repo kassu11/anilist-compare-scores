@@ -6,8 +6,9 @@ import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 import style from "./UserMedia.module.css";
 
 import IncludeWorker from "../workers/includeUpdate.js?worker";
+import ExcludeWorker from "../workers/excludeUpdate.js?worker";
 
-const userLisrOrder = {
+const userListOrder = {
 	Completed: 1,
 	Watching: 2,
 	Rewatched: 3,
@@ -78,7 +79,7 @@ function UserScoreList({ media }) {
 					{(user, i) => (
 						<>
 							<Show when={user.list != media.users[i() - 1]?.list}>
-								<span className={style.listName}>{userLisrOrder[user.list]}</span>
+								<span className={style.listName}>{userListOrder[user.list]}</span>
 							</Show>
 							<div className={style.row}>
 								<img className={style.avatar} src={user.avatar} />
@@ -130,9 +131,12 @@ export async function updateMediaData() {
 	const filterKey = usersArray.map((u) => u.name + u.exclude).join("-") + listTypes.join("-") + type;
 	const exclude = usersArray.some((u) => u.exclude);
 
-	// console.log("Message posted to worker");
+	await updateMediaInfoObject();
+	const userMediaData = [];
+	for (const user of usersArray) userMediaData.push(await fetchUserMedia(user, type));
+
 	// worker = IncludeWorker instanceof Worker ? IncludeWorker : new IncludeWorker();
-	// worker.postMessage([usersArray, listTypes, type, sortType]);
+	// worker.postMessage([usersArray, listTypes, sortType, userMediaData, mediaInfo]);
 
 	// worker.onmessage = (e) => {
 	// 	console.log(e);
@@ -148,14 +152,26 @@ export async function updateMediaData() {
 		return setMediaData(listData);
 	}
 
-	const mediaData = await (exclude
-		? excludeUpdate(usersArray, listTypes, type, sortType)
-		: includeUpdate(usersArray, listTypes, type, sortType));
+	if (exclude) worker = ExcludeWorker instanceof Worker ? ExcludeWorker : new ExcludeWorker();
+	else worker = IncludeWorker instanceof Worker ? IncludeWorker : new IncludeWorker();
 
-	filteredLists[filterKey] = mediaData;
-	filteredLists[filterKey + sortType] = mediaData;
+	worker.postMessage([usersArray, listTypes, sortType, userMediaData, mediaInfo]);
 
-	setMediaData(mediaData);
+	worker.onmessage = (e) => {
+		// console.log(e);
+		filteredLists[filterKey] = e.data;
+		filteredLists[filterKey + sortType] = e.data;
+		setMediaData(e.data);
+	};
+
+	// const mediaData = await (exclude
+	// 	? excludeUpdate(usersArray, listTypes, type, sortType)
+	// 	: includeUpdate(usersArray, listTypes, type, sortType));
+
+	// filteredLists[filterKey] = mediaData;
+	// filteredLists[filterKey + sortType] = mediaData;
+
+	// setMediaData(mediaData);
 }
 
 export async function includeUpdate(usersT, listTypes, type, sortType) {
@@ -195,7 +211,7 @@ export async function includeUpdate(usersT, listTypes, type, sortType) {
 							avatar: user.avatar.medium,
 							score: media.userScores[userKey],
 							repeat: media.userRepeats[userKey],
-							list: userLisrOrder[isOnSelectedList],
+							list: userListOrder[isOnSelectedList],
 						});
 
 						if (media.userScores[userKey] > 0) {
@@ -275,7 +291,7 @@ async function excludeUpdate(usersT, listTypes, type, sortType) {
 							avatar: user.avatar.medium,
 							score: media.userScores[userKey],
 							repeat: media.userRepeats[userKey],
-							list: userLisrOrder[isOnSelectedList],
+							list: userListOrder[isOnSelectedList],
 						});
 
 						if (media.userScores[userKey] > 0) {
