@@ -40,7 +40,7 @@ function ListTypes() {
 	);
 }
 
-function updateListType(formElem) {
+export function updateListType(formElem) {
 	const data = Object.fromEntries(new FormData(formElem));
 	const types = Object.keys(data);
 	console.log(types);
