@@ -102,6 +102,7 @@ function multiSelect(event) {
 	users.forEach((user, index) => {
 		user[forType] = checkboxes[index].checked;
 		if (forType === "enabled") checkboxes[index].closest("tr").classList.toggle(style.disabled, !checkboxes[index].checked);
+		else if (forType === "exclude") checkboxes[index].closest("tr").classList.toggle(style.excludeRow, checkboxes[index].checked);
 	});
 	setUserTable(users);
 }
@@ -109,6 +110,7 @@ function multiSelect(event) {
 
 function changeExcludeState(e, user) {
 	user.exclude = e.target.checked;
+	e.target.closest("tr").classList.toggle(style.excludeRow, e.target.checked);
 	const users = [...userTable()];
 	setUserTable(users);
 	updateMediaData(users);

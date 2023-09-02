@@ -179,3 +179,7 @@ input.includePercentage {
 	width: max-content;
 	margin: auto;
 }
+
+.excludeRow td {
+	background-color: #3f1111;
+}
