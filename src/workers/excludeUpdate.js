@@ -1,6 +1,7 @@
 const userListOrder = {
 	Completed: 1,
 	Watching: 2,
+	Reading: 2,
 	Rewatched: 3,
 	Paused: 4,
 	Dropped: 5,
@@ -8,6 +9,7 @@ const userListOrder = {
 	Custom: 7,
 	1: "Completed",
 	2: "Watching",
+	2: "Reading",
 	3: "Rewatched",
 	4: "Paused",
 	5: "Dropped",
