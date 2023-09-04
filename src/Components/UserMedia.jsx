@@ -8,7 +8,7 @@ import style from "./UserMedia.module.css";
 import IncludeWorker from "../workers/includeUpdate.js?worker";
 import ExcludeWorker from "../workers/excludeUpdate.js?worker";
 
-const userListOrder = {
+export const userListOrder = {
 	Completed: 1,
 	Watching: 2,
 	Reading: 3,

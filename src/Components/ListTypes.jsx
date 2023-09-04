@@ -3,6 +3,7 @@ import { setListType, mediaType } from "../utilities/signals";
 
 function ListTypes() {
 	const watchingReading = () => (mediaType() === "ANIME" ? "Watching" : "Reading");
+	const rewachedReread = () => (mediaType() === "ANIME" ? "Rewatched" : "Reread");
 
 	return (
 		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)} use:updateListType>
@@ -17,7 +18,7 @@ function ListTypes() {
 				</li>
 				<li>
 					<input type="checkbox" name="Rewatched" id="Rewatched" />
-					<label htmlFor="Rewatched">Rewatched</label>
+					<label htmlFor="Rewatched">{rewachedReread()}</label>
 				</li>
 				<li>
 					<input type="checkbox" name="Paused" id="Paused" />

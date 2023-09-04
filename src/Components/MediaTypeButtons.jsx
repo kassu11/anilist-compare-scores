@@ -1,5 +1,6 @@
 import { setMediaType } from "../utilities/signals";
 import { updateListType } from "./ListTypes";
+import { userListOrder } from "./UserMedia";
 
 function MediaTypeButtons() {
 	return (
@@ -14,6 +15,7 @@ function MediaTypeButtons() {
 
 function updateMediaType(form) {
 	const { type } = Object.fromEntries(new FormData(form));
+	userListOrder[userListOrder.Rewatched] = type === "ANIME" ? "Rewatched" : "Reread";
 	setMediaType(type);
 	updateListType(document.querySelector("#checkboxRow"));
 }
