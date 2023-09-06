@@ -5,8 +5,11 @@ function ListTypes() {
 	const watchingReading = () => (mediaType() === "ANIME" ? "Watching" : "Reading");
 	const rewachedReread = () => (mediaType() === "ANIME" ? "Rewatched" : "Reread");
 
+	// <form use:updateListType> activates before functions are called, so watchingReading will break;
+	setTimeout(() => updateListType(document.querySelector("#checkboxRow")), 0);
+
 	return (
-		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)} use:updateListType>
+		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)}>
 			<ul>
 				<li>
 					<input type="checkbox" name="Completed" id="Completed" checked />
@@ -44,7 +47,6 @@ function ListTypes() {
 export function updateListType(formElem) {
 	const data = Object.fromEntries(new FormData(formElem));
 	const types = Object.keys(data);
-	console.log(types);
 	setListType(types);
 	updateMediaData();
 }

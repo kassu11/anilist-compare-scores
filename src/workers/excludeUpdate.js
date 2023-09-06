@@ -100,11 +100,7 @@ onmessage = async (array) => {
 	}
 
 	sortArray(mediaArray, sortType);
-	const arr = [];
-	for (let i = 0; i < mediaArray.length; i += 50) {
-		arr.push(mediaArray.slice(i, i + 50));
-	}
-	postMessage(arr);
+	postMessage(mediaArray);
 };
 
 function sortArray(array, type = "score", clone = false) {

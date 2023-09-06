@@ -45,25 +45,27 @@ function UserMediaList() {
 			<p>Matches: {count()}</p>
 			<main id="mediaCards" className={style.flex} classList={{ [style.loading]: mediaLoading() }}>
 				<LoadingMediaElem />
-				<MediaCardGroup data={mediaData} index={0} />
+				<MediaCardGroup start={0} />
 			</main>
 		</>
 	);
 }
 
-function MediaCardGroup({ data, index }) {
+const groupSize = 50;
+function MediaCardGroup({ start }) {
 	const [buffer, setBuffer] = createSignal(false);
 	setTimeout(() => {
 		setBuffer(true);
-		if (index in data()) return;
-
+		if (start in mediaData()) return;
 		setCount(document.querySelector("#mediaCards")?.childElementCount - 1 || 0);
 	});
 
+	const end = start + groupSize;
+
 	return (
 		<Show when={buffer()}>
-			<For each={data()[index]}>{(media) => <MediaCard media={media} />}</For>
-			{data()[index] && <MediaCardGroup data={data} index={index + 1} />}
+			<For each={mediaData()?.slice(start, end)}>{(media) => <MediaCard media={media} />}</For>
+			{mediaData()[start] && <MediaCardGroup start={end} />}
 		</Show>
 	);
 }
@@ -175,6 +177,17 @@ export async function updateMediaData() {
 		setMediaLoading(false);
 		setMediaData(e.data);
 	};
+}
+
+function sortArray(array, type = "score", clone = false) {
+	const sorts = {
+		score: (a, b) => b.score - a.score || a.english.localeCompare(b.english),
+		repeat: (a, b) => b.repeat - a.repeat || b.score - a.score || a.english.localeCompare(b.english),
+		title: (a, b) => a.english.localeCompare(b.english),
+	};
+
+	if (clone) return array.toSorted(sorts[type]);
+	return array.sort(sorts[type]);
 }
 
 export default UserMediaList;

@@ -1,8 +1,9 @@
-import UserSearch from "./Components/UserSearch";
+// import UserSearch from "./Components/UserSearch";
 import UserTable from "./Components/UserTable/UserTable";
 import UserMediaList from "./Components/UserMedia";
 import MediaTypeButtons from "./Components/MediaTypeButtons";
 import ListTypes from "./Components/ListTypes";
+import MediaSort from "./Components/MediaSort";
 
 import WebWorker from "./lib/test.js?worker";
 
@@ -21,6 +22,7 @@ function App() {
 				<ListTypes />
 
 				<MediaTypeButtons />
+				<MediaSort />
 			</footer>
 			<UserMediaList />
 		</>
