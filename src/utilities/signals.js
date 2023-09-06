@@ -9,3 +9,5 @@ export const [sortValue, setSortValue] = createSignal("score");
 export const [userTable, setUserTable] = createSignal([]);
 
 export const [searchIndex, setSearchIndex] = createSignal(0);
+
+export const [mediaLoading, setMediaLoading] = createSignal(false);

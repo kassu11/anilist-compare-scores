@@ -1,7 +1,8 @@
 import { createEffect, createSignal } from "solid-js";
 import { fetchUserMedia } from "../api/anilist";
-import { percentage, sortValue, listType, mediaType, userTable } from "../utilities/signals";
+import { percentage, sortValue, listType, mediaType, userTable, mediaLoading, setMediaLoading } from "../utilities/signals";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
+import LoadingMediaElem from "./LoadingMediaElem";
 
 import style from "./UserMedia.module.css";
 
@@ -36,13 +37,14 @@ function UserMediaList() {
 	createEffect(() => {
 		mediaData();
 		percentage();
-		setCount(document.querySelector("#mediaCards").childElementCount);
+		setCount(document.querySelector("#mediaCards").childElementCount - 1);
 	});
 
 	return (
 		<>
 			<p>Matches: {count()}</p>
-			<main id="mediaCards" className={style.flex}>
+			<main id="mediaCards" className={style.flex} classList={{ [style.loading]: mediaLoading() }}>
+				<LoadingMediaElem />
 				<MediaCardGroup data={mediaData} index={0} />
 			</main>
 		</>
@@ -50,16 +52,16 @@ function UserMediaList() {
 }
 
 function MediaCardGroup({ data, index }) {
-	const [loaded, setLoaded] = createSignal(false);
+	const [buffer, setBuffer] = createSignal(false);
 	setTimeout(() => {
-		setLoaded(true);
+		setBuffer(true);
 		if (index in data()) return;
 
-		setCount(document.querySelector("#mediaCards")?.childElementCount || 0);
+		setCount(document.querySelector("#mediaCards")?.childElementCount - 1 || 0);
 	});
 
 	return (
-		<Show when={loaded()}>
+		<Show when={buffer()}>
 			<For each={data()[index]}>{(media) => <MediaCard media={media} />}</For>
 			{data()[index] && <MediaCardGroup data={data} index={index + 1} />}
 		</Show>
@@ -136,6 +138,7 @@ let worker;
 export async function updateMediaData() {
 	if (worker instanceof Worker) worker.terminate();
 	console.warn("Render Media Data");
+
 	const usersArray = userTable()
 		.sort()
 		.filter((u) => u.enabled);
@@ -151,10 +154,14 @@ export async function updateMediaData() {
 	const userMediaData = [];
 	for (const user of usersArray) userMediaData.push(await fetchUserMedia(user, type));
 
-	if (filteredLists[filterKey + sortType]) return setMediaData(filteredLists[filterKey + sortType]);
+	if (filteredLists[filterKey + sortType]) {
+		setMediaLoading(false);
+		return setMediaData(filteredLists[filterKey + sortType]);
+	}
 	if (filteredLists[filterKey]) {
 		const listData = sortArray(filteredLists[filterKey], sortType, true);
 		filteredLists[filterKey + sortType] = listData;
+		setMediaLoading(false);
 		return setMediaData(listData);
 	}
 
@@ -165,8 +172,13 @@ export async function updateMediaData() {
 	worker.onmessage = (e) => {
 		filteredLists[filterKey] = e.data;
 		filteredLists[filterKey + sortType] = e.data;
+		setMediaLoading(false);
 		setMediaData(e.data);
 	};
 }
 
 export default UserMediaList;
+
+// setInterval(() => {
+// 	setMediaLoading(true);
+// }, 2000);

@@ -1,6 +1,6 @@
 import { userTable } from "../utilities/signals";
 import { mediaInfo } from "../Components/UserMedia";
-import { mediaType } from "../utilities/signals";
+import { mediaType, setMediaLoading } from "../utilities/signals";
 import { fetchUserMedia } from "../api/anilist";
 
 const userDataSaved = {};
@@ -11,6 +11,7 @@ export async function updateMediaInfoObject(...newUsers) {
 	for (const user of users) {
 		const key = user.name + mediaType();
 		if (userDataSaved[key]) continue;
+		setMediaLoading(true);
 		userDataSaved[key] = true;
 
 		const userMedia = await fetchUserMedia(user, mediaType());
