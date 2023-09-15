@@ -32,4 +32,5 @@ body {
 
 .settings {
 	max-width: clamp(100px, 100%, 1000px);
+	width: min-content;
 }
