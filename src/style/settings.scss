@@ -184,3 +184,46 @@ input[type="search"]::-webkit-search-results-decoration {
 		transform: rotate(-45deg);
 	}
 }
+
+// UserIncludeBar.module
+
+.include-container-row {
+	display: flex;
+	align-items: center;
+	font-size: 20px;
+	gap: 8px;
+}
+
+.include-percentage {
+	width: 50px;
+	padding-top: 5px;
+	padding-right: 15px;
+	padding-left: 6px;
+	padding-bottom: 3px;
+	border-radius: 10px;
+	border: 2px solid #0b1622;
+	font-size: 20px;
+	text-align: left;
+	background: #151f2e;
+	color: #ffffffde;
+
+	// Remove arrows from number input
+	/* Chrome, Safari, Edge, Opera */
+	&::-webkit-outer-spin-button,
+	&::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	&[type="number"] {
+		-moz-appearance: textfield;
+	}
+}
+.include-percentage-symbol {
+	position: absolute;
+	right: 7px;
+	top: 3px;
+	pointer-events: none;
+	opacity: 0.75;
+}

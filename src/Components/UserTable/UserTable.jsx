@@ -6,14 +6,14 @@ import style from "./UserTable.module.css";
 
 import UserSearch2 from "./UserSearch2";
 import { userTable, setUserTable } from "../../utilities/signals";
-import UserIncludeBar from "./UserIncludeBar";
+import IncludeUsersOption from "./UserIncludeBar";
 
 function UserTable() {
 	return (
 		<div className={style.usersTable}>
 			<div className={style.options}>
 				<UserSearch2 />
-				<UserIncludeBar />
+				<IncludeUsersOption />
 			</div>
 			<table>
 				<thead>
