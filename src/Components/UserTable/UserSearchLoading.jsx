@@ -5,8 +5,8 @@ function UserSearchLoading() {
 	return (
 		<For each={leading}>
 			{() => (
-				<div class="user">
-					<div class="loadingImage"></div>
+				<div class="search-user-item">
+					<div class="user-search-fetching-image"></div>
 					<span>Loading...</span>
 				</div>
 			)}

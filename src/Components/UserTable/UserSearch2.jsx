@@ -7,8 +7,10 @@ import { updateMediaData } from "../UserMedia";
 import UserSearchItem from "./UserSearchItem";
 import UserSearchLoading from "./UserSearchLoading";
 import SearchError from "./SearchError";
+import MagnifyingGlassSvg from "../Icons/MagnifyingGlassSvg";
 
 import "../../style/settings.scss";
+import "../../style/userSearchDialog.scss";
 
 const [search, setSearch] = createSignal();
 const [error, setError] = createSignal();
@@ -19,30 +21,28 @@ function UserSearch() {
 	return (
 		<>
 			<p onClick={openDialog} class="search">
-				<i class="fa-solid fa-magnifying-glass"></i> Search users
+				<MagnifyingGlassSvg /> Search users
 			</p>
 
 			<dialog id="userSearchDialog" onFocus={closeOnFocus}>
-				<div id="wrapper">
-					<form onSubmit={submitSearch} onInput={({ target }) => setSearch(target.value)}>
-						<i class="fa-solid fa-magnifying-glass"></i>
-						<input
-							class="userInput"
-							onKeyDown={keyboard}
-							type="search"
-							autocomplete="off"
-							autocapitalize="off"
-							autocorrect="off"
-							spellcheck="false"
-							placeholder="Type to search"
-						></input>
-					</form>
-					<Show when={!recommendations.loading} fallback={UserSearchLoading}>
-						<div class="userList" tabIndex="0">
-							<For each={recommendations()}>{(user, index) => <UserSearchItem user={user} index={index()} selected={index() === 0} />}</For>
-						</div>
-					</Show>
-				</div>
+				<form onSubmit={submitSearch} onInput={({ target }) => setSearch(target.value)}>
+					<MagnifyingGlassSvg />
+					<input
+						class="user-search-input"
+						onKeyDown={keyboard}
+						type="search"
+						autocomplete="off"
+						autocapitalize="off"
+						autocorrect="off"
+						spellcheck="false"
+						placeholder="Type to search"
+					></input>
+				</form>
+				<Show when={!recommendations.loading} fallback={UserSearchLoading}>
+					<div class="search-user-list" tabIndex="0">
+						<For each={recommendations()}>{(user, index) => <UserSearchItem user={user} index={index()} selected={index() === 0} />}</For>
+					</div>
+				</Show>
 
 				<SearchError error={error} />
 			</dialog>
@@ -64,23 +64,23 @@ function keyboard(event) {
 		return;
 	} else if (code === "ArrowUp" || (code === "Tab" && event.shiftKey)) {
 		event.preventDefault();
-		const user = document.querySelector(`.user[custom-selected]`);
+		const user = userSearchDialog?.querySelector("[custom-selected]");
 		if (!user) return;
 		user.removeAttribute("custom-selected");
-		const elem = user.previousElementSibling || user;
+		const elem = user.previousElementSibling || user.parentElement.lastElementChild || user;
 		elem?.setAttribute("custom-selected", "");
 		elem?.scrollIntoView({ block: "nearest" });
 	} else if (code === "ArrowDown" || code === "Tab") {
 		event.preventDefault();
-		const user = document.querySelector(`.user[custom-selected]`);
+		const user = userSearchDialog?.querySelector("[custom-selected]");
 		if (!user) return;
 		user.removeAttribute("custom-selected");
-		const elem = user.nextElementSibling || user;
+		const elem = user.nextElementSibling || user.parentElement.firstElementChild || user;
 		elem?.setAttribute("custom-selected", "");
 		elem?.scrollIntoView({ block: "nearest" });
 	}
 
-	const selected = document.querySelector(`.user[custom-selected]`);
+	const selected = userSearchDialog?.querySelector("[custom-selected]");
 	if (selected) {
 		const index = Array.from(selected.parentElement.children).indexOf(selected);
 		setSearchIndex(index);

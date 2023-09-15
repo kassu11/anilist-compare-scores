@@ -16,7 +16,7 @@ function SearchError({ error }) {
 	createEffect(() => {
 		if (error()) {
 			elem.show();
-			userSearch.querySelector("input").select();
+			userSearchDialog?.querySelector("input").select();
 			timeOut = setTimeout(() => elem.close(), 2500);
 		} else {
 			elem.close();

@@ -1,5 +1,5 @@
 import { updateMediaData } from "../UserMedia";
-import TrashCan from "../Icons/TrashCan";
+import TrashCanSvg from "../Icons/TrashCan";
 import EmptyUserTable from "./EmptyUserTable";
 import UserSearch2 from "./UserSearch2";
 import { userTable, setUserTable } from "../../utilities/signals";
@@ -76,7 +76,7 @@ function RemoveUser({ user }) {
 				updateMediaData();
 			}}
 		>
-			<TrashCan />
+			<TrashCanSvg />
 		</div>
 	);
 }

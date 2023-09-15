@@ -1,4 +1,4 @@
-import TrashCan from "../Icons/TrashCan";
+import TrashCanSvg from "../Icons/TrashCan";
 
 import "../../style/settings.scss";
 
@@ -12,7 +12,7 @@ function EmptyUserTable() {
 					</label>
 					<div class="hamburger"></div>
 					<div class="trash">
-						<TrashCan />
+						<TrashCanSvg />
 					</div>
 				</div>
 			</td>
