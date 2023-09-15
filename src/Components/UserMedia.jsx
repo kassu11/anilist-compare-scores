@@ -37,13 +37,13 @@ function UserMediaList() {
 	createEffect(() => {
 		mediaData();
 		percentage();
-		setCount(document.querySelector("#mediaCards").childElementCount - 1);
+		setCount(mediaCards?.childElementCount - 1);
 	});
 
 	return (
 		<>
 			<p>Matches: {count()}</p>
-			<main id="mediaCards" class="flex-card-container" classList={{ ["loading"]: mediaLoading() }}>
+			<main id="mediaCards" class="media-card-container" classList={{ ["media-is-loading"]: mediaLoading() }}>
 				<LoadingMediaElem />
 				<MediaCardGroup start={0} />
 			</main>
@@ -57,7 +57,7 @@ function MediaCardGroup({ start }) {
 	setTimeout(() => {
 		setBuffer(true);
 		if (start in mediaData()) return;
-		setCount(document.querySelector("#mediaCards")?.childElementCount - 1 || 0);
+		setCount(mediaCards?.childElementCount - 1 || 0);
 	});
 
 	const end = start + groupSize;
@@ -92,17 +92,17 @@ function MediaCard({ media }) {
 
 function UserScoreList({ media }) {
 	return (
-		<div class="rightContainer">
-			<p class="title">{media.english}</p>
-			<div class="users">
+		<div class="media-right-container">
+			<p class="media-title">{media.english}</p>
+			<div class="user-score-container">
 				<For each={media.users}>
 					{(user, i) => (
 						<>
 							<Show when={user.list != media.users[i() - 1]?.list}>
-								<span class="listName">{userListOrder[user.list]}</span>
+								<span class="list-name">{userListOrder[user.list]}</span>
 							</Show>
-							<div class="row">
-								<img class="avatar" src={user.avatar} />
+							<div class="media-user">
+								<img class="profile-picture" src={user.avatar} />
 								<span class="name">{user.name}</span>
 								<Repeat repeat={user.repeat} />
 								<span class="score">{user.score.toFixed(1)}</span>
@@ -111,10 +111,10 @@ function UserScoreList({ media }) {
 					)}
 				</For>
 			</div>
-			<div class="info">
+			<div class="media-info">
 				<span class="capitalize format">{media.info.format}</span>
-				<Show when={media.info.startDate.year} fallback={<span class="date">TBA</span>}>
-					<span class="capitalize date">{`${media.info.season} ${media.info.startDate.year}`}</span>
+				<Show when={media.info.startDate.year} fallback={<span>TBA</span>}>
+					<span class="capitalize">{`${media.info.season} ${media.info.startDate.year}`}</span>
 				</Show>
 			</div>
 		</div>

@@ -1,24 +1,26 @@
-// UserMedia.module.css
-
-.flex-card-container {
+.media-card-container {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 16px;
 	justify-content: center;
+	gap: 16px;
 }
 
 .media-card {
 	position: relative;
+	display: flex;
+	background-color: #0b1622;
 	width: 450px;
 	height: 250px;
-	background-color: #0b1622;
-	padding: 16px;
-	isolation: isolate;
-	border-radius: 5px;
-	display: flex;
-	overflow: hidden;
 	gap: 10px;
+	padding: 16px;
+	border-radius: 5px;
+	isolation: isolate;
 	box-sizing: border-box;
+	overflow: hidden;
+}
+.media-is-loading .media-card {
+	opacity: 0.5;
+	filter: grayscale(50%);
 }
 
 .card-banner {
@@ -35,36 +37,29 @@
 
 .cover-container {
 	position: relative;
-	height: 100%;
-	aspect-ratio: 2/3;
-	overflow: hidden;
-	border-radius: 5px;
-	box-shadow: inset 0 -60px 0px -20px #000000cc;
-	flex-shrink: 0;
-	padding: 10px;
-	box-sizing: border-box;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: 1fr 1fr;
+	aspect-ratio: 2/3;
+	height: 100%;
+	border-radius: 5px;
+	padding: 10px;
+	flex-shrink: 0;
+	box-shadow: inset 0 -60px 0px -20px #000000cc;
+	box-sizing: border-box;
 
-	.repeat {
+	.media-repeat-container,
+	.score {
 		grid-column: 2/3;
 		justify-self: end;
 	}
 
-	.episodes {
-		grid-row: 2/3;
-		align-self: end;
-	}
-
+	.episodes,
 	.score {
 		grid-row: 2/3;
-		grid-column: 2/3;
 		align-self: end;
-		justify-self: end;
 	}
 }
-
 .media-cover-image {
 	position: absolute;
 	height: 100%;
@@ -83,6 +78,7 @@
 	border-radius: 5px;
 	font-weight: 500;
 	font-size: 12px;
+	justify-self: end;
 
 	svg {
 		position: relative;
@@ -92,70 +88,63 @@
 	}
 }
 
-.title {
-	margin: 0px;
-	font-size: 18px;
-	font-weight: 600;
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 2;
-	overflow: hidden;
-	height: max-content;
-	text-wrap: balance;
-	flex-shrink: 0;
-}
-
-.rightContainer {
-	width: 100%;
+.media-right-container {
 	display: flex;
 	flex-direction: column;
+	width: 100%;
 	gap: 5px;
-}
 
-.users {
-	position: relative;
-	width: calc(100% + 8px);
-	height: 100%;
-	overflow: auto;
-	display: flex;
-	flex-direction: column;
-	gap: 3px;
-	padding-right: 8px;
-	box-sizing: border-box;
-	scrollbar-width: thin;
-
-	&::-webkit-scrollbar {
-		width: 6px;
+	.media-title {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		font-size: 18px;
+		font-weight: 600;
+		height: max-content;
+		margin: 0px;
+		flex-shrink: 0;
+		overflow: hidden;
+		text-wrap: balance;
 	}
 
-	&::-webkit-scrollbar-thumb {
-		background: #646464;
-		border-radius: 10px;
+	.user-score-container {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+		height: 100%;
+		width: calc(100% + 8px);
+		padding-right: 8px;
+		overflow: auto;
+		scrollbar-width: thin;
+		box-sizing: border-box;
+
+		&::-webkit-scrollbar {
+			width: 6px;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: #646464;
+			border-radius: 10px;
+		}
+
+		&::-webkit-scrollbar-thumb:hover {
+			background: #949494;
+		}
 	}
 
-	&::-webkit-scrollbar-thumb:hover {
-		background: #949494;
+	.list-name {
+		opacity: 0.8;
 	}
 }
 
-.listName {
-	margin: 0px;
-	opacity: 0.8;
-}
-
-.row {
-	position: relative;
-	width: 100%;
-	height: 25px;
+.media-user {
 	display: grid;
+	gap: 5px;
+	height: 25px;
 	grid-template-columns: 25px auto 40px 40px;
 	grid-template-rows: 100%;
-	gap: 5px;
 	align-items: center;
-
-	.repeat {
-		justify-self: end;
-	}
 
 	.name {
 		width: 100%;
@@ -169,15 +158,14 @@
 		justify-self: end;
 	}
 }
-
-.avatar {
+.profile-picture {
 	height: 100%;
 	position: relative;
 	aspect-ratio: 1/1;
 	object-fit: cover;
 }
 
-.info {
+.media-info {
 	font-weight: 600;
 	opacity: 90%;
 }
@@ -194,16 +182,12 @@
 	top: -3px;
 }
 
-.loading {
-	opacity: 0.5;
-
-	.circle-loading {
-		opacity: 1;
-		transition: opacity 0.2s ease-in-out;
-	}
+.media-is-loading .loading-circle {
+	opacity: 1;
+	transition: opacity 0.2s ease-in-out;
 }
 
-.circle-loading {
+.loading-circle {
 	position: absolute;
 	display: inline-block;
 	margin-top: 45px;
@@ -219,7 +203,7 @@
 		height: 100%;
 		border: 8px solid #fff;
 		border-radius: 50%;
-		animation: loadingRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+		animation: loading-circle-rotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 		border-color: #fff transparent transparent transparent;
 		transform: rotate(0deg);
 
@@ -231,7 +215,7 @@
 	}
 }
 
-@keyframes loadingRotate {
+@keyframes loading-circle-rotate {
 	to {
 		transform: rotate(360deg);
 	}
