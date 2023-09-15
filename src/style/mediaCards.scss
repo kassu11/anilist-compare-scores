@@ -170,18 +170,6 @@
 	opacity: 90%;
 }
 
-.format::after {
-	position: relative;
-	content: "";
-	width: 4px;
-	height: 4px;
-	background: currentColor;
-	border-radius: 50%;
-	display: inline-block;
-	margin: 0px 8px;
-	top: -3px;
-}
-
 .media-is-loading .loading-circle {
 	opacity: 1;
 	transition: opacity 0.2s ease-in-out;

@@ -34,3 +34,15 @@ body {
 	max-width: clamp(100px, 100%, 1000px);
 	width: min-content;
 }
+
+.format::after {
+	position: relative;
+	content: "";
+	width: 4px;
+	height: 4px;
+	background: currentColor;
+	border-radius: 50%;
+	display: inline-block;
+	margin: 0px 8px;
+	top: -3px;
+}

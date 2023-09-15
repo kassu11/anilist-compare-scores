@@ -1,14 +1,14 @@
 import { createEffect } from "solid-js";
-import style from "./SearchError.module.css";
+import "../../style/settings.scss";
 
 let timeOut;
 
 function SearchError({ error }) {
 	const elem = (
-		<dialog className={style.error}>
-			<form method="dialog" className={style.container}>
+		<dialog class="error">
+			<form method="dialog" class="error-container">
 				<p>{error()}</p>
-				<button className={style.closeButton} onClick={() => clearInterval(timeOut)} type="close" />
+				<button class="error-close-button" onClick={() => clearInterval(timeOut)} type="close" />
 			</form>
 		</dialog>
 	);
@@ -16,7 +16,7 @@ function SearchError({ error }) {
 	createEffect(() => {
 		if (error()) {
 			elem.show();
-			document.querySelector("#userSearch input").select();
+			userSearch.querySelector("input").select();
 			timeOut = setTimeout(() => elem.close(), 2500);
 		} else {
 			elem.close();
