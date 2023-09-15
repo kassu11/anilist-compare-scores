@@ -4,7 +4,7 @@ import { percentage, sortValue, listType, mediaType, userTable, mediaLoading, se
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 import LoadingMediaElem from "./LoadingMediaElem";
 
-import style from "./UserMedia.module.css";
+import "../style/mediaCards.scss";
 
 import IncludeWorker from "../workers/includeUpdate.js?worker";
 import ExcludeWorker from "../workers/excludeUpdate.js?worker";
@@ -37,13 +37,13 @@ function UserMediaList() {
 	createEffect(() => {
 		mediaData();
 		percentage();
-		setCount(document.querySelector("#mediaCards").childElementCount - 1);
+		setCount(mediaCards?.childElementCount - 1);
 	});
 
 	return (
 		<>
 			<p>Matches: {count()}</p>
-			<main id="mediaCards" className={style.flex} classList={{ [style.loading]: mediaLoading() }}>
+			<main id="mediaCards" class="media-card-container" classList={{ ["media-is-loading"]: mediaLoading() }}>
 				<LoadingMediaElem />
 				<MediaCardGroup start={0} />
 			</main>
@@ -57,7 +57,7 @@ function MediaCardGroup({ start }) {
 	setTimeout(() => {
 		setBuffer(true);
 		if (start in mediaData()) return;
-		setCount(document.querySelector("#mediaCards")?.childElementCount - 1 || 0);
+		setCount(mediaCards?.childElementCount - 1 || 0);
 	});
 
 	const end = start + groupSize;
@@ -73,15 +73,15 @@ function MediaCardGroup({ start }) {
 function MediaCard({ media }) {
 	return (
 		<Show when={media.percentage >= percentage()}>
-			<div className={style.media}>
-				<Show when={media.banner} fallback={<div className={style.banner} style={"background-color: " + media.color}></div>}>
-					<img className={style.banner} loading="lazy" src={media.banner} />
+			<div class="media-card">
+				<Show when={media.banner} fallback={<div class="card-banner" style={"background-color: " + media.color}></div>}>
+					<img class="card-banner" loading="lazy" src={media.banner} />
 				</Show>
-				<div className={style.coverContainer}>
-					<img className={style.cover} loading="lazy" src={media.coverImage} />
+				<div class="cover-container">
+					<img class="media-cover-image" loading="lazy" src={media.coverImage} />
 					<Repeat repeat={media.repeat} />
-					<p className={style.episodes}>{media.episodes}</p>
-					<p className={style.score}>{media.score}</p>
+					<span class="episodes">{media.episodes}</span>
+					<span class="score">{media.score}</span>
 				</div>
 
 				<UserScoreList media={media} />
@@ -92,31 +92,29 @@ function MediaCard({ media }) {
 
 function UserScoreList({ media }) {
 	return (
-		<div className={style.rightContainer}>
-			<p className={style.title}>{media.english}</p>
-			<div className={style.users}>
+		<div class="media-right-container">
+			<p class="media-title">{media.english}</p>
+			<div class="user-score-container">
 				<For each={media.users}>
 					{(user, i) => (
 						<>
 							<Show when={user.list != media.users[i() - 1]?.list}>
-								<span className={style.listName}>{userListOrder[user.list]}</span>
+								<span class="list-name">{userListOrder[user.list]}</span>
 							</Show>
-							<div className={style.row}>
-								<img className={style.avatar} src={user.avatar} />
-								<span className={style.name}>{user.name}</span>
+							<div class="media-user">
+								<img class="profile-picture" src={user.avatar} />
+								<span class="name">{user.name}</span>
 								<Repeat repeat={user.repeat} />
-								<span className={style.score}>{user.score.toFixed(1)}</span>
+								<span class="score">{user.score.toFixed(1)}</span>
 							</div>
 						</>
 					)}
 				</For>
 			</div>
-			<div className={style.info}>
-				<span class="capitalize" className={style.format}>
-					{media.info.format}
-				</span>
-				<Show when={media.info.startDate.year} fallback={<span className={style.date}>TBA</span>}>
-					<span class="capitalize" className={style.date}>{`${media.info.season} ${media.info.startDate.year}`}</span>
+			<div class="media-info">
+				<span class="capitalize format">{media.info.format}</span>
+				<Show when={media.info.startDate.year} fallback={<span>TBA</span>}>
+					<span class="capitalize">{`${media.info.season} ${media.info.startDate.year}`}</span>
 				</Show>
 			</div>
 		</div>
@@ -126,12 +124,12 @@ function UserScoreList({ media }) {
 function Repeat({ repeat }) {
 	return (
 		<Show when={repeat}>
-			<p className={style.repeat}>
-				{repeat}
+			<div class="media-repeat-container">
+				<span>{repeat}</span>
 				<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
 					<path d="M386.3 160H336c-17.7 0-32 14.3-32 32s14.3 32 32 32H464c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32s-32 14.3-32 32v51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z" />
 				</svg>
-			</p>
+			</div>
 		</Show>
 	);
 }
