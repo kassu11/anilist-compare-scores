@@ -5,7 +5,7 @@ import { setWithBuffer } from "../utilities/buffer.js";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 import { updateMediaData } from "./UserMedia";
 
-import style from "./UserSearch.module.css";
+import "../style/settings.scss";
 
 const [search, setSearch] = createSignal();
 
@@ -41,12 +41,12 @@ function UserSearch() {
 				</ul>
 			</form>
 
-			<dialog id="userSearch" className={style.userSearch} onFocus={closeOnFocus}>
+			<dialog id="userSearch" class="userSearch" onFocus={closeOnFocus}>
 				<div id="wrapper">
 					<form onSubmit={submitSearch} onInput={({ target }) => setSearch(target.value)}>
 						<i class="fa-solid fa-magnifying-glass"></i>
 						<input
-							className={style.userInput}
+							class="userInput"
 							onKeyDown={keyboard}
 							type="search"
 							autocomplete="off"
@@ -57,7 +57,7 @@ function UserSearch() {
 						></input>
 					</form>
 					<Show when={!recommendations.loading} fallback={UserSearchLoading}>
-						<div className={style.userList} tabIndex="0">
+						<div class="userList" tabIndex="0">
 							<For each={recommendations()}>{(user, index) => <UserSearchItem user={user} index={index()} selected={index() === 0} />}</For>
 						</div>
 					</Show>
@@ -71,7 +71,7 @@ function UserSearchItem({ user, selected, index }) {
 	return (
 		<div
 			attr:custom-selected={selected}
-			className={style.user}
+			class="user"
 			onClick={() => {
 				searchIndex = index;
 				submitSearch();
@@ -79,29 +79,28 @@ function UserSearchItem({ user, selected, index }) {
 			}}
 			onMouseMove={(e) => {
 				if (e.target.getAttribute("custom-selected") === "true") return;
-				const users = document.querySelectorAll(`.${style.user}[custom-selected="true"]`);
+				const users = document.querySelectorAll(`.$"user"[custom-selected="true"]`);
 				users.forEach((user) => user.setAttribute("custom-selected", false));
 				e.target.setAttribute("custom-selected", true);
 			}}
 		>
-			<img src={user.avatar.medium} className={style.loading} onLoad={removeLoading} alt={user.name} height="25" />
+			<img src={user.avatar.medium} class="loading" onLoad={removeLoading} alt={user.name} height="25" />
 			<span>{user.name}</span>
 		</div>
 	);
 }
 
 function removeLoading(e) {
-	e.target.classList.remove(style.loading);
+	e.target.classList.remove("loading");
 }
-
 function UserSearchLoading() {
 	const leading = new Array(5).fill(0);
 	return (
 		<For each={leading}>
 			{() => (
-				<div className={style.user}>
-					<div className={style.loadingImage}></div>
-					<span className={style.loadingName}>Loading...</span>
+				<div class="user">
+					<div class="loadingImage"></div>
+					<span class="loadingName">Loading...</span>
 				</div>
 			)}
 		</For>
@@ -122,7 +121,7 @@ function keyboard(e) {
 		setSearch("");
 	} else if (e.code === "ArrowUp" || (e.code === "Tab" && e.shiftKey)) {
 		e.preventDefault();
-		const user = document.querySelector(`.${style.user}[custom-selected="true"]`);
+		const user = document.querySelector(`.$"user"[custom-selected="true"]`);
 		if (!user) return;
 		user.setAttribute("custom-selected", false);
 		const elem = user.previousElementSibling || user;
@@ -130,7 +129,7 @@ function keyboard(e) {
 		elem?.scrollIntoView({ block: "nearest" });
 	} else if (e.code === "ArrowDown" || e.code === "Tab") {
 		e.preventDefault();
-		const user = document.querySelector(`.${style.user}[custom-selected="true"]`);
+		const user = document.querySelector(`.$"user"[custom-selected="true"]`);
 		if (!user) return;
 		user.setAttribute("custom-selected", false);
 		const elem = user.nextElementSibling || user;
@@ -138,7 +137,7 @@ function keyboard(e) {
 		elem?.scrollIntoView({ block: "nearest" });
 	}
 
-	const selected = document.querySelector(`.${style.user}[custom-selected="true"]`);
+	const selected = document.querySelector(`.$"user"[custom-selected="true"]`);
 	if (selected) {
 		const index = Array.from(selected.parentElement.children).indexOf(selected);
 		searchIndex = index;

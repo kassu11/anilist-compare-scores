@@ -1,10 +1,12 @@
+// UserSearch.modules
+
 .userSearch[open] {
 	padding: 0px;
 	margin-block: 0px;
 	top: 75px;
 	width: min(600px, 100%);
 	border: unset;
-	background-color: #0B1622;
+	background-color: #0b1622;
 	border-radius: 10px;
 	overflow: visible;
 	display: flex;
@@ -12,13 +14,9 @@
 	flex-direction: column;
 }
 
-
-
 .userSearch form {
 	display: flex;
 }
-
-
 
 .userSearch i {
 	position: absolute;
@@ -41,13 +39,13 @@
 }
 
 /* clears the ‘X’ from Internet Explorer */
-input[type=search]::-ms-clear {
+input[type="search"]::-ms-clear {
 	display: none;
 	width: 0;
 	height: 0;
 }
 
-input[type=search]::-ms-reveal {
+input[type="search"]::-ms-reveal {
 	display: none;
 	width: 0;
 	height: 0;
@@ -60,8 +58,6 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
 	display: none;
 }
-
-
 
 .userList {
 	overflow: auto;
@@ -104,7 +100,6 @@ input[type="search"]::-webkit-search-results-decoration {
 	font-weight: 600;
 }
 
-
 .loadingImage {
 	position: relative;
 	width: 20px;
@@ -126,7 +121,6 @@ input[type="search"]::-webkit-search-results-decoration {
 		background-position: 0px;
 	}
 }
-
 
 .userSearch::backdrop {
 	background-color: rgba(0, 0, 0, 0.75);

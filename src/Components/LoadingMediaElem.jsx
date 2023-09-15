@@ -1,8 +1,8 @@
-import style from "./UserMedia.module.css";
+import "../style/mediaCards.scss";
 
 function LoadingMediaElem() {
 	return (
-		<div id="loadingCircle" class={style.circle}>
+		<div class="circle-loading">
 			<div></div>
 			<div></div>
 			<div></div>

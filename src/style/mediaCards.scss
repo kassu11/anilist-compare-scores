@@ -1,11 +1,13 @@
-.flex {
+// UserMedia.module.css
+
+.flex-card-container {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 16px;
 	justify-content: center;
 }
 
-.media {
+.media-card {
 	position: relative;
 	width: 450px;
 	height: 250px;
@@ -19,7 +21,7 @@
 	box-sizing: border-box;
 }
 
-.banner {
+.card-banner {
 	position: absolute;
 	object-fit: cover;
 	width: 100%;
@@ -31,7 +33,7 @@
 	pointer-events: none;
 }
 
-.coverContainer {
+.cover-container {
 	position: relative;
 	height: 100%;
 	aspect-ratio: 2/3;
@@ -44,13 +46,26 @@
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: 1fr 1fr;
+
+	.repeat {
+		grid-column: 2/3;
+		justify-self: end;
+	}
+
+	.episodes {
+		grid-row: 2/3;
+		align-self: end;
+	}
+
+	.score {
+		grid-row: 2/3;
+		grid-column: 2/3;
+		align-self: end;
+		justify-self: end;
+	}
 }
 
-.media p {
-	margin: 0px;
-}
-
-.cover {
+.media-cover-image {
 	position: absolute;
 	height: 100%;
 	width: 100%;
@@ -60,7 +75,7 @@
 	z-index: -1;
 }
 
-.repeat {
+.media-repeat-container {
 	background: #000000b3;
 	height: max-content;
 	width: max-content;
@@ -68,30 +83,13 @@
 	border-radius: 5px;
 	font-weight: 500;
 	font-size: 12px;
-}
 
-.repeat svg {
-	position: relative;
-	fill: white;
-	margin-left: 5px;
-	top: 1px;
-}
-
-.coverContainer .repeat {
-	grid-column: 2/3;
-	justify-self: end;
-}
-
-.coverContainer .episodes {
-	grid-row: 2/3;
-	align-self: end;
-}
-
-.coverContainer .score {
-	grid-row: 2/3;
-	grid-column: 2/3;
-	align-self: end;
-	justify-self: end;
+	svg {
+		position: relative;
+		fill: white;
+		margin-left: 5px;
+		top: 1px;
+	}
 }
 
 .title {
@@ -125,19 +123,19 @@
 	padding-right: 8px;
 	box-sizing: border-box;
 	scrollbar-width: thin;
-}
 
-.users::-webkit-scrollbar {
-	width: 6px;
-}
+	&::-webkit-scrollbar {
+		width: 6px;
+	}
 
-.users::-webkit-scrollbar-thumb {
-	background: #646464;
-	border-radius: 10px;
-}
+	&::-webkit-scrollbar-thumb {
+		background: #646464;
+		border-radius: 10px;
+	}
 
-.users::-webkit-scrollbar-thumb:hover {
-	background: #949494;
+	&::-webkit-scrollbar-thumb:hover {
+		background: #949494;
+	}
 }
 
 .listName {
@@ -154,22 +152,22 @@
 	grid-template-rows: 100%;
 	gap: 5px;
 	align-items: center;
-}
 
-.row .repeat {
-	justify-self: end;
-}
+	.repeat {
+		justify-self: end;
+	}
 
-.row .name {
-	width: 100%;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	opacity: 90%;
-}
+	.name {
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		opacity: 90%;
+	}
 
-.row .score {
-	grid-column: 4/5;
-	justify-self: end;
+	.score {
+		grid-column: 4/5;
+		justify-self: end;
+	}
 }
 
 .avatar {
@@ -186,29 +184,26 @@
 
 .format::after {
 	position: relative;
+	content: "";
 	width: 4px;
 	height: 4px;
 	background: currentColor;
 	border-radius: 50%;
-	content: "";
 	display: inline-block;
 	margin: 0px 8px;
 	top: -3px;
 }
 
-.date {
-}
-
 .loading {
 	opacity: 0.5;
+
+	.circle-loading {
+		opacity: 1;
+		transition: opacity 0.2s ease-in-out;
+	}
 }
 
-.loading .circle {
-	opacity: 1;
-	transition: opacity 0.2s ease-in-out;
-}
-
-.circle {
+.circle-loading {
 	position: absolute;
 	display: inline-block;
 	margin-top: 45px;
@@ -216,32 +211,28 @@
 	height: 64px;
 	z-index: 1;
 	opacity: 0;
-}
-.circle div {
-	position: absolute;
-	box-sizing: border-box;
-	width: 100%;
-	height: 100%;
-	border: 8px solid #fff;
-	border-radius: 50%;
-	animation: loadingRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-	border-color: #fff transparent transparent transparent;
-}
-.circle div:nth-child(1) {
-	animation-delay: -0.45s;
-}
-.circle div:nth-child(2) {
-	animation-delay: -0.3s;
-}
-.circle div:nth-child(3) {
-	animation-delay: -0.15s;
+
+	div {
+		position: absolute;
+		box-sizing: border-box;
+		width: 100%;
+		height: 100%;
+		border: 8px solid #fff;
+		border-radius: 50%;
+		animation: loadingRotate 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+		border-color: #fff transparent transparent transparent;
+		transform: rotate(0deg);
+
+		@for $i from 1 through 3 {
+			&:nth-child(#{$i}) {
+				animation-delay: -600ms + 150ms * $i;
+			}
+		}
+	}
 }
 
 @keyframes loadingRotate {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
+	to {
 		transform: rotate(360deg);
 	}
 }
