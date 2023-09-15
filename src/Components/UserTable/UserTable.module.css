@@ -40,6 +40,13 @@ table {
 	--_heading-padding: 10px;
 }
 
+.profile {
+	width: 25px;
+	height: 25px;
+	border-radius: 2px;
+	object-fit: cover;
+}
+
 thead {
 	text-align: left;
 	top: 5px;
@@ -124,4 +131,52 @@ td:last-of-type {
 	margin: -8px;
 	padding-bottom: 10px;
 	margin-bottom: -10px;
+}
+
+.fillerImage {
+	background: #ffffff17;
+	position: relative;
+	width: 25px;
+	height: 25px;
+	border-radius: 2px;
+	margin-right: 5px;
+}
+
+.empty svg {
+	fill: rgba(255, 255, 255, 0.45);
+}
+
+.empty span {
+	background-color: #0b1622;
+	border-radius: 5px;
+	color: transparent;
+	user-select: none;
+}
+
+.empty .exclude input {
+	opacity: .5;
+}
+
+.options {
+	position: relative;
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+}
+
+.options p {
+	font-size: 1.25rem;
+	font-weight: 600;
+	padding: 0px 5px;
+	margin: 0px;
+}
+
+.usersTable {
+	width: max-content;
+	margin: auto;
+}
+
+.excludeRow td {
+	background-color: #3f1111;
+	accent-color: red;
 }

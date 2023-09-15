@@ -1,0 +1,21 @@
+.loadingImage {
+	position: relative;
+	width: 20px;
+	height: 20px;
+	border-radius: 4px;
+	background-color: #1d3b5b;
+	background-image: repeating-linear-gradient(45deg, #00000073, transparent 10%);
+	background-size: 500% 500%;
+	background-position: 0px;
+	animation: loading 1s infinite ease-in-out;
+}
+
+@keyframes loading {
+	from {
+		background-position: -100px;
+	}
+
+	to {
+		background-position: 0px;
+	}
+}

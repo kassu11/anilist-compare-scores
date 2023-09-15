@@ -12,13 +12,9 @@
 	flex-direction: column;
 }
 
-
-
 .userSearch form {
 	display: flex;
 }
-
-
 
 .userSearch i {
 	position: absolute;
@@ -26,6 +22,10 @@
 	top: 18px;
 	left: 18px;
 	font-weight: 900;
+}
+
+.search i {
+	margin-right: 5px;
 }
 
 .userInput {
@@ -62,71 +62,10 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 
-
 .userList {
 	overflow: auto;
 	border-radius: 0px 0px 10px 10px;
 }
-
-.user {
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding: 5px 14px;
-}
-
-.user[custom-selected="true"] {
-	background-color: hsla(0, 0%, 100%, 0.8);
-	color: black;
-}
-
-.user:last-child {
-	padding-bottom: 10px;
-}
-
-.user img {
-	width: 20px;
-	height: 20px;
-	object-fit: cover;
-	border-radius: 4px;
-}
-
-.user[custom-selected="true"] .loading {
-	background-color: #1b3653;
-}
-
-.loading {
-	background-color: #ffffff17;
-}
-
-.user span {
-	font-weight: 600;
-}
-
-
-.loadingImage {
-	position: relative;
-	width: 20px;
-	height: 20px;
-	border-radius: 4px;
-	background-color: #1d3b5b;
-	background-image: repeating-linear-gradient(45deg, #00000073, transparent 10%);
-	background-size: 500% 500%;
-	background-position: 0px;
-	animation: loading 1s infinite ease-in-out;
-}
-
-@keyframes loading {
-	from {
-		background-position: -100px;
-	}
-
-	to {
-		background-position: 0px;
-	}
-}
-
 
 .userSearch::backdrop {
 	background-color: rgba(0, 0, 0, 0.75);
