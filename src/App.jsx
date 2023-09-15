@@ -21,7 +21,6 @@ function App() {
 					perferendis facilis eius iste, possimus dicta neque libero, quas sequi minus dolore. Eius dolor cumque, voluptate veritatis
 					maiores rerum.
 				</p>
-				{/* <UserSearch /> */}
 				<UserTable />
 
 				<ListTypes />
@@ -33,7 +32,5 @@ function App() {
 		</>
 	);
 }
-
-function userSearch() {}
 
 export default App;

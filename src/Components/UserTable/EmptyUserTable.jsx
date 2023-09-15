@@ -1,30 +1,31 @@
-import style from "./UserTable.module.css";
 import TrashCan from "../Icons/TrashCan";
+
+import "../../style/settings.scss";
 
 function EmptyUserTable() {
 	return (
-		<tr className={style.empty}>
+		<tr class="empty">
 			<td>
-				<div className={style.center}>
-					<label className={style.hitbox}>
+				<div class="center">
+					<label class="hitbox">
 						<input type="checkbox" for="enabled" checked disabled />
 					</label>
-					<div className={style.hamburger}></div>
-					<div className={style.trash}>
+					<div class="hamburger"></div>
+					<div class="trash">
 						<TrashCan />
 					</div>
 				</div>
 			</td>
 			<td>
-				<div className={style.center}>
-					<div className={style.fillerImage}></div>
+				<div class="center">
+					<div class="fillerImage"></div>
 					<span>----------</span>
 				</div>
 			</td>
 			<td>
 				<span>------</span>
 			</td>
-			<td className={style.close}>
+			<td class="close">
 				<span>------</span>
 			</td>
 			<td>
@@ -33,14 +34,14 @@ function EmptyUserTable() {
 			<td>
 				<span>-------</span>
 			</td>
-			<td className={style.close}>
+			<td class="close">
 				<span>-------</span>
 			</td>
 			<td>
 				<span>-------</span>
 			</td>
-			<td className={style.exclude}>
-				<label className={style.hitbox}>
+			<td class="exclude">
+				<label class="hitbox">
 					<input type="checkbox" for="exclude" disabled />
 				</label>
 			</td>

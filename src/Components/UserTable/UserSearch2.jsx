@@ -8,8 +8,7 @@ import UserSearchItem from "./UserSearchItem";
 import UserSearchLoading from "./UserSearchLoading";
 import SearchError from "./SearchError";
 
-import searchStyle from "./UserSearch2.module.css";
-import userItemStyle from "./UserSearchItem.module.css";
+import "../../style/settings.scss";
 
 const [search, setSearch] = createSignal();
 const [error, setError] = createSignal();
@@ -19,16 +18,16 @@ function UserSearch() {
 
 	return (
 		<>
-			<p onClick={openDialog} className={searchStyle.search}>
+			<p onClick={openDialog} class="search">
 				<i class="fa-solid fa-magnifying-glass"></i> Search users
 			</p>
 
-			<dialog id="userSearch" className={searchStyle.userSearch} onFocus={closeOnFocus}>
+			<dialog id="userSearchDialog" onFocus={closeOnFocus}>
 				<div id="wrapper">
 					<form onSubmit={submitSearch} onInput={({ target }) => setSearch(target.value)}>
 						<i class="fa-solid fa-magnifying-glass"></i>
 						<input
-							className={searchStyle.userInput}
+							class="userInput"
 							onKeyDown={keyboard}
 							type="search"
 							autocomplete="off"
@@ -39,7 +38,7 @@ function UserSearch() {
 						></input>
 					</form>
 					<Show when={!recommendations.loading} fallback={UserSearchLoading}>
-						<div className={searchStyle.userList} tabIndex="0">
+						<div class="userList" tabIndex="0">
 							<For each={recommendations()}>{(user, index) => <UserSearchItem user={user} index={index()} selected={index() === 0} />}</For>
 						</div>
 					</Show>
@@ -58,14 +57,14 @@ function UserSearch() {
 function keyboard(event) {
 	const { code } = event;
 
-	if ((code === "Enter" && document.querySelector("#userSearch input").value === "") || code === "Escape") {
-		document.querySelector("#userSearch").close();
+	if ((code === "Enter" && userSearchDialog?.querySelector("input").value === "") || code === "Escape") {
+		userSearchDialog?.close();
 		setSearch("");
 		setError("");
 		return;
 	} else if (code === "ArrowUp" || (code === "Tab" && event.shiftKey)) {
 		event.preventDefault();
-		const user = document.querySelector(`.${userItemStyle.user}[custom-selected]`);
+		const user = document.querySelector(`.user[custom-selected]`);
 		if (!user) return;
 		user.removeAttribute("custom-selected");
 		const elem = user.previousElementSibling || user;
@@ -73,7 +72,7 @@ function keyboard(event) {
 		elem?.scrollIntoView({ block: "nearest" });
 	} else if (code === "ArrowDown" || code === "Tab") {
 		event.preventDefault();
-		const user = document.querySelector(`.${userItemStyle.user}[custom-selected]`);
+		const user = document.querySelector(`.user[custom-selected]`);
 		if (!user) return;
 		user.removeAttribute("custom-selected");
 		const elem = user.nextElementSibling || user;
@@ -81,7 +80,7 @@ function keyboard(event) {
 		elem?.scrollIntoView({ block: "nearest" });
 	}
 
-	const selected = document.querySelector(`.${userItemStyle.user}[custom-selected]`);
+	const selected = document.querySelector(`.user[custom-selected]`);
 	if (selected) {
 		const index = Array.from(selected.parentElement.children).indexOf(selected);
 		setSearchIndex(index);
@@ -89,14 +88,13 @@ function keyboard(event) {
 }
 
 function openDialog() {
-	const dialog = document.getElementById("userSearch");
-	dialog.querySelector("input").select();
-	dialog.showModal();
+	userSearchDialog?.querySelector("input").select();
+	userSearchDialog?.showModal();
 }
 
 export async function submitSearch(event) {
 	event?.preventDefault?.();
-	const input = document.querySelector("#userSearch input");
+	const input = userSearchDialog?.querySelector("input");
 	const userName = input.value;
 	input.value = "";
 	setSearch("");

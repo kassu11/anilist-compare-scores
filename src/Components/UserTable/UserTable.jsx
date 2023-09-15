@@ -1,17 +1,16 @@
 import { updateMediaData } from "../UserMedia";
 import TrashCan from "../Icons/TrashCan";
 import EmptyUserTable from "./EmptyUserTable";
-
-import style from "./UserTable.module.css";
-
 import UserSearch2 from "./UserSearch2";
 import { userTable, setUserTable } from "../../utilities/signals";
 import IncludeUsersOption from "./UserIncludeBar";
 
+import "../../style/settings.scss";
+
 function UserTable() {
 	return (
-		<div className={style.usersTable}>
-			<div className={style.options}>
+		<div class="usersTable">
+			<div class="options">
 				<UserSearch2 />
 				<IncludeUsersOption />
 			</div>
@@ -21,11 +20,11 @@ function UserTable() {
 						<th>Selection</th>
 						<th>Name</th>
 						<th>Anime</th>
-						<th className={style.close}>Score</th>
-						<th className={style.paddingRight}>Hours</th>
+						<th class="close">Score</th>
+						<th class="paddingRight">Hours</th>
 						<th>Manga</th>
-						<th className={style.close}>Score</th>
-						<th className={style.paddingRight}>Chapters</th>
+						<th class="close">Score</th>
+						<th class="paddingRight">Chapters</th>
 						<th>Exclude</th>
 					</tr>
 				</thead>
@@ -34,27 +33,27 @@ function UserTable() {
 						{(user) => (
 							<tr>
 								<td>
-									<div className={style.center}>
-										<label className={style.hitbox}>
+									<div class="center">
+										<label class="hitbox">
 											<input type="checkbox" for="enabled" onInput={(e) => changeUserState(e, user)} checked onClick={multiSelect} />
 										</label>
-										<div className={style.hamburger}></div>
+										<div class="hamburger"></div>
 										<RemoveUser user={user} />
 									</div>
 								</td>
 								<td>
-									<div className={style.center}>
-										<img src={user.avatar.medium} alt={user.name} className={style.profile} height="25" /> {user.name}
+									<div class="center">
+										<img src={user.avatar.medium} alt={user.name} class="profile" height="25" /> {user.name}
 									</div>
 								</td>
 								<td>{user.statistics.anime.count}</td>
-								<td className={style.close}>{user.statistics.anime.meanScore}</td>
+								<td class="close">{user.statistics.anime.meanScore}</td>
 								<td>{Math.round(user.statistics.anime.minutesWatched / 60)}</td>
 								<td>{user.statistics.manga.count}</td>
-								<td className={style.close}>{user.statistics.manga.meanScore}</td>
+								<td class="close">{user.statistics.manga.meanScore}</td>
 								<td>{Math.round(user.statistics.manga.chaptersRead)}</td>
-								<td className={style.exclude}>
-									<label className={style.hitbox}>
+								<td class="exclude">
+									<label class="hitbox">
 										<input type="checkbox" for="exclude" onInput={(e) => changeExcludeState(e, user)} onClick={multiSelect} />
 									</label>
 								</td>
@@ -70,7 +69,7 @@ function UserTable() {
 function RemoveUser({ user }) {
 	return (
 		<div
-			className={style.trash}
+			class="trash"
 			onClick={() => {
 				const users = userTable().filter((u) => u.id !== user.id);
 				setUserTable(users);
@@ -102,15 +101,15 @@ function multiSelect(event) {
 	const users = [...userTable()];
 	users.forEach((user, index) => {
 		user[forType] = checkboxes[index].checked;
-		if (forType === "enabled") checkboxes[index].closest("tr").classList.toggle(style.disabled, !checkboxes[index].checked);
-		else if (forType === "exclude") checkboxes[index].closest("tr").classList.toggle(style.excludeRow, checkboxes[index].checked);
+		if (forType === "enabled") checkboxes[index].closest("tr").classList.toggle("disabled", !checkboxes[index].checked);
+		else if (forType === "exclude") checkboxes[index].closest("tr").classList.toggle("excludeRow", checkboxes[index].checked);
 	});
 	setUserTable(users);
 }
 
 function changeExcludeState(e, user) {
 	user.exclude = e.target.checked;
-	e.target.closest("tr").classList.toggle(style.excludeRow, e.target.checked);
+	e.target.closest("tr").classList.toggle("excludeRow", e.target.checked);
 	const users = [...userTable()];
 	setUserTable(users);
 	updateMediaData();
@@ -118,7 +117,7 @@ function changeExcludeState(e, user) {
 
 function changeUserState(e, user) {
 	user.enabled = e.target.checked;
-	e.target.closest("tr").classList.toggle(style.disabled, !e.target.checked);
+	e.target.closest("tr").classList.toggle("disabled", !e.target.checked);
 	const users = [...userTable()];
 	setUserTable(users);
 	updateMediaData();
