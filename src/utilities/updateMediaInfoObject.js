@@ -33,14 +33,15 @@ export async function updateMediaInfoObject(...newUsers) {
 					}
 					continue;
 				}
+
+				userStats.media.season = userStats.media.season?.[0].toUpperCase() + userStats.media.season?.substring(1).toLowerCase() || "";
 				if (
 					userStats.media.format &&
 					userStats.media.format !== "TV" &&
 					userStats.media.format !== "ONA" &&
 					userStats.media.format !== "OVA"
 				)
-					userStats.media.format = userStats.media.format.toLowerCase();
-				userStats.media.season = userStats.media.season?.toLowerCase() || "";
+					userStats.media.format = userStats.media.format[0].toUpperCase() + userStats.media.format.substring(1).toLowerCase();
 
 				mediaInfo[mediaKey] = userStats.media;
 				mediaInfo[mediaKey].userLists = { [userKey]: { [listKey]: true } };

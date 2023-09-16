@@ -147,9 +147,9 @@ function UserScoreList({ media }) {
 				</For>
 			</div>
 			<div class="media-info">
-				<span class="capitalize format">{media.info.format}</span>
+				<span class="format">{media.info.format}</span>
 				<Show when={media.info.startDate.year} fallback={<span>TBA</span>}>
-					<span class="capitalize">{`${media.info.season} ${media.info.startDate.year}`}</span>
+					<span>{`${media.info.season} ${media.info.startDate.year}`}</span>
 				</Show>
 			</div>
 		</div>
