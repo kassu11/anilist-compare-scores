@@ -11,3 +11,6 @@ export const [userTable, setUserTable] = createSignal([]);
 export const [searchIndex, setSearchIndex] = createSignal(0);
 
 export const [mediaLoading, setMediaLoading] = createSignal(false);
+
+export const [animeUserList, setAnimeUserList] = createSignal([]);
+export const [mangaUserList, setMangaUserList] = createSignal([]);

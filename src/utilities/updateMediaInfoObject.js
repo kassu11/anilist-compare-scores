@@ -1,23 +1,28 @@
 import { userTable } from "../utilities/signals";
 import { mediaInfo } from "../Components/UserMedia";
-import { mediaType, setMediaLoading } from "../utilities/signals";
+import { mediaType, setMediaLoading, setAnimeUserList, setMangaUserList } from "../utilities/signals";
 import { fetchUserMedia } from "../api/anilist";
 
 const userDataSaved = {};
 
 export async function updateMediaInfoObject(...newUsers) {
 	const users = [...userTable(), ...newUsers];
+	const mediaTypeValue = mediaType();
 
 	for (const user of users) {
-		const key = user.name + mediaType();
+		const key = user.name + mediaTypeValue;
 		if (userDataSaved[key]) continue;
 		setMediaLoading(true);
 		userDataSaved[key] = true;
 
-		const userMedia = await fetchUserMedia(user, mediaType());
+		const userMedia = await fetchUserMedia(user, mediaTypeValue);
 		const rewatchedList = { name: "Rewatched", entries: [], isCustomList: false };
+
 		for (const list of userMedia) {
 			const listKey = list.isCustomList ? "Custom" : list.name;
+			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, list.name])]);
+			else setAnimeUserList((prev) => [...new Set([...prev, list.name])]);
+
 			for (const userStats of list.entries) {
 				const mediaKey = userStats.media.id;
 				const userKey = user.name;
@@ -54,7 +59,11 @@ export async function updateMediaInfoObject(...newUsers) {
 			}
 		}
 
-		userMedia.push(rewatchedList);
+		if (rewatchedList.entries.length) {
+			userMedia.push(rewatchedList);
+			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, "Rewatched"])]);
+			else setAnimeUserList((prev) => [...new Set([...prev, "Rewatched"])]);
+		}
 
 		console.log(userMedia);
 	}
