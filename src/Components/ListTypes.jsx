@@ -1,5 +1,16 @@
 import { updateMediaData } from "./UserMedia";
 import { setListType, mediaType, animeUserList, mangaUserList } from "../utilities/signals";
+import { createEffect } from "solid-js";
+
+const customList = {
+	Completed: false,
+	Watching: false,
+	Rewatched: false,
+	Paused: false,
+	Dropped: false,
+	Planning: false,
+	Custom: false,
+};
 
 function ListTypes() {
 	const watchingReading = () => (mediaType() === "ANIME" ? "Watching" : "Reading");
@@ -8,11 +19,24 @@ function ListTypes() {
 	// <form use:updateListType> activates before functions are called, so watchingReading will break;
 	setTimeout(() => updateListType(document.querySelector("#checkboxRow")), 0);
 
+	// createEffect(() => {
+	// 	if()
+	// });
+
 	return (
 		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)}>
 			{console.log(animeUserList(), mangaUserList())}
+
 			<ul>
-				<li>
+				<For each={mediaType() === "ANIME" ? animeUserList() : mangaUserList()}>
+					{(item) => (
+						<li>
+							<input type="checkbox" name={item} id={item} checked />
+							<label htmlFor={item}>{item}</label>
+						</li>
+					)}
+				</For>
+				{/* <li>
 					<input type="checkbox" name="Completed" id="Completed" checked />
 					<label htmlFor="Completed">Completed</label>
 				</li>
@@ -39,7 +63,7 @@ function ListTypes() {
 				<li>
 					<input type="checkbox" name="Custom" id="Custom" />
 					<label htmlFor="Custom">Custom</label>
-				</li>
+				</li> */}
 			</ul>
 		</form>
 	);
