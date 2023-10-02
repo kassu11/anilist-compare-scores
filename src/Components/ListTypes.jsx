@@ -21,8 +21,8 @@ function ListTypes() {
 					<label htmlFor={watchingReading()}>{watchingReading()}</label>
 				</li>
 				<li>
-					<input type="checkbox" name="Rewatched" id="Rewatched" />
-					<label htmlFor="Rewatched">{rewachedReread()}</label>
+					<input type="checkbox" name={rewachedReread()} id={rewachedReread()} />
+					<label htmlFor={rewachedReread()}>{rewachedReread()}</label>
 				</li>
 				<li>
 					<input type="checkbox" name="Paused" id="Paused" />
