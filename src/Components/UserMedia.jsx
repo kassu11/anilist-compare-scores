@@ -31,6 +31,7 @@ export const userListOrder = {
 export const mediaInfo = {};
 const filteredLists = {};
 const [mediaData, setMediaData] = createSignal([]);
+let observer;
 
 const [count, setCount] = createSignal(0);
 function UserMediaList() {
@@ -40,13 +41,38 @@ function UserMediaList() {
 		setCount(mediaCards?.childElementCount - 1);
 	});
 
+	const mediaContainer = (
+		<main id="mediaCards" class="media-card-container" classList={{ ["media-is-loading"]: mediaLoading() }}>
+			<LoadingMediaElem />
+			<MediaCardGroup start={0} />
+		</main>
+	);
+
+	const options = {
+		rootMargin: "500px",
+		threshold: 1.0,
+	};
+
+	observer = new IntersectionObserver((entries, observer) => {
+		entries.forEach((entry) => {
+			if (entry.isIntersecting) {
+				const coverContainer = entry.target.querySelector(".cover-container");
+				const mediaId = parseInt(entry.target.getAttribute("custom-media-id"));
+				if (mediaId in mediaCoverImages) coverContainer.append(mediaCoverImages[mediaId]);
+				if (mediaId in mediaBannerImages) {
+					coverContainer.querySelector("div.card-banner")?.remove();
+					coverContainer.before(mediaBannerImages[mediaId]);
+				}
+
+				observer.unobserve(entry.target);
+			}
+		});
+	}, options);
+
 	return (
 		<>
 			<p>Matches: {count()}</p>
-			<main id="mediaCards" class="media-card-container" classList={{ ["media-is-loading"]: mediaLoading() }}>
-				<LoadingMediaElem />
-				<MediaCardGroup start={0} />
-			</main>
+			{mediaContainer}
 		</>
 	);
 }
@@ -70,24 +96,33 @@ function MediaCardGroup({ start }) {
 	);
 }
 
-function MediaCard({ media }) {
-	return (
-		<Show when={media.percentage >= percentage()}>
-			<div class="media-card">
-				<Show when={media.banner} fallback={<div class="card-banner" style={"background-color: " + media.color}></div>}>
-					<img class="card-banner" loading="lazy" src={media.banner} />
-				</Show>
-				<div class="cover-container">
-					<img class="media-cover-image" loading="lazy" src={media.coverImage} />
-					<Repeat repeat={media.repeat} />
-					<span class="episodes">{media.episodes}</span>
-					<span class="score">{media.score}</span>
-				</div>
+const mediaCoverImages = {};
+const mediaBannerImages = {};
 
-				<UserScoreList media={media} />
+function MediaCard({ media }) {
+	const bannerImage = <img class="card-banner" src={media.banner} style={"background-color: " + media.color} />;
+	const coverImage = <img class="media-cover-image" src={media.coverImage} />;
+	mediaCoverImages[media.info.id] ??= coverImage;
+	if (media.banner) mediaBannerImages[media.info.id] ??= bannerImage;
+
+	const mediaCard = (
+		<div class="media-card" attr:custom-media-id={media.info.id}>
+			<Show when={!media.banner}>
+				<div class="card-banner" style={"background-color: " + media.color}></div>
+			</Show>
+			<div class="cover-container">
+				<Repeat repeat={media.repeat} />
+				<span class="episodes">{media.episodes}</span>
+				<span class="score">{media.score}</span>
 			</div>
-		</Show>
+
+			<UserScoreList media={media} />
+		</div>
 	);
+
+	observer.observe(mediaCard);
+
+	return <Show when={media.percentage >= percentage()}>{mediaCard}</Show>;
 }
 
 function UserScoreList({ media }) {
@@ -112,9 +147,9 @@ function UserScoreList({ media }) {
 				</For>
 			</div>
 			<div class="media-info">
-				<span class="capitalize format">{media.info.format}</span>
+				<span class="format">{media.info.format}</span>
 				<Show when={media.info.startDate.year} fallback={<span>TBA</span>}>
-					<span class="capitalize">{`${media.info.season} ${media.info.startDate.year}`}</span>
+					<span>{`${media.info.season} ${media.info.startDate.year}`}</span>
 				</Show>
 			</div>
 		</div>

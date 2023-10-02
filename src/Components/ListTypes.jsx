@@ -1,5 +1,5 @@
 import { updateMediaData } from "./UserMedia";
-import { setListType, mediaType } from "../utilities/signals";
+import { setListType, mediaType, animeUserList, mangaUserList } from "../utilities/signals";
 
 function ListTypes() {
 	const watchingReading = () => (mediaType() === "ANIME" ? "Watching" : "Reading");
@@ -10,6 +10,7 @@ function ListTypes() {
 
 	return (
 		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)}>
+			{console.log(animeUserList(), mangaUserList())}
 			<ul>
 				<li>
 					<input type="checkbox" name="Completed" id="Completed" checked />

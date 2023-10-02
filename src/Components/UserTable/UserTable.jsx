@@ -1,7 +1,7 @@
 import { updateMediaData } from "../UserMedia";
 import TrashCanSvg from "../Icons/TrashCan";
 import EmptyUserTable from "./EmptyUserTable";
-import UserSearch2 from "./UserSearch2";
+import UserSearch2 from "../UserSearch/UserSearch";
 import { userTable, setUserTable } from "../../utilities/signals";
 import IncludeUsersOption from "./UserIncludeBar";
 

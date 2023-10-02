@@ -1,5 +1,5 @@
 import { setSearchIndex } from "../../utilities/signals";
-import { submitSearch } from "./UserSearch2";
+import { submitSearch } from "./UserSearch";
 
 import "../../style/settings.scss";
 
