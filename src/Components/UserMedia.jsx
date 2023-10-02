@@ -217,6 +217,7 @@ function sortArray(array, type = "score", clone = false) {
 		score: (a, b) => b.score - a.score || a.english.localeCompare(b.english),
 		repeat: (a, b) => b.repeat - a.repeat || b.score - a.score || a.english.localeCompare(b.english),
 		title: (a, b) => a.english.localeCompare(b.english),
+		averageScore: (a, b) => b.info.averageScore - a.info.averageScore || a.english.localeCompare(b.english),
 	};
 
 	if (clone) return array.toSorted(sorts[type]);
