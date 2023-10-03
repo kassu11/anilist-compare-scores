@@ -16,12 +16,13 @@ export async function updateMediaInfoObject(...newUsers) {
 		userDataSaved[key] = true;
 
 		const userMedia = await fetchUserMedia(user, mediaTypeValue);
-		const rewatchedList = { name: "Rewatched", entries: [], isCustomList: false };
+		const rewatchedName = mediaTypeValue === "MANGA" ? "Reread" : "Rewatched";
+		const rewatchedList = { name: rewatchedName, entries: [], isCustomList: false };
 
 		for (const list of userMedia) {
 			const listKey = list.isCustomList ? "Custom" : list.name;
-			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, list.name])]);
-			else setAnimeUserList((prev) => [...new Set([...prev, list.name])]);
+			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, list.name, listKey])].sort());
+			else setAnimeUserList((prev) => [...new Set([...prev, list.name, listKey])].sort());
 
 			for (const userStats of list.entries) {
 				const mediaKey = userStats.media.id;
@@ -30,11 +31,12 @@ export async function updateMediaInfoObject(...newUsers) {
 				if (mediaKey in mediaInfo) {
 					mediaInfo[mediaKey].userLists[userKey] ??= {};
 					mediaInfo[mediaKey].userLists[userKey][listKey] = true;
+					mediaInfo[mediaKey].userLists[userKey][list.name] = true;
 					mediaInfo[mediaKey].userScores[userKey] = userStats.score;
 					mediaInfo[mediaKey].userRepeats[userKey] = userStats.repeat;
-					if (userStats.repeat && !mediaInfo[mediaKey].userLists[userKey]["Rewatched"]) {
+					if (userStats.repeat && !mediaInfo[mediaKey].userLists[userKey][rewatchedName]) {
 						rewatchedList.entries.push(userStats);
-						mediaInfo[mediaKey].userLists[userKey]["Rewatched"] = true;
+						mediaInfo[mediaKey].userLists[userKey][rewatchedName] = true;
 					}
 					continue;
 				}
@@ -50,19 +52,20 @@ export async function updateMediaInfoObject(...newUsers) {
 
 				mediaInfo[mediaKey] = userStats.media;
 				mediaInfo[mediaKey].userLists = { [userKey]: { [listKey]: true } };
+				mediaInfo[mediaKey].userLists[userKey][list.name] = true;
 				mediaInfo[mediaKey].userScores = { [userKey]: userStats.score };
 				mediaInfo[mediaKey].userRepeats = { [userKey]: userStats.repeat };
 				if (userStats.repeat) {
 					rewatchedList.entries.push(userStats);
-					mediaInfo[mediaKey].userLists[userKey]["Rewatched"] = true;
+					mediaInfo[mediaKey].userLists[userKey][rewatchedName] = true;
 				}
 			}
 		}
 
 		if (rewatchedList.entries.length) {
 			userMedia.push(rewatchedList);
-			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, "Rewatched"])]);
-			else setAnimeUserList((prev) => [...new Set([...prev, "Rewatched"])]);
+			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, rewatchedName])].sort());
+			else setAnimeUserList((prev) => [...new Set([...prev, rewatchedName])].sort());
 		}
 
 		console.log(userMedia);

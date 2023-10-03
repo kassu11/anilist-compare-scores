@@ -1,45 +1,51 @@
 import { updateMediaData } from "./UserMedia";
 import { setListType, mediaType, animeUserList, mangaUserList } from "../utilities/signals";
 
+const notCustomList = {
+	Completed: true,
+	Watching: true,
+	Rewatched: true,
+	Paused: true,
+	Dropped: true,
+	Planning: true,
+	Custom: true,
+	Rewatching: true,
+};
+
 function ListTypes() {
-	const watchingReading = () => (mediaType() === "ANIME" ? "Watching" : "Reading");
-	const rewachedReread = () => (mediaType() === "ANIME" ? "Rewatched" : "Reread");
-
-	// <form use:updateListType> activates before functions are called, so watchingReading will break;
-	setTimeout(() => updateListType(document.querySelector("#checkboxRow")), 0);
-
 	return (
 		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)}>
-			{console.log(animeUserList(), mangaUserList())}
 			<ul>
-				<li>
-					<input type="checkbox" name="Completed" id="Completed" checked />
-					<label htmlFor="Completed">Completed</label>
-				</li>
-				<li>
-					<input type="checkbox" name={watchingReading()} id={watchingReading()} checked />
-					<label htmlFor={watchingReading()}>{watchingReading()}</label>
-				</li>
-				<li>
-					<input type="checkbox" name="Rewatched" id="Rewatched" />
-					<label htmlFor="Rewatched">{rewachedReread()}</label>
-				</li>
-				<li>
-					<input type="checkbox" name="Paused" id="Paused" />
-					<label htmlFor="Paused">Paused</label>
-				</li>
-				<li>
-					<input type="checkbox" name="Dropped" id="Dropped" />
-					<label htmlFor="Dropped">Dropped</label>
-				</li>
-				<li>
-					<input type="checkbox" name="Planning" id="Planning" />
-					<label htmlFor="Planning">Planning</label>
-				</li>
-				<li>
-					<input type="checkbox" name="Custom" id="Custom" />
-					<label htmlFor="Custom">Custom</label>
-				</li>
+				<For each={(mediaType() === "ANIME" ? animeUserList() : mangaUserList()).filter((list) => notCustomList[list])}>
+					{(item) =>
+						item === "Custom" ? (
+							<li>
+								<details class="custom-list-dropdown">
+									<summary>
+										<input type="checkbox" name={item} id={item} checked />
+										<label htmlFor={item}>{item}</label>
+										<span class="dropdown-lable">[more]</span>
+									</summary>
+									<ul>
+										<For each={(mediaType() === "ANIME" ? animeUserList() : mangaUserList()).filter((list) => !notCustomList[list])}>
+											{(item) => (
+												<li>
+													<input type="checkbox" name={item} id={item} />
+													<label htmlFor={item}>{item}</label>
+												</li>
+											)}
+										</For>
+									</ul>
+								</details>
+							</li>
+						) : (
+							<li>
+								<input type="checkbox" name={item} id={item} checked />
+								<label htmlFor={item}>{item}</label>
+							</li>
+						)
+					}
+				</For>
 			</ul>
 		</form>
 	);
