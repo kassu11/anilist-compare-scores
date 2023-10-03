@@ -21,8 +21,8 @@ export async function updateMediaInfoObject(...newUsers) {
 
 		for (const list of userMedia) {
 			const listKey = list.isCustomList ? "Custom" : list.name;
-			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, list.name])]);
-			else setAnimeUserList((prev) => [...new Set([...prev, list.name])]);
+			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, list.name, listKey])].sort());
+			else setAnimeUserList((prev) => [...new Set([...prev, list.name, listKey])].sort());
 
 			for (const userStats of list.entries) {
 				const mediaKey = userStats.media.id;
@@ -31,6 +31,7 @@ export async function updateMediaInfoObject(...newUsers) {
 				if (mediaKey in mediaInfo) {
 					mediaInfo[mediaKey].userLists[userKey] ??= {};
 					mediaInfo[mediaKey].userLists[userKey][listKey] = true;
+					mediaInfo[mediaKey].userLists[userKey][list.name] = true;
 					mediaInfo[mediaKey].userScores[userKey] = userStats.score;
 					mediaInfo[mediaKey].userRepeats[userKey] = userStats.repeat;
 					if (userStats.repeat && !mediaInfo[mediaKey].userLists[userKey][rewatchedName]) {
@@ -51,6 +52,7 @@ export async function updateMediaInfoObject(...newUsers) {
 
 				mediaInfo[mediaKey] = userStats.media;
 				mediaInfo[mediaKey].userLists = { [userKey]: { [listKey]: true } };
+				mediaInfo[mediaKey].userLists[userKey][list.name] = true;
 				mediaInfo[mediaKey].userScores = { [userKey]: userStats.score };
 				mediaInfo[mediaKey].userRepeats = { [userKey]: userStats.repeat };
 				if (userStats.repeat) {
@@ -62,8 +64,8 @@ export async function updateMediaInfoObject(...newUsers) {
 
 		if (rewatchedList.entries.length) {
 			userMedia.push(rewatchedList);
-			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, rewatchedName])]);
-			else setAnimeUserList((prev) => [...new Set([...prev, rewatchedName])]);
+			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, rewatchedName])].sort());
+			else setAnimeUserList((prev) => [...new Set([...prev, rewatchedName])].sort());
 		}
 
 		console.log(userMedia);

@@ -35,8 +35,8 @@ onmessage = async (array) => {
 		const userMedia = userMediaData[iUserIndex];
 		for (const type of listTypes) {
 			for (const list of userMedia) {
-				const listKey = list.isCustomList ? "Custom" : list.name;
-				if (listKey !== type) continue;
+				const listKey = list.name;
+				if (listKey !== type && !(list.isCustomList === false || type !== "Custom")) continue;
 
 				list.entries.forEach((entry) => {
 					const mediaKey = entry.media.id;
