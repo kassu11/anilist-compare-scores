@@ -30,7 +30,7 @@ function ListTypes() {
 										<For each={(mediaType() === "ANIME" ? animeUserList() : mangaUserList()).filter((list) => !notCustomList[list])}>
 											{(item) => (
 												<li>
-													<input type="checkbox" name={item} id={item} checked />
+													<input type="checkbox" name={item} id={item} />
 													<label htmlFor={item}>{item}</label>
 												</li>
 											)}
