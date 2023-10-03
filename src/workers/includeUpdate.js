@@ -27,7 +27,7 @@ onmessage = async (array) => {
 		for (const type of listTypes) {
 			for (const list of userMedia) {
 				const listKey = list.name;
-				if (listKey !== type && !(list.isCustomList === false || type !== "Custom")) continue;
+				if (listKey !== type && list.isCustomList && type !== "Custom") continue;
 
 				list.entries.forEach((entry) => {
 					const mediaKey = entry.media.id;
