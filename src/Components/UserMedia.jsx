@@ -203,7 +203,7 @@ export async function updateMediaData() {
 	if (exclude) worker = ExcludeWorker instanceof Worker ? ExcludeWorker : new ExcludeWorker();
 	else worker = IncludeWorker instanceof Worker ? IncludeWorker : new IncludeWorker();
 
-	worker.postMessage([usersArray, listTypes, sortType, userMediaData, mediaInfo]);
+	worker.postMessage([usersArray, listTypes, sortType, userMediaData]);
 	worker.onmessage = (e) => {
 		filteredLists[filterKey] = e.data;
 		filteredLists[filterKey + sortType] = e.data;

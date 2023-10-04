@@ -18,7 +18,7 @@ const userListOrder = {
 };
 
 onmessage = async (array) => {
-	const [usersT, listTypes, sortType, userMediaData, mediaInfo] = array.data;
+	const [usersT, listTypes, sortType, userMediaData] = array.data;
 
 	const mediaArray = [];
 	const checkedArray = {};
@@ -27,37 +27,35 @@ onmessage = async (array) => {
 		for (const type of listTypes) {
 			for (const list of userMedia) {
 				const listKey = list.name;
-				if (listKey !== type && list.isCustomList && type !== "Custom") continue;
+				if (!(list.isCustomList && type === "Custom") && listKey !== type) continue;
 
-				list.entries.forEach((entry) => {
-					const mediaKey = entry.media.id;
-					if (checkedArray[mediaKey]) return;
-					checkedArray[mediaKey] = true;
+				list.entries.forEach((anime) => {
+					if (checkedArray[anime.id]) return;
+					checkedArray[anime.id] = true;
 
 					let totalUserCount = 0;
 					let totalUserWhoScored = 0;
 					let totalScore = 0;
 					let repeat = 0;
 					const users = [];
-					const media = mediaInfo[mediaKey];
 
 					for (const user of usersT) {
 						const userKey = user.name;
-						const isOnSelectedList = listTypes.find((type) => media.userLists[userKey]?.[type]);
+						const isOnSelectedList = listTypes.find((type) => anime.userLists[userKey]?.[type]);
 						if (!isOnSelectedList) continue;
 
 						totalUserCount++;
-						repeat += media.userRepeats[userKey];
+						repeat += anime.userRepeats[userKey];
 						users.push({
 							name: user.name,
 							avatar: user.avatar.medium,
-							score: media.userScores[userKey],
-							repeat: media.userRepeats[userKey],
+							score: anime.userScores[userKey],
+							repeat: anime.userRepeats[userKey],
 							list: userListOrder[isOnSelectedList],
 						});
 
-						if (media.userScores[userKey] > 0) {
-							totalScore += media.userScores[userKey];
+						if (anime.userScores[userKey] > 0) {
+							totalScore += anime.userScores[userKey];
 							totalUserWhoScored++;
 						}
 					}
@@ -65,14 +63,14 @@ onmessage = async (array) => {
 					const score = totalScore ? (totalScore / totalUserWhoScored).toFixed(2) : 0;
 
 					mediaArray.push({
-						info: media,
-						english: media.title.english || media.title.userPreferred,
-						native: media.title.native || media.title.userPreferred,
-						romaji: media.title.romaji || media.title.userPreferred,
-						coverImage: media.coverImage.large,
-						color: media.coverImage.color,
-						banner: media.bannerImage,
-						episodes: media.episodes || media.nextAiringEpisode?.episode || media.chapters || "TBA",
+						info: anime,
+						english: anime.title.english || anime.title.userPreferred,
+						native: anime.title.native || anime.title.userPreferred,
+						romaji: anime.title.romaji || anime.title.userPreferred,
+						coverImage: anime.coverImage.large,
+						color: anime.coverImage.color,
+						banner: anime.bannerImage,
+						episodes: anime.episodes || anime.nextAiringEpisode?.episode || anime.chapters || "TBA",
 						score,
 						repeat,
 						percentage: totalUserCount / usersT.length,
