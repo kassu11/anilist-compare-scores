@@ -16,6 +16,7 @@ export async function updateMediaInfoObject(...newUsers) {
 		userDataSaved[key] = true;
 
 		const userMedia = await fetchUserMedia(user, mediaTypeValue);
+		console.log(userMedia);
 		const rewatchedName = mediaTypeValue === "MANGA" ? "Reread" : "Rewatched";
 		const rewatchedList = { name: rewatchedName, entries: [], isCustomList: false };
 
