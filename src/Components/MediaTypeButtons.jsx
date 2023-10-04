@@ -1,6 +1,5 @@
 import { setMediaType } from "../utilities/signals";
 import { updateListType } from "./ListTypes";
-import { userListOrder } from "./UserMedia";
 import { updateMediaData } from "./UserMedia";
 
 function MediaTypeButtons() {
@@ -16,7 +15,6 @@ function MediaTypeButtons() {
 
 async function updateMediaType(form) {
 	const { type } = Object.fromEntries(new FormData(form));
-	userListOrder[userListOrder.Rewatched] = type === "ANIME" ? "Rewatched" : "Reread";
 	setMediaType(type);
 	await updateMediaData();
 

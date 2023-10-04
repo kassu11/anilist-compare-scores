@@ -1,22 +1,3 @@
-const userListOrder = {
-	Completed: 1,
-	Watching: 2,
-	Reading: 3,
-	Rewatched: 4,
-	Paused: 5,
-	Dropped: 6,
-	Planning: 7,
-	Custom: 8,
-	1: "Completed",
-	2: "Watching",
-	3: "Reading",
-	4: "Rewatched",
-	5: "Paused",
-	6: "Dropped",
-	7: "Planning",
-	8: "Custom",
-};
-
 onmessage = async (array) => {
 	const [usersT, listTypes, sortType, userMediaData] = array.data;
 
@@ -65,7 +46,7 @@ onmessage = async (array) => {
 							avatar: user.avatar.medium,
 							score: anime.userScores[userKey],
 							repeat: anime.userRepeats[userKey],
-							list: userListOrder[isOnSelectedList],
+							list: list.renderName,
 						});
 
 						if (anime.userScores[userKey] > 0) {
@@ -89,7 +70,7 @@ onmessage = async (array) => {
 						repeat,
 						percentage: totalUserCount / includeUsersIndex.length,
 						users: users.sort((a, b) => {
-							return a.list - b.list || b.score - a.score;
+							return a.list > b.list ? 1 : a.list === b.list ? b.score - a.score : -1;
 						}),
 					});
 				});

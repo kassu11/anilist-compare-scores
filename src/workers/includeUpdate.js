@@ -1,22 +1,3 @@
-const userListOrder = {
-	Completed: 1,
-	Watching: 2,
-	Reading: 3,
-	Rewatched: 4,
-	Paused: 5,
-	Dropped: 6,
-	Planning: 7,
-	Custom: 8,
-	1: "Completed",
-	2: "Watching",
-	3: "Reading",
-	4: "Rewatched",
-	5: "Paused",
-	6: "Dropped",
-	7: "Planning",
-	8: "Custom",
-};
-
 onmessage = async (array) => {
 	const [usersT, listTypes, sortType, userMediaData] = array.data;
 
@@ -26,8 +7,7 @@ onmessage = async (array) => {
 	for (const userMedia of userMediaData) {
 		for (const type of listTypes) {
 			for (const list of userMedia) {
-				const listKey = list.name;
-				if (!(list.isCustomList && type === "Custom") && listKey !== type) continue;
+				if (!(list.isCustomList && type === "Custom") && list.name !== type) continue;
 
 				list.entries.forEach((anime) => {
 					if (checkedArray[anime.id]) return;
@@ -41,8 +21,8 @@ onmessage = async (array) => {
 
 					for (const user of usersT) {
 						const userKey = user.name;
-						const isOnSelectedList = listTypes.find((type) => anime.userLists[userKey]?.[type]);
-						if (!isOnSelectedList) continue;
+						const isOnSelectedList = listTypes.find((type) => anime.userLists[userKey]?.[type])?.replace("c-", "");
+						if (isOnSelectedList === undefined) continue;
 
 						totalUserCount++;
 						repeat += anime.userRepeats[userKey];
@@ -51,7 +31,7 @@ onmessage = async (array) => {
 							avatar: user.avatar.medium,
 							score: anime.userScores[userKey],
 							repeat: anime.userRepeats[userKey],
-							list: userListOrder[isOnSelectedList],
+							list: isOnSelectedList,
 						});
 
 						if (anime.userScores[userKey] > 0) {
@@ -75,7 +55,7 @@ onmessage = async (array) => {
 						repeat,
 						percentage: totalUserCount / usersT.length,
 						users: users.sort((a, b) => {
-							return a.list - b.list || b.score - a.score;
+							return a.list > b.list ? 1 : a.list === b.list ? b.score - a.score : -1;
 						}),
 					});
 				});
