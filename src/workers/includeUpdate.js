@@ -64,13 +64,13 @@ onmessage = async (array) => {
 
 					mediaArray.push({
 						info: anime,
-						english: anime.title.english || anime.title.userPreferred,
-						native: anime.title.native || anime.title.userPreferred,
-						romaji: anime.title.romaji || anime.title.userPreferred,
+						english: anime.title.english,
+						native: anime.title.native,
+						romaji: anime.title.romaji,
 						coverImage: anime.coverImage.large,
 						color: anime.coverImage.color,
 						banner: anime.bannerImage,
-						episodes: anime.episodes || anime.nextAiringEpisode?.episode || anime.chapters || "TBA",
+						episodes: anime.episodes,
 						score,
 						repeat,
 						percentage: totalUserCount / usersT.length,

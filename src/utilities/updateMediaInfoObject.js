@@ -52,6 +52,7 @@ function processEntry(entry, listName, userName) {
 
 		entry.media.format = mediaFormat(entry.media.format);
 		entry.media.season = mediaSeason(entry.media.season);
+		entry.media.episodes ||= entry.media.nextAiringEpisode?.episode || entry.media.chapters || "TBA";
 
 		entry.media.title.english ??= entry.media.title.userPreferred;
 		entry.media.title.native ??= entry.media.title.userPreferred;
@@ -85,5 +86,6 @@ function mediaSeason(season) {
 }
 
 function capitalize(string) {
+	if (!string) return "";
 	return string[0].toUpperCase() + string.substring(1).toLowerCase();
 }
