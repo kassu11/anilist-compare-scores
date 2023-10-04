@@ -45,7 +45,10 @@ function ListTypes() {
 export function updateListType(formElem) {
 	const data = Object.fromEntries(new FormData(formElem));
 	const types = Object.keys(data);
-	setListType(types);
+
+	if (types.includes("Custom")) {
+		setListType(types.filter((type) => !type.startsWith("c-")));
+	} else setListType(types);
 	updateMediaData();
 }
 
