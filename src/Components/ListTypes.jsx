@@ -1,23 +1,13 @@
 import { updateMediaData } from "./UserMedia";
 import { setListType, mediaType, animeUserList, mangaUserList } from "../utilities/signals";
 
-const notCustomList = {
-	Completed: true,
-	Watching: true,
-	Reading: true,
-	Rewatched: true,
-	Paused: true,
-	Dropped: true,
-	Planning: true,
-	Custom: true,
-	Rewatching: true,
-};
-
 function ListTypes() {
+	const custom = (list) => list.startsWith("c-");
+	const notCustom = (list) => !list.startsWith("c-");
 	return (
 		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)}>
 			<ul>
-				<For each={(mediaType() === "ANIME" ? animeUserList() : mangaUserList()).filter((list) => notCustomList[list])}>
+				<For each={(mediaType() === "ANIME" ? animeUserList() : mangaUserList()).filter(notCustom)}>
 					{(item) =>
 						item === "Custom" ? (
 							<li>
@@ -28,11 +18,11 @@ function ListTypes() {
 										<span class="dropdown-lable">[more]</span>
 									</summary>
 									<ul>
-										<For each={(mediaType() === "ANIME" ? animeUserList() : mangaUserList()).filter((list) => !notCustomList[list])}>
+										<For each={(mediaType() === "ANIME" ? animeUserList() : mangaUserList()).filter(custom)}>
 											{(item) => (
 												<li>
 													<input type="checkbox" name={item} id={item} />
-													<label htmlFor={item}>{item}</label>
+													<label htmlFor={item}>{item.replace("c-", "")}</label>
 												</li>
 											)}
 										</For>
