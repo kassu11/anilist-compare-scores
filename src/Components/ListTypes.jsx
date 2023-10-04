@@ -4,6 +4,7 @@ import { setListType, mediaType, animeUserList, mangaUserList } from "../utiliti
 const notCustomList = {
 	Completed: true,
 	Watching: true,
+	Reading: true,
 	Rewatched: true,
 	Paused: true,
 	Dropped: true,

@@ -42,7 +42,8 @@ export async function updateMediaInfoObject(...newUsers) {
 				}
 
 				userStats.media.season = userStats.media.season?.[0].toUpperCase() + userStats.media.season?.substring(1).toLowerCase() || "";
-				if (
+				if (userStats.media.format === "TV_SHORT") userStats.media.format = "TV Short";
+				else if (
 					userStats.media.format &&
 					userStats.media.format !== "TV" &&
 					userStats.media.format !== "ONA" &&
