@@ -5,12 +5,6 @@ import MediaTypeButtons from "./Components/MediaTypeButtons";
 import ListTypes from "./Components/ListTypes";
 import MediaSort from "./Components/MediaSort";
 
-import WebWorker from "./lib/test.js?worker";
-
-const myWorker = WebWorker instanceof Worker ? WebWorker : new WebWorker();
-
-myWorker.postMessage([{ 5: 5 }, 7]);
-
 function App() {
 	return (
 		<>

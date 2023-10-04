@@ -9,25 +9,6 @@ import "../style/mediaCards.scss";
 import IncludeWorker from "../workers/includeUpdate.js?worker";
 import ExcludeWorker from "../workers/excludeUpdate.js?worker";
 
-export const userListOrder = {
-	Completed: 1,
-	Watching: 2,
-	Reading: 3,
-	Rewatched: 4,
-	Paused: 5,
-	Dropped: 6,
-	Planning: 7,
-	Custom: 8,
-	1: "Completed",
-	2: "Watching",
-	3: "Reading",
-	4: "Rewatched",
-	5: "Paused",
-	6: "Dropped",
-	7: "Planning",
-	8: "Custom",
-};
-
 export const mediaInfo = {};
 const filteredLists = {};
 const [mediaData, setMediaData] = createSignal([]);
@@ -134,7 +115,7 @@ function UserScoreList({ media }) {
 					{(user, i) => (
 						<>
 							<Show when={user.list != media.users[i() - 1]?.list}>
-								<span class="list-name">{userListOrder[user.list]}</span>
+								<span class="list-name">{user.list}</span>
 							</Show>
 							<div class="media-user">
 								<img class="profile-picture" src={user.avatar} />
@@ -203,7 +184,7 @@ export async function updateMediaData() {
 	if (exclude) worker = ExcludeWorker instanceof Worker ? ExcludeWorker : new ExcludeWorker();
 	else worker = IncludeWorker instanceof Worker ? IncludeWorker : new IncludeWorker();
 
-	worker.postMessage([usersArray, listTypes, sortType, userMediaData, mediaInfo]);
+	worker.postMessage([usersArray, listTypes, sortType, userMediaData]);
 	worker.onmessage = (e) => {
 		filteredLists[filterKey] = e.data;
 		filteredLists[filterKey + sortType] = e.data;

@@ -11,64 +11,81 @@ export async function updateMediaInfoObject(...newUsers) {
 
 	for (const user of users) {
 		const key = user.name + mediaTypeValue;
+		const userName = user.name;
 		if (userDataSaved[key]) continue;
 		setMediaLoading(true);
 		userDataSaved[key] = true;
 
-		const userMedia = await fetchUserMedia(user, mediaTypeValue);
+		const userAnimeLists = await fetchUserMedia(user, mediaTypeValue);
 		const rewatchedName = mediaTypeValue === "MANGA" ? "Reread" : "Rewatched";
-		const rewatchedList = { name: rewatchedName, entries: [], isCustomList: false };
+		const rewatchedList = { name: rewatchedName, renderName: rewatchedName, isCustomList: false, entries: [] };
 
-		for (const list of userMedia) {
-			const listKey = list.isCustomList ? "Custom" : list.name;
-			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, list.name, listKey])].sort());
-			else setAnimeUserList((prev) => [...new Set([...prev, list.name, listKey])].sort());
+		for (const animeList of userAnimeLists) {
+			animeList.renderName = animeList.name;
+			animeList.name = animeList.isCustomList ? "c-" + animeList.name : animeList.name;
+			const listKey = animeList.isCustomList ? "Custom" : animeList.name;
+			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, animeList.name, listKey])].sort());
+			else setAnimeUserList((prev) => [...new Set([...prev, animeList.name, listKey])].sort());
 
-			for (const userStats of list.entries) {
-				const mediaKey = userStats.media.id;
-				const userKey = user.name;
-
-				if (mediaKey in mediaInfo) {
-					mediaInfo[mediaKey].userLists[userKey] ??= {};
-					mediaInfo[mediaKey].userLists[userKey][listKey] = true;
-					mediaInfo[mediaKey].userLists[userKey][list.name] = true;
-					mediaInfo[mediaKey].userScores[userKey] = userStats.score;
-					mediaInfo[mediaKey].userRepeats[userKey] = userStats.repeat;
-					if (userStats.repeat && !mediaInfo[mediaKey].userLists[userKey][rewatchedName]) {
-						rewatchedList.entries.push(userStats);
-						mediaInfo[mediaKey].userLists[userKey][rewatchedName] = true;
-					}
-					continue;
-				}
-
-				userStats.media.season = userStats.media.season?.[0].toUpperCase() + userStats.media.season?.substring(1).toLowerCase() || "";
-				if (userStats.media.format === "TV_SHORT") userStats.media.format = "TV Short";
-				else if (
-					userStats.media.format &&
-					userStats.media.format !== "TV" &&
-					userStats.media.format !== "ONA" &&
-					userStats.media.format !== "OVA"
-				)
-					userStats.media.format = userStats.media.format[0].toUpperCase() + userStats.media.format.substring(1).toLowerCase();
-
-				mediaInfo[mediaKey] = userStats.media;
-				mediaInfo[mediaKey].userLists = { [userKey]: { [listKey]: true } };
-				mediaInfo[mediaKey].userLists[userKey][list.name] = true;
-				mediaInfo[mediaKey].userScores = { [userKey]: userStats.score };
-				mediaInfo[mediaKey].userRepeats = { [userKey]: userStats.repeat };
-				if (userStats.repeat) {
-					rewatchedList.entries.push(userStats);
-					mediaInfo[mediaKey].userLists[userKey][rewatchedName] = true;
-				}
+			for (let i = 0; i < animeList.entries.length; i++) {
+				const anime = animeList.entries[i];
+				animeList.entries[i] = processEntry(anime, animeList.name, userName);
+				if (animeList.isCustomList) processEntry(anime, "Custom", userName);
+				if (anime.repeat) rewatchedList.entries.push(processEntry(anime, rewatchedName, userName));
 			}
 		}
 
 		if (rewatchedList.entries.length) {
-			userMedia.push(rewatchedList);
+			userAnimeLists.push(rewatchedList);
 			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, rewatchedName])].sort());
 			else setAnimeUserList((prev) => [...new Set([...prev, rewatchedName])].sort());
 		}
 
-		console.log(userMedia);
+		console.log(userAnimeLists);
 	}
+}
+
+function processEntry(entry, listName, userName) {
+	newEntry: {
+		if (entry.media.id in mediaInfo) break newEntry;
+		mediaInfo[entry.media.id] = entry.media;
+
+		entry.media.format = mediaFormat(entry.media.format);
+		entry.media.season = mediaSeason(entry.media.season);
+		entry.media.episodes ||= entry.media.nextAiringEpisode?.episode || entry.media.chapters || "TBA";
+
+		entry.media.title.english ??= entry.media.title.userPreferred;
+		entry.media.title.native ??= entry.media.title.userPreferred;
+		entry.media.title.romaji ??= entry.media.title.userPreferred;
+
+		entry.media.allLists = {};
+		entry.media.userLists = {};
+		entry.media.userScores = {};
+		entry.media.userRepeats = {};
+	}
+
+	const anime = mediaInfo[entry.media.id];
+
+	anime.userLists[userName] ??= {};
+	anime.userLists[userName][listName] = true;
+	anime.userScores[userName] = entry.score;
+	anime.userRepeats[userName] = entry.repeat;
+
+	return anime;
+}
+
+function mediaFormat(format) {
+	if (format === "TV_SHORT") return "TV Short";
+	if (format == "TV" || format == "ONA" || format == "OVA") return format;
+	return capitalize(format);
+}
+
+function mediaSeason(season) {
+	if (!season) return "";
+	return capitalize(season);
+}
+
+function capitalize(string) {
+	if (!string) return "";
+	return string[0].toUpperCase() + string.substring(1).toLowerCase();
 }
