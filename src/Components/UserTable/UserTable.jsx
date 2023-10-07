@@ -1,7 +1,7 @@
 import { updateMediaData } from "../UserMedia";
 import TrashCanSvg from "../Icons/TrashCan";
 import EmptyUserTable from "./EmptyUserTable";
-import UserSearch2 from "../UserSearch/UserSearch";
+import UserSearch from "../UserSearch/UserSearch";
 import { userTable, setUserTable } from "../../utilities/signals";
 import IncludeUsersOption from "./UserIncludeBar";
 
@@ -11,7 +11,7 @@ function UserTable() {
 	return (
 		<div class="usersTable">
 			<div class="options">
-				<UserSearch2 />
+				<UserSearch />
 				<IncludeUsersOption />
 			</div>
 			<table>
