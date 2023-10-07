@@ -1,11 +1,14 @@
 import { setWithBuffer } from "../../utilities/buffer.js";
-import { userTable, setPercentage } from "../../utilities/signals";
+import { userTable, setPercentage, percentage } from "../../utilities/signals";
 
 import "../../style/settings.scss";
 
 function IncludeUsersOption() {
 	return (
 		<div class="include-container-row">
+			<Show when={userTable().length}>
+				<span class="user-count">Users ({Math.round(getActiveUsersCount() * percentage())})</span>
+			</Show>
 			<label for="include">Include</label>
 			<input
 				class="include-percentage"
@@ -21,10 +24,12 @@ function IncludeUsersOption() {
 	);
 }
 
+const getActiveUsersCount = () => userTable().filter((u) => u.enabled && !u.exclude).length || 1;
+
 function customArrows(event) {
 	const input = event.target;
 	const inputValue = parseInt(input.value) / 100;
-	const activeUserCount = userTable().filter((u) => u.enabled && !u.exclude).length || 1;
+	const activeUserCount = getActiveUsersCount();
 	const values = Array(activeUserCount + 1)
 		.fill(activeUserCount)
 		.map((v, i) => i / v);
@@ -54,7 +59,7 @@ function calcPercentage(event) {
 	input.value = minmaxValue;
 
 	const value = minmaxValue / 100 || 0;
-	const activeUserCount = userTable().filter((u) => u.enabled && !u.exclude).length || 1;
+	const activeUserCount = getActiveUsersCount();
 	const percentage = 1 / activeUserCount;
 	const ceilToClosestDiff = Math.ceil(value / percentage) * percentage;
 	const fixTo2Ceil = Math.floor(ceilToClosestDiff * 100) / 100;
