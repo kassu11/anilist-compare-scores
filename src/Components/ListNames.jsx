@@ -44,7 +44,6 @@ function ListTypes() {
 }
 
 export function updateListType(formElem) {
-	console.trace("updateListType");
 	const data = Object.fromEntries(new FormData(formElem));
 	activeUserList().forEach((list) => {
 		userListSelectionMemory[mediaType()][list] = list in data;
@@ -58,7 +57,6 @@ export function updateListType(formElem) {
 }
 
 export async function updateActiveUserLists() {
-	console.trace("updateActiveUserLists");
 	const users = userTable().filter((u) => u.enabled && !u.exclude);
 	let hasCustom = false;
 	const activeList = [];
