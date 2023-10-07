@@ -13,7 +13,6 @@ onmessage = async (array) => {
 					if (checkedArray[anime.id]) return;
 					checkedArray[anime.id] = true;
 
-					let totalUserCount = 0;
 					let totalUserWhoScored = 0;
 					let totalScore = 0;
 					let repeat = 0;
@@ -24,7 +23,6 @@ onmessage = async (array) => {
 						const isOnSelectedList = listTypes.find((type) => anime.userLists[userKey]?.[type])?.replace("c-", "");
 						if (isOnSelectedList === undefined) continue;
 
-						totalUserCount++;
 						repeat += anime.userRepeats[userKey];
 						users.push({
 							name: user.name,
@@ -53,7 +51,7 @@ onmessage = async (array) => {
 						episodes: anime.episodes,
 						score,
 						repeat,
-						percentage: totalUserCount / usersT.length,
+						percentage: users.length / usersT.length,
 						users: users.sort((a, b) => {
 							return a.list > b.list ? 1 : a.list === b.list ? b.score - a.score : -1;
 						}),
@@ -73,6 +71,7 @@ function sortArray(array, type = "score", clone = false) {
 		repeat: (a, b) => b.repeat - a.repeat || b.score - a.score || a.english.localeCompare(b.english),
 		title: (a, b) => a.english.localeCompare(b.english),
 		averageScore: (a, b) => b.info.averageScore - a.info.averageScore || a.english.localeCompare(b.english),
+		user: (a, b) => b.users.length - a.users.length || b.score - a.score || a.english.localeCompare(b.english),
 	};
 
 	if (clone) return array.toSorted(sorts[type]);

@@ -5,10 +5,19 @@
 }
 
 .include-container-row {
+	position: relative;
 	display: flex;
 	align-items: center;
 	font-size: 20px;
 	gap: 8px;
+}
+
+.user-count {
+	font-size: 14px;
+	opacity: 0.7;
+	position: absolute;
+	bottom: 100%;
+	right: 0px;
 }
 
 .include-percentage {
