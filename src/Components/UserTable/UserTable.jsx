@@ -4,7 +4,7 @@ import EmptyUserTable from "./EmptyUserTable";
 import UserSearch from "../UserSearch/UserSearch";
 import { userTable, setUserTable } from "../../utilities/signals";
 import IncludeUsersOption from "./UserIncludeBar";
-import { updateActiveUserLists } from "../ListNames";
+import { updateAllUserLists } from "../ListNames";
 
 import "../../style/settings.scss";
 
@@ -73,7 +73,7 @@ function RemoveUser({ user }) {
 			class="trash"
 			onClick={() => {
 				setUserTable((users) => users.filter((u) => u.id !== user.id));
-				updateActiveUserLists();
+				updateAllUserLists();
 				updateMediaData();
 			}}
 		>
@@ -113,7 +113,7 @@ function changeExcludeState(e, user) {
 	user.exclude = e.target.checked;
 	e.target.closest("tr").classList.toggle("excludeRow", e.target.checked);
 	setUserTable((users) => [...users]);
-	updateActiveUserLists();
+	updateAllUserLists();
 	updateMediaData();
 }
 
@@ -121,7 +121,7 @@ function changeUserState(e, user) {
 	user.enabled = e.target.checked;
 	e.target.closest("tr").classList.toggle("disabled", !e.target.checked);
 	setUserTable((users) => [...users]);
-	updateActiveUserLists();
+	updateAllUserLists();
 	updateMediaData();
 }
 

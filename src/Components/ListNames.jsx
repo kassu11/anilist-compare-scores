@@ -1,5 +1,5 @@
 import { updateMediaData } from "./UserMedia";
-import { setListType, mediaType, userTable, activeUserList, setActiveUserList, userListSelectionMemory } from "../utilities/signals";
+import { setSelectedLists, mediaType, userTable, allUserLists, setAllUserLists, userListSelectionMemory } from "../utilities/signals";
 import { fetchUserMedia } from "../api/anilist";
 
 function ListTypes() {
@@ -8,7 +8,7 @@ function ListTypes() {
 	return (
 		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)}>
 			<ul>
-				<For each={activeUserList().filter(notCustom)}>
+				<For each={allUserLists().filter(notCustom)}>
 					{(item) =>
 						item === "Custom" ? (
 							<li>
@@ -19,7 +19,7 @@ function ListTypes() {
 										<span class="dropdown-lable">[more]</span>
 									</summary>
 									<ul>
-										<For each={activeUserList().filter(custom)}>
+										<For each={allUserLists().filter(custom)}>
 											{(item) => (
 												<li>
 													<input type="checkbox" name={item} id={item} checked={userListSelectionMemory[mediaType()][item]} />
@@ -45,18 +45,18 @@ function ListTypes() {
 
 export function updateListType(formElem) {
 	const data = Object.fromEntries(new FormData(formElem));
-	activeUserList().forEach((list) => {
+	allUserLists().forEach((list) => {
 		userListSelectionMemory[mediaType()][list] = list in data;
 	});
 	const types = Object.keys(data);
 
 	if (types.includes("Custom")) {
-		setListType(types.filter((type) => !type.startsWith("c-")));
-	} else setListType(types);
+		setSelectedLists(types.filter((type) => !type.startsWith("c-")));
+	} else setSelectedLists(types);
 	updateMediaData();
 }
 
-export async function updateActiveUserLists() {
+export async function updateAllUserLists() {
 	const users = userTable().filter((u) => u.enabled && !u.exclude);
 	let hasCustom = false;
 	const activeList = [];
@@ -70,18 +70,8 @@ export async function updateActiveUserLists() {
 
 	if (hasCustom) activeList.push("Custom");
 	const uniqueListNames = [...new Set(activeList)].sort();
-	setActiveUserList(uniqueListNames);
+	setAllUserLists(uniqueListNames);
 	updateListType(document.querySelector("#checkboxRow"));
 }
-
-// function getSelectedLists() {
-// 	const type = mediaType();
-// 	const selectedList = activeUserList().filter((list) => {
-// 		if (userListSelectionMemory[type].Custom && list.startsWith("c-")) return false;
-// 		return userListSelectionMemory[type][list] ?? true; // If not in memory, default to true
-// 	});
-
-// 	return selectedList;
-// }
 
 export default ListTypes;
