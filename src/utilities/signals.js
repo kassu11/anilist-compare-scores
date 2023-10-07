@@ -14,3 +14,6 @@ export const [mediaLoading, setMediaLoading] = createSignal(false);
 
 export const [animeUserList, setAnimeUserList] = createSignal([]);
 export const [mangaUserList, setMangaUserList] = createSignal([]);
+
+export const [activeUserList, setActiveUserList] = createSignal([]);
+export const userListSelectionMemory = { ANIME: {}, MANGA: {} };

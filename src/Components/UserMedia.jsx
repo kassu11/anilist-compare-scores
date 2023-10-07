@@ -152,6 +152,7 @@ function Repeat({ repeat }) {
 
 let worker;
 export async function updateMediaData() {
+	console.trace("updateMediaData", listType());
 	if (worker instanceof Worker) worker.terminate();
 	console.warn("Render Media Data");
 
