@@ -115,7 +115,6 @@ export async function submitSearch(event) {
 
 	setUserTable((users) => [...users, newUser]);
 	updateAllUserLists();
-	updateMediaData();
 	setSearchIndex(0);
 }
 

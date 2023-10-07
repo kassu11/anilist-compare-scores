@@ -109,20 +109,18 @@ function multiSelect(event) {
 	);
 }
 
-function changeExcludeState(e, user) {
+async function changeExcludeState(e, user) {
 	user.exclude = e.target.checked;
 	e.target.closest("tr").classList.toggle("excludeRow", e.target.checked);
 	setUserTable((users) => [...users]);
-	updateAllUserLists();
-	updateMediaData();
+	await updateAllUserLists();
 }
 
-function changeUserState(e, user) {
+async function changeUserState(e, user) {
 	user.enabled = e.target.checked;
 	e.target.closest("tr").classList.toggle("disabled", !e.target.checked);
 	setUserTable((users) => [...users]);
-	updateAllUserLists();
-	updateMediaData();
+	await updateAllUserLists();
 }
 
 export default UserTable;
