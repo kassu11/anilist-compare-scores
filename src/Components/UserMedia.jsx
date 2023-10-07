@@ -1,6 +1,6 @@
 import { createEffect, createSignal } from "solid-js";
 import { fetchUserMedia } from "../api/anilist";
-import { percentage, sortValue, listType, mediaType, userTable, mediaLoading, setMediaLoading } from "../utilities/signals";
+import { percentage, sortValue, selectedLists, mediaType, userTable, mediaLoading, setMediaLoading } from "../utilities/signals";
 import { updateMediaInfoObject } from "../utilities/updateMediaInfoObject";
 import LoadingMediaElem from "./LoadingMediaElem";
 
@@ -159,7 +159,7 @@ export async function updateMediaData() {
 		.sort()
 		.filter((u) => u.enabled);
 
-	const listTypes = listType(),
+	const listTypes = selectedLists(),
 		type = mediaType(),
 		sortType = sortValue();
 

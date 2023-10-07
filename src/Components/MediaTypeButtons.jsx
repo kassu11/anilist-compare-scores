@@ -1,5 +1,5 @@
 import { setMediaType } from "../utilities/signals";
-import { updateListType } from "./ListTypes";
+import { updateAllUserLists } from "./ListNames";
 import { updateMediaData } from "./UserMedia";
 
 function MediaTypeButtons() {
@@ -18,7 +18,7 @@ async function updateMediaType(form) {
 	setMediaType(type);
 	await updateMediaData();
 
-	updateListType(document.querySelector("#checkboxRow"));
+	updateAllUserLists();
 }
 
 export default MediaTypeButtons;

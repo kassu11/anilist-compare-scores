@@ -1,6 +1,6 @@
 import { userTable } from "../utilities/signals";
 import { mediaInfo } from "../Components/UserMedia";
-import { mediaType, setMediaLoading, setAnimeUserList, setMangaUserList } from "../utilities/signals";
+import { mediaType, setMediaLoading } from "../utilities/signals";
 import { fetchUserMedia } from "../api/anilist";
 
 const userDataSaved = {};
@@ -23,9 +23,6 @@ export async function updateMediaInfoObject(...newUsers) {
 		for (const animeList of userAnimeLists) {
 			animeList.renderName = animeList.name;
 			animeList.name = animeList.isCustomList ? "c-" + animeList.name : animeList.name;
-			const listKey = animeList.isCustomList ? "Custom" : animeList.name;
-			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, animeList.name, listKey])].sort());
-			else setAnimeUserList((prev) => [...new Set([...prev, animeList.name, listKey])].sort());
 
 			for (let i = 0; i < animeList.entries.length; i++) {
 				const anime = animeList.entries[i];
@@ -35,11 +32,7 @@ export async function updateMediaInfoObject(...newUsers) {
 			}
 		}
 
-		if (rewatchedList.entries.length) {
-			userAnimeLists.push(rewatchedList);
-			if (mediaTypeValue === "MANGA") setMangaUserList((prev) => [...new Set([...prev, rewatchedName])].sort());
-			else setAnimeUserList((prev) => [...new Set([...prev, rewatchedName])].sort());
-		}
+		if (rewatchedList.entries.length) userAnimeLists.push(rewatchedList);
 
 		console.log(userAnimeLists);
 	}

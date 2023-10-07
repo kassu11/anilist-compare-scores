@@ -1,9 +1,10 @@
 import { updateMediaData } from "../UserMedia";
 import TrashCanSvg from "../Icons/TrashCan";
 import EmptyUserTable from "./EmptyUserTable";
-import UserSearch2 from "../UserSearch/UserSearch";
+import UserSearch from "../UserSearch/UserSearch";
 import { userTable, setUserTable } from "../../utilities/signals";
 import IncludeUsersOption from "./UserIncludeBar";
+import { updateAllUserLists } from "../ListNames";
 
 import "../../style/settings.scss";
 
@@ -11,7 +12,7 @@ function UserTable() {
 	return (
 		<div class="usersTable">
 			<div class="options">
-				<UserSearch2 />
+				<UserSearch />
 				<IncludeUsersOption />
 			</div>
 			<table>
@@ -71,8 +72,8 @@ function RemoveUser({ user }) {
 		<div
 			class="trash"
 			onClick={() => {
-				const users = userTable().filter((u) => u.id !== user.id);
-				setUserTable(users);
+				setUserTable((users) => users.filter((u) => u.id !== user.id));
+				updateAllUserLists();
 				updateMediaData();
 			}}
 		>
@@ -98,28 +99,29 @@ function multiSelect(event) {
 		event.target.checked = false;
 	}
 
-	const users = [...userTable()];
-	users.forEach((user, index) => {
-		user[forType] = checkboxes[index].checked;
-		if (forType === "enabled") checkboxes[index].closest("tr").classList.toggle("disabled", !checkboxes[index].checked);
-		else if (forType === "exclude") checkboxes[index].closest("tr").classList.toggle("excludeRow", checkboxes[index].checked);
-	});
-	setUserTable(users);
+	setUserTable((users) =>
+		users.map((user, index) => {
+			user[forType] = checkboxes[index].checked;
+			if (forType === "enabled") checkboxes[index].closest("tr").classList.toggle("disabled", !checkboxes[index].checked);
+			else if (forType === "exclude") checkboxes[index].closest("tr").classList.toggle("excludeRow", checkboxes[index].checked);
+			return user;
+		})
+	);
 }
 
 function changeExcludeState(e, user) {
 	user.exclude = e.target.checked;
 	e.target.closest("tr").classList.toggle("excludeRow", e.target.checked);
-	const users = [...userTable()];
-	setUserTable(users);
+	setUserTable((users) => [...users]);
+	updateAllUserLists();
 	updateMediaData();
 }
 
 function changeUserState(e, user) {
 	user.enabled = e.target.checked;
 	e.target.closest("tr").classList.toggle("disabled", !e.target.checked);
-	const users = [...userTable()];
-	setUserTable(users);
+	setUserTable((users) => [...users]);
+	updateAllUserLists();
 	updateMediaData();
 }
 
