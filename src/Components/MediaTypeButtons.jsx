@@ -1,5 +1,5 @@
 import { setMediaType } from "../utilities/signals";
-import { updateListType } from "./ListTypes";
+import { updateListType } from "./ListNames";
 import { updateMediaData } from "./UserMedia";
 
 function MediaTypeButtons() {

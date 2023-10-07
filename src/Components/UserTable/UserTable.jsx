@@ -4,7 +4,7 @@ import EmptyUserTable from "./EmptyUserTable";
 import UserSearch from "../UserSearch/UserSearch";
 import { userTable, setUserTable } from "../../utilities/signals";
 import IncludeUsersOption from "./UserIncludeBar";
-import { updateActiveUserLists } from "../ListTypes";
+import { updateActiveUserLists } from "../ListNames";
 
 import "../../style/settings.scss";
 
