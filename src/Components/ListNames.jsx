@@ -5,6 +5,8 @@ import { fetchUserMedia } from "../api/anilist";
 function ListTypes() {
 	const custom = (list) => list.startsWith("c-");
 	const notCustom = (list) => !list.startsWith("c-");
+	const memory = (list) => userListSelectionMemory[mediaType()]["global"][list];
+
 	return (
 		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)}>
 			<ul>
@@ -14,7 +16,7 @@ function ListTypes() {
 							<li>
 								<details class="custom-list-dropdown">
 									<summary>
-										<input type="checkbox" name={item} id={item} checked={userListSelectionMemory[mediaType()][item] ?? true} />
+										<input type="checkbox" name={item} id={item} checked={memory(item) ?? true} />
 										<label htmlFor={item}>{item}</label>
 										<span class="dropdown-lable">[more]</span>
 									</summary>
@@ -22,7 +24,7 @@ function ListTypes() {
 										<For each={allUserLists().filter(custom)}>
 											{(item) => (
 												<li>
-													<input type="checkbox" name={item} id={item} checked={userListSelectionMemory[mediaType()][item]} />
+													<input type="checkbox" name={item} id={item} checked={memory(item)} />
 													<label htmlFor={item}>{item.replace("c-", "")}</label>
 												</li>
 											)}
@@ -32,7 +34,7 @@ function ListTypes() {
 							</li>
 						) : (
 							<li>
-								<input type="checkbox" name={item} id={item} checked={userListSelectionMemory[mediaType()][item] ?? true} />
+								<input type="checkbox" name={item} id={item} checked={memory(item) ?? true} />
 								<label htmlFor={item}>{item}</label>
 							</li>
 						)
@@ -45,8 +47,9 @@ function ListTypes() {
 
 export function updateListType(formElem) {
 	const data = Object.fromEntries(new FormData(formElem));
+	const globalSettings = userListSelectionMemory[mediaType()]["global"];
 	allUserLists().forEach((list) => {
-		userListSelectionMemory[mediaType()][list] = list in data;
+		globalSettings[list] = list in data;
 	});
 	const types = Object.keys(data);
 

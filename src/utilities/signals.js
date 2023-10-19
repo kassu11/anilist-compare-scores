@@ -13,4 +13,27 @@ export const [mediaLoading, setMediaLoading] = createSignal(false);
 
 export const [allUserLists, setAllUserLists] = createSignal([]);
 export const [selectedLists, setSelectedLists] = createSignal([]);
-export const userListSelectionMemory = { ANIME: {}, MANGA: {} };
+export const userListSelectionMemory = { ANIME: { global: {} }, MANGA: { global: {} } };
+
+let test_syntax = {
+	ANIME: {
+		global: {
+			Watching: true,
+			Completed: true,
+			Paused: true,
+			Dropped: true,
+			Planning: true,
+			Repeating: true,
+			Custom: true,
+		},
+		u_kassu: {
+			Watching: true,
+			Completed: true,
+			Paused: true,
+			Dropped: true,
+			Planning: true,
+			Repeating: true,
+			Custom: true,
+		},
+	},
+};
