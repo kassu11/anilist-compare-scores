@@ -10,6 +10,116 @@ import "../../style/settings.scss";
 
 function UserTable() {
 	return (
+		<div class="userContainer">
+			<div class="options">
+				<UserSearch />
+				<IncludeUsersOption />
+			</div>
+			<div class="userGrid">
+				<span class="header">Selection</span>
+				<span class="header">Name</span>
+				<span class="header">Anime</span>
+				<span class="header">Score</span>
+				<span class="header">Hours</span>
+				<span class="header">Manga</span>
+				<span class="header">Score</span>
+				<span class="header">Chapters</span>
+				<span class="header">Advanced</span>
+				<span class="header">Exclude</span>
+				<For each={userTable()}>{(user, i) => <UserRow user={user} index={i} />}</For>
+			</div>
+		</div>
+	);
+}
+
+function UserRow({ user, index }) {
+	const column = (num) => `--_grid-row: ${(index() + 1) * 3};` + `--_grid-column: ${num}`;
+	const info = (
+		<div class="info" style={column()}>
+			<form>
+				<ul>
+					<li>
+						<input type="checkbox" name="Completed" id="Completed"></input>
+						<label for="Completed">Completed</label>
+					</li>
+					<li>
+						<details class="custom-list-dropdown">
+							<summary>
+								<input type="checkbox" name="Custom" id="Custom"></input>
+								<label for="Custom">Custom</label>
+								<span class="dropdown-lable">[more]</span>
+							</summary>
+							<ul>
+								<li>
+									<input type="checkbox" name="c-Dabbled" id="c-Dabbled"></input>
+									<label for="c-Dabbled">Dabbled</label>
+								</li>
+								<li>
+									<input type="checkbox" name="c-Extras" id="c-Extras"></input>
+									<label for="c-Extras">Extras</label>
+								</li>
+								<li>
+									<input type="checkbox" name="c-Rewatched" id="c-Rewatched"></input>
+									<label for="c-Rewatched">Rewatched</label>
+								</li>
+							</ul>
+						</details>
+					</li>
+					<li>
+						<input type="checkbox" name="Dropped" id="Dropped"></input>
+						<label for="Dropped">Dropped</label>
+					</li>
+					<li>
+						<input type="checkbox" name="Planning" id="Planning"></input>
+						<label for="Planning">Planning</label>
+					</li>
+					<li>
+						<input type="checkbox" name="Rewatched" id="Rewatched"></input>
+						<label for="Rewatched">Rewatched</label>
+					</li>
+					<li>
+						<input type="checkbox" name="Watching" id="Watching"></input>
+						<label for="Watching">Watching</label>
+					</li>
+				</ul>
+			</form>
+		</div>
+	);
+	return (
+		<>
+			<div class="user-background" style={column(0)}></div>
+			<div class="selection" style={column(1)}>
+				<label class="hitbox">
+					<input type="checkbox" for="enabled" onInput={(e) => changeUserState(e, user)} checked onClick={multiSelect} />
+				</label>
+				<div class="hamburger"></div>
+				<RemoveUser user={user} />
+			</div>
+			<div class="user-name" style={column(2)}>
+				<img src={user.avatar.medium} alt={user.name} class="profile" height="25" />
+				<span>{user.name}</span>
+			</div>
+			<span style={column(3)}>{user.statistics.anime.count}</span>
+			<span style={column(4)}>{user.statistics.anime.meanScore}</span>
+			<span style={column(5)}>{Math.round(user.statistics.anime.minutesWatched / 60)}</span>
+			<span style={column(6)}>{user.statistics.manga.count}</span>
+			<span style={column(7)}>{user.statistics.manga.meanScore}</span>
+			<span style={column(8)}>{Math.round(user.statistics.manga.chaptersRead)}</span>
+			<label style={column(9)}>
+				<input type="checkbox" onInput={(e) => info.classList.toggle("open", e.target.checked)} /> Advanced
+			</label>
+			<div class="exclude" style={column(10)}>
+				<label class="hitbox">
+					<input type="checkbox" for="exclude" onInput={(e) => changeExcludeState(e, user)} onClick={multiSelect} />
+				</label>
+			</div>
+			{info}
+		</>
+	);
+}
+
+function UserTableOld() {
+	return (
 		<div class="usersTable">
 			<div class="options">
 				<UserSearch />
@@ -26,6 +136,7 @@ function UserTable() {
 						<th>Manga</th>
 						<th class="close">Score</th>
 						<th class="paddingRight">Chapters</th>
+						<th>Advanced</th>
 						<th>Exclude</th>
 					</tr>
 				</thead>
@@ -53,6 +164,11 @@ function UserTable() {
 								<td>{user.statistics.manga.count}</td>
 								<td class="close">{user.statistics.manga.meanScore}</td>
 								<td>{Math.round(user.statistics.manga.chaptersRead)}</td>
+								<td>
+									<details>
+										<summary>Open</summary>
+									</details>
+								</td>
 								<td class="exclude">
 									<label class="hitbox">
 										<input type="checkbox" for="exclude" onInput={(e) => changeExcludeState(e, user)} onClick={multiSelect} />
@@ -102,8 +218,8 @@ function multiSelect(event) {
 	setUserTable((users) =>
 		users.map((user, index) => {
 			user[forType] = checkboxes[index].checked;
-			if (forType === "enabled") checkboxes[index].closest("tr").classList.toggle("disabled", !checkboxes[index].checked);
-			else if (forType === "exclude") checkboxes[index].closest("tr").classList.toggle("excludeRow", checkboxes[index].checked);
+			// if (forType === "enabled") checkboxes[index].closest("tr").classList.toggle("disabled", !checkboxes[index].checked);
+			// else if (forType === "exclude") checkboxes[index].closest("tr").classList.toggle("excludeRow", checkboxes[index].checked);
 			return user;
 		})
 	);
@@ -111,14 +227,14 @@ function multiSelect(event) {
 
 async function changeExcludeState(e, user) {
 	user.exclude = e.target.checked;
-	e.target.closest("tr").classList.toggle("excludeRow", e.target.checked);
+	// e.target.closest("tr").classList.toggle("excludeRow", e.target.checked);
 	setUserTable((users) => [...users]);
 	await updateAllUserLists();
 }
 
 async function changeUserState(e, user) {
 	user.enabled = e.target.checked;
-	e.target.closest("tr").classList.toggle("disabled", !e.target.checked);
+	// e.target.closest("tr").classList.toggle("disabled", !e.target.checked);
 	setUserTable((users) => [...users]);
 	await updateAllUserLists();
 }

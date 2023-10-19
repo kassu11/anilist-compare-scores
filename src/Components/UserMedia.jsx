@@ -163,6 +163,8 @@ export async function updateMediaData() {
 		type = mediaType(),
 		sortType = sortValue();
 
+	console.trace(listTypes);
+
 	const filterKey = usersArray.map((u) => u.name + u.exclude).join("-") + listTypes.join("-") + type;
 	const exclude = usersArray.some((u) => u.exclude);
 

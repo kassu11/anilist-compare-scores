@@ -2,8 +2,7 @@ import { fetchUsers } from "../../api/anilist";
 import { createSignal, createResource } from "solid-js";
 import { userTable, setUserTable, searchIndex, setSearchIndex } from "../../utilities/signals";
 import { updateMediaInfoObject } from "../../utilities/updateMediaInfoObject";
-import { updateMediaData } from "../UserMedia";
-import { updateListType, updateAllUserLists } from "../ListNames";
+import { updateAllUserLists } from "../ListNames";
 
 import UserSearchItem from "./UserSearchItem";
 import UserSearchLoading from "./UserSearchLoading";

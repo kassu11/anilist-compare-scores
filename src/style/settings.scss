@@ -54,6 +54,59 @@
 	opacity: 0.75;
 }
 
+// New userGrid
+
+.userGrid {
+	display: grid;
+	grid-template-columns: repeat(10, auto);
+	gap: 5px;
+
+	.header {
+		font-weight: 600;
+	}
+
+	label {
+		display: inline-flex;
+		gap: 5px;
+	}
+
+	.selection {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.user-name {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
+
+	> * {
+		grid-column: var(--_grid-column);
+		grid-row: var(--_grid-row);
+	}
+
+	.user-background {
+		grid-column: 1 / -1;
+		z-index: -1;
+		background-color: #151f2e;
+		grid-row: calc(var(--_grid-row) - 1) / span 3;
+		user-select: none;
+		pointer-events: none;
+	}
+
+	.info {
+		&:not(.open) {
+			display: none;
+		}
+
+		background-color: green;
+		grid-row: calc(var(--_grid-row) + 1);
+		grid-column: 1 / -1;
+	}
+}
+
 // UserTable.module
 
 .center {

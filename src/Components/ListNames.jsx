@@ -56,6 +56,8 @@ export function updateListType(formElem) {
 	if (types.includes("Custom")) {
 		setSelectedLists(types.filter((type) => !type.startsWith("c-")));
 	} else setSelectedLists(types);
+
+	console.log(types, data);
 	updateMediaData();
 }
 
