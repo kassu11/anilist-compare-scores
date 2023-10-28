@@ -61,7 +61,7 @@
 
 // New new userGrid
 
-.user-grid {
+#userGrid {
 	display: grid;
 	grid-template-columns: repeat(10, auto);
 	min-width: 600px;

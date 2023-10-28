@@ -17,7 +17,7 @@ function UserTable() {
 				<UserSearch />
 				<IncludeUsersOption />
 			</div>
-			<div class="user-grid">
+			<div id="userGrid">
 				<Show when={userTable()?.length}>
 					<Header />
 					<For each={userTable()}>{(user) => <UserRow user={user} />}</For>
@@ -49,7 +49,7 @@ function UserRow({ user }) {
 		<div className="subgrid-row user-row">
 			<div class="selection-options">
 				<label class="hitbox">
-					<input type="checkbox" for="enabled" onInput={(e) => changeUserState(e, user)} checked onClick={multiSelect} />
+					<input type="checkbox" for="enabled" checked onChange={(e) => inputTest(e, user)} onClick={multiSelect} />
 				</label>
 				<div class="hamburger"></div>
 				<RemoveUser user={user} />
@@ -65,12 +65,11 @@ function UserRow({ user }) {
 			<span class="center">{user.statistics.manga.meanScore}</span>
 			<span>{Math.round(user.statistics.manga.chaptersRead)}</span>
 			<label>
-				<input type="checkbox" onInput={(e) => e.target.closest(".user-row").classList.toggle("open-advanced-info", e.target.checked)} />{" "}
-				Advanced
+				<input type="checkbox" for="advanced" onChange={(e) => inputTest(e, user)} onClick={multiSelect} /> Advanced
 			</label>
 			<div class="exclude">
 				<label class="hitbox">
-					<input type="checkbox" for="exclude" onInput={(e) => changeExcludeState(e, user)} onClick={multiSelect} />
+					<input type="checkbox" for="exclude" onChange={(e) => inputTest(e, user)} onClick={multiSelect} />
 				</label>
 			</div>
 			<UserInfo user={user} />
@@ -114,21 +113,46 @@ function RemoveUser({ user }) {
 	);
 }
 
-function multiSelect(event) {
-	if (!event.shiftKey) return;
+async function inputTest(event, user) {
 	const forType = event.target.getAttribute("for");
-	const checkboxes = document.querySelectorAll(`input[for="${forType}"]`);
+	const userRow = event.target.closest(".user-row");
+
+	if (forType === "enabled") {
+		user.enabled = event.target.checked;
+		userRow.classList.toggle("disabled", !event.target.checked);
+	} else if (forType === "exclude") {
+		user.exclude = event.target.checked;
+		userRow.classList.toggle("excludeRow", event.target.checked);
+	} else if (forType === "advanced") {
+		userRow.classList.toggle("open-advanced-info", event.target.checked);
+	}
+
+	setUserTable((users) => [...users]);
+	await updateAllUserLists();
+}
+
+async function multiSelect(event) {
+	const input = event.target.tagName === "INPUT" ? event.target : event.target.querySelector("input");
+	const forType = input.getAttribute("for");
+	if (!event.shiftKey) return;
+
+	const checkboxes = userGrid.querySelectorAll(`input[for="${forType}"]`);
 	let sum = 0;
 	for (const checkbox of checkboxes) {
 		if (checkbox.checked) sum++;
-		else break;
 	}
 
-	if (sum === checkboxes.length && event.target.checked) {
+	if (sum === checkboxes.length || (sum === checkboxes.length - 1 && !input.checked)) {
 		checkboxes.forEach((input) => (input.checked = false));
+		input.checked = true;
 	} else {
 		checkboxes.forEach((input) => (input.checked = true));
-		event.target.checked = false;
+		input.checked = false;
+	}
+
+	if (forType === "advanced") {
+		checkboxes.forEach((input) => input.closest(".user-row").classList.toggle("open-advanced-info", input.checked));
+		return;
 	}
 
 	setUserTable((users) =>
@@ -139,20 +163,6 @@ function multiSelect(event) {
 			return user;
 		})
 	);
-}
-
-async function changeExcludeState(e, user) {
-	user.exclude = e.target.checked;
-	e.target.closest(".user-row").classList.toggle("excludeRow", e.target.checked);
-	setUserTable((users) => [...users]);
-	await updateAllUserLists();
-}
-
-async function changeUserState(e, user) {
-	user.enabled = e.target.checked;
-	e.target.closest(".user-row").classList.toggle("disabled", !e.target.checked);
-	setUserTable((users) => [...users]);
-	await updateAllUserLists();
 }
 
 export default UserTable;
