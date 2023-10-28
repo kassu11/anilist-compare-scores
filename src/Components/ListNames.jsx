@@ -5,6 +5,10 @@ import { fetchUserMedia } from "../api/anilist";
 const custom = (list) => list.startsWith("c-");
 const notCustom = (list) => !list.startsWith("c-");
 const memory = (scope, listName) => userListSelectionMemory[mediaType()][scope]?.[listName];
+const setMemory = (scope, listName, value) => {
+	userListSelectionMemory[mediaType()][scope] ??= {};
+	userListSelectionMemory[mediaType()][scope][listName] = value;
+};
 
 const defaultScope = "global";
 
@@ -32,7 +36,7 @@ export function SelectionList({ values = allUserLists, scope = defaultScope }) {
 
 const CustomList = ({ values = allUserLists, scope }) => (
 	<li>
-		<details class="custom-list-dropdown">
+		<details class="custom-list-dropdown" open={memory(scope, "dropdown")} onToggle={(e) => setMemory(scope, "dropdown", e.target.open)}>
 			<summary>
 				<ListValues id="Custom" scope={scope} checked={true} />
 				<span class="dropdown-lable">[more]</span>
@@ -52,7 +56,13 @@ const ListItem = ({ id, checked, scope }) => (
 
 const ListValues = ({ id, checked = false, scope }) => (
 	<>
-		<input type="checkbox" name={id} id={scope + id} checked={memory(scope, id) ?? checked} />
+		<input
+			type="checkbox"
+			name={id}
+			id={scope + id}
+			checked={memory(scope, id) ?? checked}
+			onInput={(e) => setMemory(scope, e.target.name, e.target.checked)}
+		/>
 		<label htmlFor={scope + id}>{id.replace("c-", "")}</label>
 	</>
 );
@@ -67,7 +77,6 @@ export function updateListType(formElem) {
 		setSelectedLists(types.filter((type) => !type.startsWith("c-")));
 	} else setSelectedLists(types);
 
-	console.log(types, data);
 	updateMediaData();
 }
 

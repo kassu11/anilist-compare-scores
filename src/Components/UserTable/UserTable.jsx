@@ -1,3 +1,6 @@
+import { createResource } from "solid-js";
+import { mediaType } from "../../utilities/signals";
+import { fetchUserMedia } from "../../api/anilist";
 import { updateMediaData } from "../UserMedia";
 import TrashCanSvg from "../Icons/TrashCan";
 import UserSearch from "../UserSearch/UserSearch";
@@ -75,13 +78,23 @@ function UserRow({ user }) {
 	);
 }
 
+const custom = (list) => list.isCustomList;
+const list = (userData) => {
+	const allLists = userData().map((v) => v.name);
+	if (userData().some(custom)) allLists.push("Custom");
+	return allLists.sort();
+};
+
 function UserInfo({ user }) {
-	console.log(user);
+	const [value] = createResource(mediaType, (type) => fetchUserMedia(user, type));
+
 	return (
 		<div class="user-advanced-info">
-			<form>
-				<SelectionList values={() => ["test", "nice"]} scope={user.id + "-"} />
-			</form>
+			<Show when={value()}>
+				<form>
+					<SelectionList values={() => list(value)} scope={user.id + "-"} />
+				</form>
+			</Show>
 		</div>
 	);
 }
