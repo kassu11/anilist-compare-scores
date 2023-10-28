@@ -2,55 +2,65 @@ import { updateMediaData } from "./UserMedia";
 import { setSelectedLists, mediaType, userTable, allUserLists, setAllUserLists, userListSelectionMemory } from "../utilities/signals";
 import { fetchUserMedia } from "../api/anilist";
 
-function ListTypes() {
-	const custom = (list) => list.startsWith("c-");
-	const notCustom = (list) => !list.startsWith("c-");
-	const memory = (list) => userListSelectionMemory[mediaType()]["global"][list];
+const custom = (list) => list.startsWith("c-");
+const notCustom = (list) => !list.startsWith("c-");
+const memory = (scope, listName) => userListSelectionMemory[mediaType()][scope]?.[listName];
 
+const defaultScope = "global";
+
+function ListTypes({ values = allUserLists }) {
 	return (
 		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)}>
-			<ul>
-				<For each={allUserLists().filter(notCustom)}>
-					{(item) =>
-						item === "Custom" ? (
-							<li>
-								<details class="custom-list-dropdown">
-									<summary>
-										<input type="checkbox" name={item} id={item} checked={memory(item) ?? true} />
-										<label htmlFor={item}>{item}</label>
-										<span class="dropdown-lable">[more]</span>
-									</summary>
-									<ul>
-										<For each={allUserLists().filter(custom)}>
-											{(item) => (
-												<li>
-													<input type="checkbox" name={item} id={item} checked={memory(item)} />
-													<label htmlFor={item}>{item.replace("c-", "")}</label>
-												</li>
-											)}
-										</For>
-									</ul>
-								</details>
-							</li>
-						) : (
-							<li>
-								<input type="checkbox" name={item} id={item} checked={memory(item) ?? true} />
-								<label htmlFor={item}>{item}</label>
-							</li>
-						)
-					}
-				</For>
-			</ul>
+			<SelectionList values={values} scope={defaultScope} />
 		</form>
 	);
 }
 
+export function SelectionList({ values = allUserLists, scope = defaultScope }) {
+	return (
+		<ul>
+			<For each={values().filter(notCustom)}>
+				{(item) => (
+					<Show when={item === "Custom"} fallback={<ListItem id={item} scope={scope} checked={true} />}>
+						<CustomList values={values} scope={scope} />
+					</Show>
+				)}
+			</For>
+		</ul>
+	);
+}
+
+const CustomList = ({ values = allUserLists, scope }) => (
+	<li>
+		<details class="custom-list-dropdown">
+			<summary>
+				<ListValues id="Custom" scope={scope} checked={true} />
+				<span class="dropdown-lable">[more]</span>
+			</summary>
+			<ul>
+				<For each={values().filter(custom)}>{(item) => <ListItem id={item} scope={scope} />}</For>
+			</ul>
+		</details>
+	</li>
+);
+
+const ListItem = ({ id, checked, scope }) => (
+	<li>
+		<ListValues id={id} checked={checked} scope={scope} />
+	</li>
+);
+
+const ListValues = ({ id, checked = false, scope }) => (
+	<>
+		<input type="checkbox" name={id} id={scope + id} checked={memory(scope, id) ?? checked} />
+		<label htmlFor={scope + id}>{id.replace("c-", "")}</label>
+	</>
+);
+
 export function updateListType(formElem) {
 	const data = Object.fromEntries(new FormData(formElem));
-	const globalSettings = userListSelectionMemory[mediaType()]["global"];
-	allUserLists().forEach((list) => {
-		globalSettings[list] = list in data;
-	});
+	const globalSettings = userListSelectionMemory[mediaType()][defaultScope];
+	allUserLists().forEach((list) => (globalSettings[list] = list in data));
 	const types = Object.keys(data);
 
 	if (types.includes("Custom")) {

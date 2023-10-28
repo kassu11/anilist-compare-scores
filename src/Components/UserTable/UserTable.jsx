@@ -3,7 +3,7 @@ import TrashCanSvg from "../Icons/TrashCan";
 import UserSearch from "../UserSearch/UserSearch";
 import { userTable, setUserTable } from "../../utilities/signals";
 import IncludeUsersOption from "./UserIncludeBar";
-import { updateAllUserLists } from "../ListNames";
+import { SelectionList, updateAllUserLists } from "../ListNames";
 
 import "../../style/settings.scss";
 
@@ -70,60 +70,17 @@ function UserRow({ user }) {
 					<input type="checkbox" for="exclude" onInput={(e) => changeExcludeState(e, user)} onClick={multiSelect} />
 				</label>
 			</div>
-			<UserInfo />
+			<UserInfo user={user} />
 		</div>
 	);
 }
 
 function UserInfo({ user }) {
+	console.log(user);
 	return (
 		<div class="user-advanced-info">
 			<form>
-				<ul>
-					<li>
-						<input type="checkbox" name="Completed" id="Completed"></input>
-						<label for="Completed">Completed</label>
-					</li>
-					<li>
-						<details class="custom-list-dropdown">
-							<summary>
-								<input type="checkbox" name="Custom" id="Custom"></input>
-								<label for="Custom">Custom</label>
-								<span class="dropdown-lable">[more]</span>
-							</summary>
-							<ul>
-								<li>
-									<input type="checkbox" name="c-Dabbled" id="c-Dabbled"></input>
-									<label for="c-Dabbled">Dabbled</label>
-								</li>
-								<li>
-									<input type="checkbox" name="c-Extras" id="c-Extras"></input>
-									<label for="c-Extras">Extras</label>
-								</li>
-								<li>
-									<input type="checkbox" name="c-Rewatched" id="c-Rewatched"></input>
-									<label for="c-Rewatched">Rewatched</label>
-								</li>
-							</ul>
-						</details>
-					</li>
-					<li>
-						<input type="checkbox" name="Dropped" id="Dropped"></input>
-						<label for="Dropped">Dropped</label>
-					</li>
-					<li>
-						<input type="checkbox" name="Planning" id="Planning"></input>
-						<label for="Planning">Planning</label>
-					</li>
-					<li>
-						<input type="checkbox" name="Rewatched" id="Rewatched"></input>
-						<label for="Rewatched">Rewatched</label>
-					</li>
-					<li>
-						<input type="checkbox" name="Watching" id="Watching"></input>
-						<label for="Watching">Watching</label>
-					</li>
-				</ul>
+				<SelectionList values={() => ["test", "nice"]} scope={user.id + "-"} />
 			</form>
 		</div>
 	);
