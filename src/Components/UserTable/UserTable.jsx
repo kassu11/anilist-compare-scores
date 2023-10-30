@@ -1,4 +1,4 @@
-import { createResource } from "solid-js";
+import { createResource, createSignal } from "solid-js";
 import { mediaType } from "../../utilities/signals";
 import { fetchUserMedia } from "../../api/anilist";
 import { updateMediaData } from "../UserMedia";
@@ -84,14 +84,17 @@ const list = (userData) => {
 	return allLists.sort();
 };
 
-function UserInfo({ user }) {
-	const [value] = createResource(mediaType, (type) => fetchUserMedia(user, type));
+function UserInfo(props) {
+	const [value] = createResource(mediaType, (type) => fetchUserMedia(props.user, type));
+	const [state, setState] = createSignal(false);
 
 	return (
 		<div class="user-advanced-info">
 			<Show when={value()}>
 				<form>
-					<SelectionList values={() => list(value)} scope={user.id + "-"} />
+					<input type="checkbox" name="advanced" id={props.user.id + "advanced"} onChange={(e) => setState(e.target.checked)} />
+					<label htmlFor={props.user.id + "advanced"}>Enable custom list selection</label>
+					<SelectionList list={list(value)} scope={props.user.id + "-"} disabled={!state()} />
 				</form>
 			</Show>
 		</div>

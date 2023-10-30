@@ -1,6 +1,7 @@
 import { updateMediaData } from "./UserMedia";
 import { setSelectedLists, mediaType, userTable, allUserLists, setAllUserLists, userListSelectionMemory } from "../utilities/signals";
 import { fetchUserMedia } from "../api/anilist";
+import { mergeProps, splitProps } from "solid-js";
 
 const custom = (list) => list.startsWith("c-");
 const notCustom = (list) => !list.startsWith("c-");
@@ -12,21 +13,24 @@ const setMemory = (scope, listName, value) => {
 
 const defaultScope = "global";
 
-function ListTypes({ values = allUserLists }) {
+function ListTypes() {
 	return (
 		<form id="checkboxRow" onInput={(e) => updateListType(e.currentTarget)}>
-			<SelectionList values={values} scope={defaultScope} />
+			<p>All user lists</p>
+			<SelectionList list={allUserLists()} scope={defaultScope} />
 		</form>
 	);
 }
 
-export function SelectionList({ values = allUserLists, scope = defaultScope }) {
+export function SelectionList(props) {
+	const merged = mergeProps({ list: [], scope: defaultScope, disabled: false }, props);
+
 	return (
 		<ul>
-			<For each={values().filter(notCustom)}>
+			<For each={merged.list.filter(notCustom)}>
 				{(item) => (
-					<Show when={item === "Custom"} fallback={<ListItem id={item} scope={scope} checked={true} />}>
-						<CustomList values={values} scope={scope} />
+					<Show when={item === "Custom"} fallback={<ListItem id={item} checked={true} {...merged} />}>
+						<CustomList {...merged} />
 					</Show>
 				)}
 			</For>
@@ -34,38 +38,48 @@ export function SelectionList({ values = allUserLists, scope = defaultScope }) {
 	);
 }
 
-const CustomList = ({ values = allUserLists, scope }) => (
+const CustomList = (props) => {
+	const [local, others] = splitProps(props, ["list"]);
+	const open = memory(others.scope, "dropdown");
+	const setOpen = (value) => setMemory(others.scope, "dropdown", value);
+
+	return (
+		<li>
+			<details class="custom-list-dropdown" open={open} onToggle={(e) => setOpen(e.target.open)}>
+				<summary>
+					<ListValues id="Custom" checked={true} {...others} />
+					<span class="dropdown-lable">[more]</span>
+				</summary>
+				<ul>
+					<For each={local.list.filter(custom)}>{(item) => <ListItem id={item} {...others} />}</For>
+				</ul>
+			</details>
+		</li>
+	);
+};
+
+const ListItem = (props) => (
 	<li>
-		<details class="custom-list-dropdown" open={memory(scope, "dropdown")} onToggle={(e) => setMemory(scope, "dropdown", e.target.open)}>
-			<summary>
-				<ListValues id="Custom" scope={scope} checked={true} />
-				<span class="dropdown-lable">[more]</span>
-			</summary>
-			<ul>
-				<For each={values().filter(custom)}>{(item) => <ListItem id={item} scope={scope} />}</For>
-			</ul>
-		</details>
+		<ListValues {...props} />
 	</li>
 );
 
-const ListItem = ({ id, checked, scope }) => (
-	<li>
-		<ListValues id={id} checked={checked} scope={scope} />
-	</li>
-);
-
-const ListValues = ({ id, checked = false, scope }) => (
-	<>
-		<input
-			type="checkbox"
-			name={id}
-			id={scope + id}
-			checked={memory(scope, id) ?? checked}
-			onInput={(e) => setMemory(scope, e.target.name, e.target.checked)}
-		/>
-		<label htmlFor={scope + id}>{id.replace("c-", "")}</label>
-	</>
-);
+const ListValues = (props) => {
+	const merged = mergeProps({ checked: false }, props);
+	return (
+		<>
+			<input
+				type="checkbox"
+				name={merged.id}
+				id={merged.scope + merged.id}
+				checked={memory(merged.scope, merged.id) ?? merged.checked}
+				onInput={(e) => setMemory(merged.scope, e.target.name, e.target.checked)}
+				disabled={merged.disabled}
+			/>
+			<label htmlFor={merged.scope + merged.id}>{merged.id.replace("c-", "")}</label>
+		</>
+	);
+};
 
 export function updateListType(formElem) {
 	const data = Object.fromEntries(new FormData(formElem));
