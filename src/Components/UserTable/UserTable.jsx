@@ -48,8 +48,8 @@ function UserRow({ user }) {
 	return (
 		<div className="subgrid-row user-row">
 			<div class="selection-options">
-				<label class="hitbox">
-					<input type="checkbox" for="enabled" checked onChange={(e) => inputTest(e, user)} onClick={multiSelect} />
+				<label class="hitbox" onClick={multiSelect}>
+					<input type="checkbox" for="enabled" checked onChange={(e) => inputTest(e, user)} />
 				</label>
 				<div class="hamburger"></div>
 				<RemoveUser user={user} />
@@ -64,12 +64,12 @@ function UserRow({ user }) {
 			<span class="right">{user.statistics.manga.count}</span>
 			<span class="center">{user.statistics.manga.meanScore}</span>
 			<span>{Math.round(user.statistics.manga.chaptersRead)}</span>
-			<label>
-				<input type="checkbox" for="advanced" onChange={(e) => inputTest(e, user)} onClick={multiSelect} /> Advanced
+			<label onClick={multiSelect}>
+				<input type="checkbox" for="advanced" onChange={(e) => inputTest(e, user)} /> Advanced
 			</label>
 			<div class="exclude">
-				<label class="hitbox">
-					<input type="checkbox" for="exclude" onChange={(e) => inputTest(e, user)} onClick={multiSelect} />
+				<label class="hitbox" onClick={multiSelect}>
+					<input type="checkbox" for="exclude" onChange={(e) => inputTest(e, user)} />
 				</label>
 			</div>
 			<UserInfo user={user} />
@@ -138,6 +138,12 @@ async function multiSelect(event) {
 	const input = event.target.tagName === "INPUT" ? event.target : event.target.querySelector("input");
 	const forType = input.getAttribute("for");
 	if (!event.shiftKey) return;
+	if (document.selection && document.selection.empty) {
+		document.selection.empty();
+	} else if (window.getSelection) {
+		var sel = window.getSelection();
+		sel.removeAllRanges();
+	}
 
 	const checkboxes = userGrid.querySelectorAll(`input[for="${forType}"]`);
 	let sum = 0;
