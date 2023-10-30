@@ -101,11 +101,10 @@
 				width: calc(100% - 102px);
 				height: 5px;
 				background: #ffffff47;
-				top: 50%;
+				top: 15px;
 				right: 5px;
 				pointer-events: none;
 				backdrop-filter: blur(2px);
-				transform: translateY(-50%);
 				border-radius: 10px;
 			}
 		}
