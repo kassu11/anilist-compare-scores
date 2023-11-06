@@ -95,53 +95,20 @@ const userMediaQuery = `query ($userId: Int, $userName: String, $type: MediaType
 			id
 			name
 			avatar {
-				large
+				medium
 			}
 			mediaListOptions {
 				scoreFormat
 				rowOrder
-				animeList {
-					sectionOrder
-					customLists
-					splitCompletedSectionByFormat
-					theme
-				}
-				mangaList {
-					sectionOrder
-					customLists
-					splitCompletedSectionByFormat
-					theme
-				}
 			}
 		}
 	}
 }
 
 fragment mediaListEntry on MediaList {
-	id
-	mediaId
-	status
 	score(format: POINT_10_DECIMAL)
-	progress
-	progressVolumes
 	repeat
-	priority
-	private
-	hiddenFromStatusLists
 	customLists
-	advancedScores
-	notes
-	updatedAt
-	startedAt {
-		year
-		month
-		day
-	}
-	completedAt {
-		year
-		month
-		day
-	}
 	media {
 		id
 		title {
@@ -151,22 +118,15 @@ fragment mediaListEntry on MediaList {
 			native
 		}
 		coverImage {
-			extraLarge
 			large
 			color
 		}
 		season
 		type
 		format
-		status(version: 2)
 		episodes
-		volumes
 		chapters
 		averageScore
-		popularity
-		isAdult
-		countryOfOrigin
-		genres
 		bannerImage
 		nextAiringEpisode {
 			episode
