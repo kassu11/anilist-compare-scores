@@ -1,10 +1,9 @@
 import { createResource, createSignal } from "solid-js";
-import { mediaType } from "../../utilities/signals";
+import { userTable, setUserTable, mediaType } from "../../utilities/signals";
 import { fetchUserMedia } from "../../api/anilist";
 import { updateMediaData } from "../UserMedia";
 import TrashCanSvg from "../Icons/TrashCan";
 import UserSearch from "../UserSearch/UserSearch";
-import { userTable, setUserTable } from "../../utilities/signals";
 import IncludeUsersOption from "./UserIncludeBar";
 import { SelectionList, updateAllUserLists } from "../ListNames";
 
@@ -91,7 +90,7 @@ function UserInfo(props) {
 	return (
 		<div class="user-advanced-info">
 			<Show when={value()}>
-				<form>
+				<form onChange={change}>
 					<input type="checkbox" name="advanced" id={props.user.id + "advanced"} onChange={(e) => setState(e.target.checked)} />
 					<label htmlFor={props.user.id + "advanced"}>Enable custom list selection</label>
 					<SelectionList list={list(value)} scope={props.user.id + "-"} disabled={!state()} />
@@ -99,6 +98,20 @@ function UserInfo(props) {
 			</Show>
 		</div>
 	);
+
+	function change(event) {
+		const formData = new FormData(event.currentTarget);
+		const data = Object.fromEntries(formData);
+
+		if ("advanced" in data) {
+			delete data.advanced;
+			if (data.Custom) props.user.searchListNames = Object.keys(data).filter((v) => !v.startsWith("c-"));
+			else props.user.searchListNames = Object.keys(data);
+		} else delete props.user.searchListNames;
+
+		setUserTable((users) => [...users]);
+		updateAllUserLists();
+	}
 }
 
 function RemoveUser({ user }) {

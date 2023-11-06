@@ -1,6 +1,6 @@
 onmessage = async (array) => {
-	const [users, selectedLists, sortMode, userLists] = array.data;
-	users.forEach((u, i) => ((u["lists"] = userLists[i]), (u["searchListNames"] = selectedLists[i])));
+	const [users, sortMode, userLists] = array.data;
+	users.forEach((u, i) => (u["lists"] = userLists[i]));
 
 	const mediaArray = [];
 	const checkedArray = {};
@@ -8,6 +8,7 @@ onmessage = async (array) => {
 	const excludeUsers = users.filter((user) => user.exclude);
 	const includeUsers = users.filter((user) => !user.exclude);
 	const userCount = includeUsers.length;
+	console.log(includeUsers);
 
 	for (const { searchListNames, lists } of includeUsers) {
 		for (const listName of searchListNames) {
@@ -17,7 +18,14 @@ onmessage = async (array) => {
 				list.entries.forEach((anime) => {
 					if (checkedArray[anime.id]) return;
 					checkedArray[anime.id] = true;
-					for (const { name } of excludeUsers) if (name in anime.userLists) return;
+					for (const { name, searchListNames } of excludeUsers) {
+						if (searchListNames === "all" && name in anime.userLists) return;
+						else {
+							for (const listName of searchListNames) {
+								if (listName in anime.userLists[name]) return;
+							}
+						}
+					}
 
 					let totalUserWhoScored = 0;
 					let totalScore = 0;

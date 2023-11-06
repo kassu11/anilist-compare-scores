@@ -162,13 +162,23 @@ export async function updateMediaData() {
 		type = mediaType(),
 		sortType = sortValue();
 
-	// console.trace(listTypes);
-
-	const filterKey = usersArray.map((u) => u.name + u.exclude).join("-") + listTypes.join("-") + type;
-
 	await updateMediaInfoObject();
 	const userMediaData = [];
 	for (const user of usersArray) userMediaData.push(await fetchUserMedia(user, type));
+	const filterKey =
+		usersArray.map((u) => (u.name + u.exclude + u.searchListNames?.length === 0 ? "none" : u.searchListNames?.join("-") ?? "")).join("-") +
+		listTypes.join("-") +
+		type;
+
+	console.log(usersArray);
+
+	usersArray.forEach((user, i) => {
+		if ("searchListNames" in user) return;
+		if (user.exclude) user.searchListNames = "all";
+		else user.searchListNames = listTypes.filter((name) => userMediaData[i].some((v) => v.name === name) || name === "Custom");
+	});
+
+	console.log(userMediaData[0].map(({ name }) => name));
 
 	if (filteredLists[filterKey + sortType]) {
 		setMediaLoading(false);
@@ -189,7 +199,9 @@ export async function updateMediaData() {
 		setMediaData(e.data);
 	};
 
-	worker.postMessage([usersArray, Array(usersArray.length).fill(listTypes), sortType, userMediaData]);
+	// console.log(listTypes);
+
+	worker.postMessage([usersArray, sortType, userMediaData]);
 }
 
 function sortArray(array, type = "score", clone = false) {
