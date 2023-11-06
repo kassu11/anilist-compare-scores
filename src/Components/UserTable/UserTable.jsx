@@ -105,9 +105,9 @@ function UserInfo(props) {
 
 		if ("advanced" in data) {
 			delete data.advanced;
-			if (data.Custom) props.user.searchListNames = Object.keys(data).filter((v) => !v.startsWith("c-"));
-			else props.user.searchListNames = Object.keys(data);
-		} else delete props.user.searchListNames;
+			if (data.Custom) props.user.lists = Object.keys(data).filter((v) => !v.startsWith("c-"));
+			else props.user.lists = Object.keys(data);
+		} else delete props.user.lists;
 
 		setUserTable((users) => [...users]);
 		updateAllUserLists();
