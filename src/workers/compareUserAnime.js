@@ -1,26 +1,32 @@
 onmessage = async (array) => {
-	const [usersT, listTypes, sortType, userMediaData] = array.data;
+	const [users, selectedLists, sortMode, userLists] = array.data;
+	users.forEach((u, i) => ((u["lists"] = userLists[i]), (u["searchListNames"] = selectedLists[i])));
 
 	const mediaArray = [];
 	const checkedArray = {};
 
-	for (const userMedia of userMediaData) {
-		for (const type of listTypes) {
-			for (const list of userMedia) {
-				if (!(list.isCustomList && type === "Custom") && list.name !== type) continue;
+	const excludeUsers = users.filter((user) => user.exclude);
+	const includeUsers = users.filter((user) => !user.exclude);
+	const userCount = includeUsers.length;
+
+	for (const { searchListNames, lists } of includeUsers) {
+		for (const listName of searchListNames) {
+			for (const list of lists) {
+				if (!(list.isCustomList && listName === "Custom") && listName !== list.name) continue;
 
 				list.entries.forEach((anime) => {
 					if (checkedArray[anime.id]) return;
 					checkedArray[anime.id] = true;
+					for (const { name } of excludeUsers) if (name in anime.userLists) return;
 
 					let totalUserWhoScored = 0;
 					let totalScore = 0;
 					let repeat = 0;
 					const users = [];
 
-					for (const user of usersT) {
+					for (const user of includeUsers) {
 						const userKey = user.name;
-						const isOnSelectedList = listTypes.find((type) => anime.userLists[userKey]?.[type])?.replace("c-", "");
+						const isOnSelectedList = user.searchListNames.find((type) => anime.userLists[userKey]?.[type])?.replace("c-", "");
 						if (isOnSelectedList === undefined) continue;
 
 						repeat += anime.userRepeats[userKey];
@@ -51,7 +57,7 @@ onmessage = async (array) => {
 						episodes: anime.episodes,
 						score,
 						repeat,
-						percentage: users.length / usersT.length,
+						percentage: users.length / userCount,
 						users: users.sort((a, b) => {
 							return a.list > b.list ? 1 : a.list === b.list ? b.score - a.score : -1;
 						}),
@@ -61,7 +67,7 @@ onmessage = async (array) => {
 		}
 	}
 
-	sortArray(mediaArray, sortType);
+	sortArray(mediaArray, sortMode);
 	postMessage(mediaArray);
 };
 

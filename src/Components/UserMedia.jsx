@@ -6,8 +6,7 @@ import LoadingMediaElem from "./LoadingMediaElem";
 
 import "../style/mediaCards.scss";
 
-import IncludeWorker from "../workers/includeUpdate.js?worker";
-import ExcludeWorker from "../workers/excludeUpdate.js?worker";
+import CompareAnimeWorker from "../workers/compareUserAnime.js?worker";
 
 export const mediaInfo = {};
 const filteredLists = {};
@@ -166,7 +165,6 @@ export async function updateMediaData() {
 	// console.trace(listTypes);
 
 	const filterKey = usersArray.map((u) => u.name + u.exclude).join("-") + listTypes.join("-") + type;
-	const exclude = usersArray.some((u) => u.exclude);
 
 	await updateMediaInfoObject();
 	const userMediaData = [];
@@ -183,16 +181,15 @@ export async function updateMediaData() {
 		return setMediaData(listData);
 	}
 
-	if (exclude) worker = ExcludeWorker instanceof Worker ? ExcludeWorker : new ExcludeWorker();
-	else worker = IncludeWorker instanceof Worker ? IncludeWorker : new IncludeWorker();
-
-	worker.postMessage([usersArray, listTypes, sortType, userMediaData]);
+	worker = CompareAnimeWorker instanceof Worker ? CompareAnimeWorker : new CompareAnimeWorker();
 	worker.onmessage = (e) => {
 		filteredLists[filterKey] = e.data;
 		filteredLists[filterKey + sortType] = e.data;
 		setMediaLoading(false);
 		setMediaData(e.data);
 	};
+
+	worker.postMessage([usersArray, Array(usersArray.length).fill(listTypes), sortType, userMediaData]);
 }
 
 function sortArray(array, type = "score", clone = false) {

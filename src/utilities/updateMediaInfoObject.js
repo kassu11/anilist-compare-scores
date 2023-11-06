@@ -51,7 +51,6 @@ function processEntry(entry, listName, userName) {
 		entry.media.title.native ??= entry.media.title.userPreferred;
 		entry.media.title.romaji ??= entry.media.title.userPreferred;
 
-		entry.media.allLists = {};
 		entry.media.userLists = {};
 		entry.media.userScores = {};
 		entry.media.userRepeats = {};
