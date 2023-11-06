@@ -13,7 +13,13 @@ export const [mediaLoading, setMediaLoading] = createSignal(false);
 
 export const [allUserLists, setAllUserLists] = createSignal([]);
 export const [selectedLists, setSelectedLists] = createSignal([]);
-export const userListSelectionMemory = { ANIME: { global: {} }, MANGA: { global: {} } };
+
+const memoryObject = { ANIME: { global: {} }, MANGA: { global: {} } };
+export const memory = (scope, listName) => memoryObject[mediaType()][scope]?.[listName];
+export const setMemory = (scope, listName, value) => {
+	memoryObject[mediaType()][scope] ??= {};
+	memoryObject[mediaType()][scope][listName] = value;
+};
 
 let test_syntax = {
 	ANIME: {

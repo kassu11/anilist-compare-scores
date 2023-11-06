@@ -49,7 +49,7 @@ function UserRow({ user }) {
 		<div className="subgrid-row user-row">
 			<div class="selection-options">
 				<label class="hitbox" onClick={multiSelect}>
-					<input type="checkbox" for="enabled" checked onChange={(e) => inputTest(e, user)} />
+					<input type="checkbox" for="enabled" checked onChange={(e) => inputChange(e, user)} />
 				</label>
 				<div class="hamburger"></div>
 				<RemoveUser user={user} />
@@ -65,11 +65,11 @@ function UserRow({ user }) {
 			<span class="center">{user.statistics.manga.meanScore}</span>
 			<span>{Math.round(user.statistics.manga.chaptersRead)}</span>
 			<label onClick={multiSelect}>
-				<input type="checkbox" for="advanced" onChange={(e) => inputTest(e, user)} /> Advanced
+				<input type="checkbox" for="advanced" onChange={(e) => inputChange(e, user)} /> Advanced
 			</label>
 			<div class="exclude">
 				<label class="hitbox" onClick={multiSelect}>
-					<input type="checkbox" for="exclude" onChange={(e) => inputTest(e, user)} />
+					<input type="checkbox" for="exclude" onChange={(e) => inputChange(e, user)} />
 				</label>
 			</div>
 			<UserInfo user={user} />
@@ -116,7 +116,7 @@ function RemoveUser({ user }) {
 	);
 }
 
-async function inputTest(event, user) {
+async function inputChange(event, user) {
 	const forType = event.target.getAttribute("for");
 	const userRow = event.target.closest(".user-row");
 
@@ -128,6 +128,7 @@ async function inputTest(event, user) {
 		userRow.classList.toggle("excludeRow", event.target.checked);
 	} else if (forType === "advanced") {
 		userRow.classList.toggle("open-advanced-info", event.target.checked);
+		return;
 	}
 
 	setUserTable((users) => [...users]);
@@ -138,11 +139,18 @@ async function multiSelect(event) {
 	const input = event.target.tagName === "INPUT" ? event.target : event.target.querySelector("input");
 	const forType = input.getAttribute("for");
 	if (!event.shiftKey) return;
-	if (document.selection && document.selection.empty) {
-		document.selection.empty();
-	} else if (window.getSelection) {
-		var sel = window.getSelection();
-		sel.removeAllRanges();
+
+	if (event.target !== input) {
+		event.preventDefault();
+		event.stopPropagation();
+		input.checked = !input.checked;
+
+		if (document.selection && document.selection.empty) {
+			document.selection.empty();
+		} else if (window.getSelection) {
+			const sel = window.getSelection();
+			sel.removeAllRanges();
+		}
 	}
 
 	const checkboxes = userGrid.querySelectorAll(`input[for="${forType}"]`);

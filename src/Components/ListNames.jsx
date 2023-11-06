@@ -1,16 +1,10 @@
 import { updateMediaData } from "./UserMedia";
-import { setSelectedLists, mediaType, userTable, allUserLists, setAllUserLists, userListSelectionMemory } from "../utilities/signals";
+import { setSelectedLists, mediaType, userTable, allUserLists, setAllUserLists, memory, setMemory } from "../utilities/signals";
 import { fetchUserMedia } from "../api/anilist";
 import { mergeProps, splitProps } from "solid-js";
 
 const custom = (list) => list.startsWith("c-");
 const notCustom = (list) => !list.startsWith("c-");
-const memory = (scope, listName) => userListSelectionMemory[mediaType()][scope]?.[listName];
-const setMemory = (scope, listName, value) => {
-	userListSelectionMemory[mediaType()][scope] ??= {};
-	userListSelectionMemory[mediaType()][scope][listName] = value;
-};
-
 const defaultScope = "global";
 
 function ListTypes() {
@@ -83,8 +77,7 @@ const ListValues = (props) => {
 
 export function updateListType(formElem) {
 	const data = Object.fromEntries(new FormData(formElem));
-	const globalSettings = userListSelectionMemory[mediaType()][defaultScope];
-	allUserLists().forEach((list) => (globalSettings[list] = list in data));
+	allUserLists().forEach((list) => setMemory(defaultScope, list, list in data));
 	const types = Object.keys(data);
 
 	if (types.includes("Custom")) {
