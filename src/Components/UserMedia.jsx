@@ -166,13 +166,12 @@ export async function updateMediaData() {
 	const userMediaData = [];
 	for (const user of usersArray) userMediaData.push(await fetchUserMedia(user, type));
 	const filterKey =
-		usersArray.map((u) => u.name + u.exclude + (u.searchListNames?.length === 0 ? "none" : u.searchListNames?.join("-") ?? "")).join("-") +
-		listTypes.join("-") +
-		type;
+		usersArray.map((u) => `${u.name}-${u.exclude ? "y" : "n"}-${u.lists?.length === 0 ? "none" : u.lists?.join("-") ?? ""}`).join("-") +
+		`${listTypes.join("-")}-${type}`;
 
 	usersArray.forEach((user, i) => {
-		if ("searchListNames" in user) return;
-		if (user.exclude) user.searchListNames = "all";
+		if ("lists" in user) user.searchListNames = user.lists;
+		else if (user.exclude) user.searchListNames = "all";
 		else user.searchListNames = listTypes.filter((name) => userMediaData[i].some((v) => v.name === name) || name === "Custom");
 	});
 
