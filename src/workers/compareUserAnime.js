@@ -8,7 +8,6 @@ onmessage = async (array) => {
 	const excludeUsers = users.filter((user) => user.exclude);
 	const includeUsers = users.filter((user) => !user.exclude);
 	const userCount = includeUsers.length;
-	console.log(includeUsers);
 
 	for (const { searchListNames, lists } of includeUsers) {
 		for (const listName of searchListNames) {
