@@ -17,13 +17,11 @@ onmessage = async (array) => {
 				list.entries.forEach((anime) => {
 					if (checkedArray[anime.id]) return;
 					checkedArray[anime.id] = true;
+
 					for (const { name, searchListNames } of excludeUsers) {
+						if (!(name in anime.userLists)) continue;
 						if (searchListNames === "all" && name in anime.userLists) return;
-						else {
-							for (const listName of searchListNames) {
-								if (listName in anime.userLists[name]) return;
-							}
-						}
+						if (searchListNames.some((listName) => listName in anime.userLists[name])) return;
 					}
 
 					let totalUserWhoScored = 0;
