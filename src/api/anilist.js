@@ -29,8 +29,7 @@ const userQuery = `query ($page: Int = 1, $id: Int, $search: String, $sort: [Use
 			}
 		}
 	}
-}
-`;
+}`;
 
 const userVariable = {
 	page: 1,
@@ -137,8 +136,7 @@ fragment mediaListEntry on MediaList {
 			day
 		}
 	}
-}
-`;
+}`;
 
 const userMediaVariable = {
 	userId: 0,

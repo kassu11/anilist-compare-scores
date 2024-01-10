@@ -1,8 +1,13 @@
-let timeout;
+const timeouts = new Map();
 
 export function setWithBuffer(set, value) {
-	clearTimeout(timeout);
-	timeout = setTimeout(() => {
-		set(value);
-	}, 100);
+	if (timeouts.has(set)) clearTimeout(timeouts.get(set));
+
+	timeouts.set(
+		set,
+		setTimeout(() => {
+			set(value);
+			timeouts.delete(set);
+		}, 100)
+	);
 }
