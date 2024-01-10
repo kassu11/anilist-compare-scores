@@ -1,8 +1,14 @@
+import { createContext, createSignal } from "solid-js";
 import UserSearch from "./components/UserSearch/userSearch";
+import UserSelection from "./components/UserSelection/UserSelection";
+
+export const GlobalContext = createContext();
 
 function App() {
+	const [users, setUsers] = createSignal([]);
+
 	return (
-		<>
+		<GlobalContext.Provider value={{ users, setUsers }}>
 			<h1>Anime Score Compare</h1>
 			<p>
 				The interface works, but is not decorated yet! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Odio ratione atque
@@ -10,7 +16,8 @@ function App() {
 				rerum.
 			</p>
 			<UserSearch />
-		</>
+			<UserSelection />
+		</GlobalContext.Provider>
 	);
 }
 

@@ -1,14 +1,17 @@
-import { batch, createEffect, createResource, createSelector, createSignal } from "solid-js";
+import { batch, createContext, createEffect, createResource, createSelector, createSignal, useContext } from "solid-js";
 import { fetchUsers } from "../../../api/anilist";
 import style from "./UserSearchDialog.module.scss";
 import UserSearchResult from "./UserSearchResult/UserSearchResult";
 import SearchForm from "./SearchForm/SearchForm";
+
+import { GlobalContext } from "../../../App";
 
 export default function UserSearchDialog(props) {
 	const [searchIndex, setSearchIndex] = createSignal(0);
 	const [search, setSearch] = createSignal("");
 	const [recommendations] = createResource(search, fetchUsers);
 	const isSelected = createSelector(searchIndex);
+	const { setUsers } = useContext(GlobalContext);
 
 	const closeOnFocusOut = (event) => {
 		if (event.target === dialogElem) props.setOpen(false);
@@ -32,7 +35,13 @@ export default function UserSearchDialog(props) {
 
 		if (!newUser?.name) return console.log("No users found");
 
+		setUsers((users) => [...users, newUser]);
+
 		console.table(newUser);
+	};
+
+	const addUser = (user) => {
+		setUsers((users) => [...users, user]);
 	};
 
 	const onKeyDown = (event) => {
