@@ -1,7 +1,8 @@
 import { batch, createEffect, createResource, createSelector, createSignal } from "solid-js";
-import MagnificationGlassSvg from "../../../svg/MagnificationGlassSvg/MagnificationGlassSvg";
-import style from "./UserSearchDialog.module.scss";
 import { fetchUsers } from "../../../api/anilist";
+import style from "./UserSearchDialog.module.scss";
+import UserSearchResult from "./UserSearchResult/UserSearchResult";
+import SearchForm from "./SearchForm/SearchForm";
 
 export default function UserSearchDialog(props) {
 	const [searchIndex, setSearchIndex] = createSignal(0);
@@ -59,40 +60,13 @@ export default function UserSearchDialog(props) {
 	const dialogElem = (
 		<dialog onClose={() => props.setOpen(false)} className={style["user-search-dialog"]} onClick={closeOnFocusOut}>
 			<div className={style["dialog-container"]}>
-				<form onSubmit={submitSearch}>
-					<label className={style["search-container"]}>
-						<MagnificationGlassSvg className={style["magnification-glass"]} width={18} height={18} />
-						<input
-							className={style["user-search-input"]}
-							type="search"
-							autoComplete="off"
-							autoCapitalize="off"
-							autoCorrect="off"
-							spellCheck="false"
-							placeholder="Type to search"
-							value={search()}
-							onInput={(event) => setSearch(event.target.value)}
-							onKeyDown={onKeyDown}
-						/>
-					</label>
-				</form>
-				<div className="search-results">
-					<For each={recommendations()}>
-						{(user, index) => {
-							return (
-								<div
-									className={style["user-row"]}
-									classList={{ selected: isSelected(index()) }}
-									onMouseEnter={() => setSearchIndex(index())}
-									onClick={submitSearch}
-								>
-									<img src={user.avatar.medium} />
-									<span>{user.name}</span>
-								</div>
-							);
-						}}
-					</For>
-				</div>
+				<SearchForm onKeyDown={onKeyDown} search={search()} setSearch={setSearch} submitSearch={submitSearch} />
+				<UserSearchResult
+					recommendations={recommendations()}
+					isSelected={isSelected}
+					setSearchIndex={setSearchIndex}
+					submitSearch={submitSearch}
+				/>
 			</div>
 		</dialog>
 	);
@@ -100,6 +74,10 @@ export default function UserSearchDialog(props) {
 	createEffect(() => {
 		if (props.open) dialogElem.showModal();
 		else dialogElem.close();
+	});
+
+	createEffect(() => {
+		if (recommendations()) setSearchIndex(0);
 	});
 
 	return dialogElem;

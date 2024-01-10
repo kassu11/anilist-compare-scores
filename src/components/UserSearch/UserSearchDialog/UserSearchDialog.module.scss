@@ -8,6 +8,10 @@
 	border: unset;
 	overflow: visible;
 
+	&[open] {
+		display: flex;
+	}
+
 	&::backdrop {
 		background-color: var(--clr-shadow-500);
 		backdrop-filter: blur(5px);
@@ -16,67 +20,6 @@
 	@at-root .dialog-container {
 		display: flex;
 		flex-direction: column;
-	}
-
-	@at-root .search-container {
-		display: flex;
-		place-items: center;
-		gap: 1em;
-		padding-inline: 1em;
-
-		@at-root .magnification-glass {
-			filter: drop-shadow(0px 0px 1px white);
-			pointer-events: none;
-		}
-
-		@at-root .user-search-input {
-			border: none;
-			outline: none;
-			background-color: transparent;
-			width: 100%;
-			padding-block: 1em;
-			font-size: var(--fs-500);
-			font-weight: var(--fw-700);
-
-			/* clears the ‘X’ from Internet Explorer */
-			&::-ms-clear,
-			&::-ms-reveal {
-				display: none;
-				width: 0;
-				height: 0;
-			}
-
-			/* clears the ‘X’ from Chrome */
-			&::-webkit-search-decoration,
-			&::-webkit-search-cancel-button,
-			&::-webkit-search-results-button,
-			&::-webkit-search-results-decoration {
-				display: none;
-			}
-		}
-	}
-
-	@at-root .user-row {
-		display: flex;
-		gap: 10px;
-		padding: 5px 14px;
-		align-items: center;
-		cursor: pointer;
-
-		&:global(.selected) {
-			background-color: var(--clr-highlight-500);
-			color: var(--clr-shadow-100);
-		}
-
-		img {
-			width: 20px;
-			height: 20px;
-			object-fit: cover;
-			border-radius: 4px;
-		}
-
-		span {
-			font-weight: var(--fw-600);
-		}
+		width: 100%;
 	}
 }
